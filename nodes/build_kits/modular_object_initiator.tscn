@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://k5bndo2nju2o"]
+
+[ext_resource type="Script" path="res://nodes/build_kits/scripts/modular_object_initiator.gd" id="1_mk08r"]
+
+[node name="ModularObjectInitiator" type="Node3D"]
+script = ExtResource("1_mk08r")

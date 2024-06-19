@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://dmrn78doyxv83"]
+
+[ext_resource type="Script" path="res://nodes/mod_engine/scripts/icon_generator.gd" id="1_c7sb2"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_g08vk"]
+viewport_path = NodePath("IconArea/SubViewport")
+
+[node name="IconGenerator" type="Node3D"]
+script = ExtResource("1_c7sb2")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-20000, 0)
+texture = SubResource("ViewportTexture_g08vk")
+
+[node name="IconArea" type="Node3D" parent="."]
+
+[node name="SubViewport" type="SubViewport" parent="IconArea"]
+transparent_bg = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(128, 128)
+
+[node name="Camera3D" type="Camera3D" parent="IconArea/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50)
+projection = 1
+size = 2.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="IconArea/SubViewport"]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0)
+
+[node name="Anchor" type="Node3D" parent="IconArea/SubViewport"]

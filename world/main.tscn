@@ -1,0 +1,47 @@
+[gd_scene load_steps=8 format=3 uid="uid://c0jb2lgtxw7dx"]
+
+[ext_resource type="Script" path="res://world/scripts/game_manager.gd" id="1_gkktq"]
+[ext_resource type="PackedScene" uid="uid://ipkvp58j3ob4" path="res://nodes/mod_engine/asset_loader.tscn" id="2_1jfy4"]
+[ext_resource type="PackedScene" uid="uid://b4ipag4vv4p21" path="res://world/mod_manager.tscn" id="3_b6jg3"]
+[ext_resource type="PackedScene" uid="uid://dv0frcwk2qdun" path="res://world/object_index.tscn" id="4_convv"]
+[ext_resource type="PackedScene" uid="uid://byde85uqoynxl" path="res://nodes/cmd/cmd.tscn" id="5_hp777"]
+[ext_resource type="Script" path="res://nodes/cmd/scripts/cmd.gd" id="6_8k5yp"]
+[ext_resource type="PackedScene" uid="uid://bi2oakit1yejl" path="res://ui/ui.tscn" id="8_5tnxo"]
+
+[node name="Main" type="Node3D"]
+
+[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("asset_loader")]
+script = ExtResource("1_gkktq")
+asset_loader = NodePath("AssetLoader")
+menu = "res://world/menu.tscn"
+world = "res://world/world.tscn"
+world_editor = "res://world_editor/world_editor.tscn"
+prefab_editor = "res://world_editor/prefab_editor.tscn"
+
+[node name="ModManager" parent="GameManager" instance=ExtResource("3_b6jg3")]
+
+[node name="AssetLoader" parent="GameManager" instance=ExtResource("2_1jfy4")]
+
+[node name="ObjectIndex" parent="GameManager" instance=ExtResource("4_convv")]
+
+[node name="Commands" parent="GameManager" instance=ExtResource("5_hp777")]
+script = ExtResource("6_8k5yp")
+
+[node name="Level" type="Node" parent="."]
+
+[node name="UI" parent="." node_paths=PackedStringArray("escapable_ui_nodes") instance=ExtResource("8_5tnxo")]
+escapable_ui_nodes = [NodePath("EscMenu"), NodePath("UIBuildingInterface"), NodePath("UIMain/MenuRight/PlayOptions"), NodePath("UIMain/MenuRight/CharactersOptions"), NodePath("UIMain/MenuRight/WorldEditorOptions"), NodePath("UIMain/MenuRight/ModsOptions"), NodePath("UIMain/MenuRight/ConfigsOptions"), NodePath("UIMain/MenuRight/DirectConnection"), null]
+
+[node name="UIChat" parent="UI" index="6"]
+visible = true
+
+[connection signal="level_changed" from="GameManager" to="UI" method="_on_game_manager_level_changed"]
+[connection signal="level_changed" from="GameManager" to="UI/EscMenu" method="_on_game_manager_level_changed"]
+[connection signal="level_changed" from="GameManager" to="UI/UIChat" method="_on_game_manager_level_changed"]
+[connection signal="assets_loaded" from="GameManager/AssetLoader" to="GameManager/ModManager" method="_on_asset_loader_assets_loaded"]
+[connection signal="ready" from="GameManager/AssetLoader" to="GameManager/ModManager" method="_on_asset_loader_ready"]
+
+[editable path="UI"]
+[editable path="UI/UIMain"]
+[editable path="UI/UIChat"]
+[editable path="UI/UIConsole"]

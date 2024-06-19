@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://lkraphbmh3h6"]
+
+[ext_resource type="PackedScene" uid="uid://cvv7vr17nmnje" path="res://nodes/models/helpers/ground_plane.tscn" id="1_j827f"]
+[ext_resource type="Texture2D" uid="uid://c4ucmpkapw4eb" path="res://images/textures/test-green.png" id="2_nm0jf"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_xbe4c"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_osw4o"]
+albedo_texture = ExtResource("2_nm0jf")
+
+[node name="World" type="Node3D"]
+
+[node name="GroundPlane" parent="." instance=ExtResource("1_j827f")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.766044, 0.642788, 0, -0.642788, 0.766044, 0, 2, 2.015)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_xbe4c")
+surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")

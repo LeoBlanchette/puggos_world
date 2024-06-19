@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://ipkvp58j3ob4"]
+
+[ext_resource type="Script" path="res://nodes/mod_engine/scripts/asset_loader.gd" id="1_yc7nv"]
+[ext_resource type="PackedScene" uid="uid://dmrn78doyxv83" path="res://nodes/mod_engine/icon_generator.tscn" id="2_0jsnr"]
+
+[node name="AssetLoader" type="Node" node_paths=PackedStringArray("mod_tree")]
+script = ExtResource("1_yc7nv")
+mod_tree = NodePath("ModTree")
+
+[node name="ModTree" type="Node" parent="."]
+
+[node name="IconGenerator" parent="." instance=ExtResource("2_0jsnr")]

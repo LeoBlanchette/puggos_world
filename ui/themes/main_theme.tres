@@ -1,0 +1,14 @@
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://1cgrcgf7at3y"]
+
+[ext_resource type="StyleBox" uid="uid://cjrgqk768y5bs" path="res://ui/themes/button_style_hover_box_flat.tres" id="1_cy6du"]
+[ext_resource type="FontVariation" uid="uid://djbufmjwwlsfp" path="res://ui/fonts/lalezar_font_variation.tres" id="1_ip2tv"]
+[ext_resource type="StyleBox" uid="uid://1fcn0s2dxyce" path="res://ui/themes/button_style_default_box_flat.tres" id="2_unpvf"]
+
+[resource]
+default_font = ExtResource("1_ip2tv")
+default_font_size = 24
+Button/colors/font_hover_color = Color(0, 0, 0, 1)
+Button/styles/hover = ExtResource("1_cy6du")
+Button/styles/normal = ExtResource("2_unpvf")
+Button/styles/pressed = ExtResource("2_unpvf")
+CheckButton/styles/hover_pressed = ExtResource("2_unpvf")

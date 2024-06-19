@@ -1,0 +1,35 @@
+[gd_scene load_steps=7 format=3 uid="uid://cvv7vr17nmnje"]
+
+[ext_resource type="Texture2D" uid="uid://c6vk7bij5775n" path="res://images/textures/64-px-1-meters-grid.png" id="1_4hbte"]
+[ext_resource type="Material" uid="uid://bdtfprhttv4tp" path="res://materials/green_beacon.tres" id="2_bfxst"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_alh1j"]
+size = Vector3(1000, 2, 1000)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_nw0eu"]
+size = Vector2(1000, 1000)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ty40w"]
+albedo_texture = ExtResource("1_4hbte")
+uv1_triplanar = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_6mb6r"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 50.0
+radial_segments = 8
+
+[node name="GroundPlane" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+shape = SubResource("BoxShape3D_alh1j")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_nw0eu")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_ty40w")
+
+[node name="HomeBeacon" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_6mb6r")
+surface_material_override/0 = ExtResource("2_bfxst")

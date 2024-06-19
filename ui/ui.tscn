@@ -1,0 +1,63 @@
+[gd_scene load_steps=14 format=3 uid="uid://bi2oakit1yejl"]
+
+[ext_resource type="Script" path="res://ui/scripts/ui.gd" id="1_w4cnj"]
+[ext_resource type="Theme" uid="uid://1cgrcgf7at3y" path="res://ui/themes/main_theme.tres" id="1_wfx8k"]
+[ext_resource type="PackedScene" uid="uid://b7675gqeab4ta" path="res://ui/ui_main.tscn" id="2_g37sc"]
+[ext_resource type="PackedScene" uid="uid://cinf6b7t7l44r" path="res://ui/ui_prefab_editor.tscn" id="3_6iv82"]
+[ext_resource type="PackedScene" uid="uid://d0b2rqdlc2ojg" path="res://ui/ui_world.tscn" id="4_li8md"]
+[ext_resource type="PackedScene" uid="uid://1066jn4an0tp" path="res://ui/ui_world_editor.tscn" id="5_rb0pw"]
+[ext_resource type="Script" path="res://ui/scripts/ui_prefab_editor.gd" id="5_w27md"]
+[ext_resource type="Script" path="res://ui/scripts/ui_world.gd" id="7_qrlgp"]
+[ext_resource type="Script" path="res://ui/scripts/ui_world_editor.gd" id="9_omnbt"]
+[ext_resource type="PackedScene" uid="uid://cqpche65gohci" path="res://ui/ui_building_interface.tscn" id="10_1wvbp"]
+[ext_resource type="PackedScene" uid="uid://cy04nuesstfd0" path="res://ui/esc_menu.tscn" id="11_qns1x"]
+[ext_resource type="PackedScene" uid="uid://cg6td68sf3duf" path="res://ui/ui_chat.tscn" id="12_as3hp"]
+[ext_resource type="PackedScene" uid="uid://158jfcngo378" path="res://ui/ui_console.tscn" id="13_7vgq5"]
+
+[node name="UI" type="Control" node_paths=PackedStringArray("escapable_ui_nodes")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_wfx8k")
+script = ExtResource("1_w4cnj")
+escapable_ui_nodes = [NodePath("EscMenu"), NodePath("UIChat"), NodePath("UIBuildingInterface"), NodePath("UIMain/MenuRight/PlayOptions"), NodePath("UIMain/MenuRight/CharactersOptions"), NodePath("UIMain/MenuRight/WorldEditorOptions"), NodePath("UIMain/MenuRight/ModsOptions"), NodePath("UIMain/MenuRight/ConfigsOptions"), NodePath("UIMain/MenuRight/DirectConnection"), null]
+
+[node name="UIMain" parent="." instance=ExtResource("2_g37sc")]
+layout_mode = 1
+
+[node name="UIWorld" parent="." instance=ExtResource("4_li8md")]
+visible = false
+layout_mode = 1
+script = ExtResource("7_qrlgp")
+
+[node name="UIWorldEditor" parent="." instance=ExtResource("5_rb0pw")]
+visible = false
+layout_mode = 1
+script = ExtResource("9_omnbt")
+
+[node name="UIPrefabEditor" parent="." instance=ExtResource("3_6iv82")]
+visible = false
+layout_mode = 1
+script = ExtResource("5_w27md")
+
+[node name="UIBuildingInterface" parent="." instance=ExtResource("10_1wvbp")]
+visible = false
+layout_mode = 1
+
+[node name="EscMenu" parent="." instance=ExtResource("11_qns1x")]
+visible = false
+layout_mode = 1
+
+[node name="UIChat" parent="." instance=ExtResource("12_as3hp")]
+visible = false
+layout_mode = 1
+
+[node name="UIConsole" parent="." instance=ExtResource("13_7vgq5")]
+layout_mode = 1
+
+[editable path="UIMain"]
+[editable path="UIChat"]
+[editable path="UIConsole"]

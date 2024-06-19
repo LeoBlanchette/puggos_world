@@ -1,0 +1,52 @@
+[gd_scene load_steps=9 format=3 uid="uid://bgk06cxwm7u8n"]
+
+[ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="1_kprfw"]
+[ext_resource type="Script" path="res://nodes/characters/scripts/register_player.gd" id="2_3b31x"]
+[ext_resource type="PackedScene" uid="uid://bkqfe3f3rwa8g" path="res://nodes/build_kits/builder_node.tscn" id="2_j8xj8"]
+[ext_resource type="Script" path="res://nodes/characters/scripts/view_switch.gd" id="2_vpfrc"]
+[ext_resource type="Material" uid="uid://bdtfprhttv4tp" path="res://materials/green_beacon.tres" id="3_anivm"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_v7jah"]
+material = ExtResource("3_anivm")
+radius = 0.2
+height = 50.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_o17ca"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plrjp"]
+albedo_color = Color(1, 0, 0, 1)
+roughness = 0.15
+
+[node name="Player" node_paths=PackedStringArray("builder_node") groups=["players"] instance=ExtResource("1_kprfw")]
+builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
+
+[node name="Register_Player" type="Node" parent="." index="0"]
+script = ExtResource("2_3b31x")
+
+[node name="View Switch" type="Node" parent="." index="2"]
+script = ExtResource("2_vpfrc")
+
+[node name="ViewInteraction" type="Node3D" parent="Head/ThirdPersonCameraReference" index="0"]
+
+[node name="Camera3D" type="Camera3D" parent="Head/ThirdPersonCameraReference/ViewInteraction" index="0"]
+
+[node name="BuilderNode" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D" index="0" node_paths=PackedStringArray("anchor") instance=ExtResource("2_j8xj8")]
+marker_follow_speed = 0.8
+anchor = NodePath("HitMarker/Anchor")
+
+[node name="BuilderRayCast3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode" index="0"]
+collide_with_bodies = true
+
+[node name="HitMarker" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode" index="1"]
+
+[node name="HitVisualizer" type="MeshInstance3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode/HitMarker" index="0"]
+mesh = SubResource("SphereMesh_v7jah")
+skeleton = NodePath("../..")
+
+[node name="Anchor" type="Node3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode/HitMarker" index="1"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="12"]
+mesh = SubResource("CapsuleMesh_o17ca")
+surface_material_override/0 = SubResource("StandardMaterial3D_plrjp")
+
+[editable path="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode"]

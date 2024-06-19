@@ -1,0 +1,80 @@
+@icon("res://images/icons/blocks.svg")
+extends Node
+class_name ModManager
+
+static var mod_manager: ModManager = null
+
+## IMPORTANT array that contains the core information for mod scanning
+static var valid_creator_mod_types: Array = [
+	["structures/modular/", "structure.tscn"],
+	["materials/structures_modular/", "material.tres"],
+	["images/player_faces/", "face.png"],
+]
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:	
+	if ModManager.mod_manager == null:
+		ModManager.mod_manager = self
+	else:
+		queue_free()
+
+func _exit_tree() -> void:
+	if ModManager.mod_manager == self:
+		ModManager.mod_manager = null
+
+func load_mod_from_path(mod_path: String):
+	var loaded_mod: Resource = ResourceLoader.load(mod_path)
+	if mod_path.ends_with(".tscn"):
+		var instanced_mod = loaded_mod.instantiate()
+		instanced_mod.set_meta("mod_path", mod_path)
+		return instanced_mod
+	return null
+
+
+## loads mods by path parts supplied, such as "/structures/modular/" 
+func load_mods_by_path(asset_paths: Array[String]):
+	var mods: Array[String] = filter_mod_list_by_paths(asset_paths)
+	for mod in mods:
+		#get the mod
+		var instanced_mod = load_mod_from_path(mod)
+		if instanced_mod == null:
+			print_debug("insanced_mod is null mod: "+mod)
+			continue		
+		#get the mod's signature and path info for use in indexer
+		var mod_hierarchy: Dictionary = AssetLoader.asset_loader.get_mod_hierarchy(mod)
+		for key in mod_hierarchy:
+			instanced_mod.set_meta(key, mod_hierarchy[key])
+		ObjectIndex.add_object_to_index(instanced_mod)
+
+'''
+## unloads mods by path parts supplied, such as "/structures/modular/" 	
+func unload_mods_by_paths(asset_paths: Array[String]):
+	
+	var mods: Array[String] = filter_mod_list_by_paths(asset_paths)
+	mods = ["IN PROGRESS"]
+	pass
+'''
+
+## provide paths such as "/structures/modular/" and it will return all mods 
+## containing the string matching the path string parts supplied
+func filter_mod_list_by_paths(asset_paths) -> Array[String]:
+	var matches: Array[String] = []
+	var mod_list: Array[String] = AssetLoader.get_mods_list()
+	
+	for mod in mod_list:
+		for asset_path in asset_paths:
+			if asset_path in mod:
+				matches.append(mod)
+	
+	return matches
+
+'''
+func clear_mods(asset_paths: Array[String]):
+	pass
+'''
+
+func _on_asset_loader_assets_loaded() -> void:	
+	pass
+	
+func _on_asset_loader_ready() -> void:
+	AssetLoader.asset_loader.populate_mod_content()

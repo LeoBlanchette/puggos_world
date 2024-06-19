@@ -1,0 +1,13 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://djbufmjwwlsfp"]
+
+[ext_resource type="FontFile" uid="uid://b4ri0g8iyf23c" path="res://ui/fonts/Lalezar-Regular.ttf" id="1_ol7tx"]
+
+[resource]
+base_font = ExtResource("1_ol7tx")
+opentype_features = {
+1633774708: 1,
+1684826471: 1,
+1801810542: 1,
+1818847073: 1
+}
+baseline_offset = 0.08

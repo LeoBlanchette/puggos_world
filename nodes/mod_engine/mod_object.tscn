@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://brgul88rdr02r"]
+
+[sub_resource type="GDScript" id="GDScript_udgjg"]
+script/source = "extends Node
+
+class_name ModObject
+"
+
+[node name="ModObject" type="Node"]
+script = SubResource("GDScript_udgjg")

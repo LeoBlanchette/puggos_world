@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://cqpche65gohci"]
+
+[ext_resource type="Script" path="res://ui/scripts/ui_building_interface.gd" id="1_363et"]
+[ext_resource type="PackedScene" uid="uid://bfw7vl6821cud" path="res://ui/building_interface_elements/button_mod_object.tscn" id="2_6j237"]
+
+[node name="UIBuildingInterface" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_363et")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.678431)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+offset_right = 138.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Building Interface"
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 5
+
+[node name="ButtonItem" parent="GridContainer" instance=ExtResource("2_6j237")]
+layout_mode = 2

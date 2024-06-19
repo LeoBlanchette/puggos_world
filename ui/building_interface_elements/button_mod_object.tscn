@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bfw7vl6821cud"]
+
+[ext_resource type="Script" path="res://ui/building_interface_elements/scripts/button_mod_object.gd" id="2_lgyxt"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_menji"]
+load_path = "res://.godot/imported/puggos_world.sandbox.structures.modular.door.png-2acce8ef3266398794654cbb9434a7c4.ctex"
+
+[node name="ButtonItem" type="Button"]
+custom_minimum_size = Vector2(128, 128)
+text = "
+"
+icon = SubResource("CompressedTexture2D_menji")
+flat = true
+script = ExtResource("2_lgyxt")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

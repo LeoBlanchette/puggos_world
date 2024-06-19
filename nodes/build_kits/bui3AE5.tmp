@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkqfe3f3rwa8g"]
+
+[ext_resource type="Script" path="res://nodes/build_kits/scripts/builder_node.gd" id="1_okeps"]
+
+[node name="BuilderNode" type="Node3D"]
+script = ExtResource("1_okeps")
+
+[node name="BuilderRayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+target_position = Vector3(0, 0, -15)
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false

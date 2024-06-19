@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b4ipag4vv4p21"]
+
+[ext_resource type="Script" path="res://world/scripts/mod_manager.gd" id="1_rperc"]
+
+[node name="ModManager" type="Node"]
+script = ExtResource("1_rperc")

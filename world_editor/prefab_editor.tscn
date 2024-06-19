@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://btw52yc8koj43"]
+
+[ext_resource type="Script" path="res://world_editor/scripts/prefab_editor.gd" id="1_ubjkp"]
+[ext_resource type="PackedScene" uid="uid://cvv7vr17nmnje" path="res://nodes/models/helpers/ground_plane.tscn" id="2_5smr1"]
+[ext_resource type="PackedScene" uid="uid://bgk06cxwm7u8n" path="res://nodes/characters/player.tscn" id="2_yvkhk"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_30ka8"]
+sky_top_color = Color(0.0679686, 0.0903384, 0.121446, 1)
+sky_horizon_color = Color(0.147171, 0.151731, 0.15893, 1)
+ground_bottom_color = Color(0.231373, 0.235294, 0.247059, 1)
+ground_horizon_color = Color(0.125873, 0.129967, 0.13643, 1)
+
+[sub_resource type="Sky" id="Sky_g70us"]
+sky_material = SubResource("ProceduralSkyMaterial_30ka8")
+
+[sub_resource type="Environment" id="Environment_px6bi"]
+background_mode = 2
+sky = SubResource("Sky_g70us")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="PrefabEditor" type="Node"]
+script = ExtResource("1_ubjkp")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_px6bi")
+
+[node name="GroundPlane" parent="." instance=ExtResource("2_5smr1")]
+collision_layer = 3
+
+[node name="Player" parent="." instance=ExtResource("2_yvkhk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.40216, 0)
+
+[node name="BuilderNode" parent="Player/Head/ThirdPersonCameraReference/ViewInteraction/Camera3D" index="0"]
+marker_follow_speed = 0.5
+
+[node name="PrefabRoot" type="Node3D" parent="."]
+
+[editable path="GroundPlane"]
+[editable path="Player"]
+[editable path="Player/Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode"]

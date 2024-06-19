@@ -1,0 +1,356 @@
+[gd_scene load_steps=8 format=3 uid="uid://b7675gqeab4ta"]
+
+[ext_resource type="Theme" uid="uid://1cgrcgf7at3y" path="res://ui/themes/main_theme.tres" id="1_5j53r"]
+[ext_resource type="Script" path="res://ui/scripts/ui_main.gd" id="2_a3bab"]
+[ext_resource type="Script" path="res://ui/scripts/main_menu/button_play_open_menu.gd" id="3_8khem"]
+[ext_resource type="Script" path="res://ui/scripts/main_menu/direct_connection.gd" id="4_5o7gv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gq6qh"]
+bg_color = Color(0, 0, 0, 0.392157)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ron3a"]
+bg_color = Color(0.6, 0, 0, 0.294118)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gkree"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="UIMain" type="Control" node_paths=PackedStringArray("play_options", "characters_options", "world_editor_options", "mod_options", "configs_options", "direct_connection_options", "status_panel", "status_label")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_5j53r")
+script = ExtResource("2_a3bab")
+play_options = NodePath("MenuRight/PlayOptions")
+characters_options = NodePath("MenuRight/CharactersOptions")
+world_editor_options = NodePath("MenuRight/WorldEditorOptions")
+mod_options = NodePath("MenuRight/ModsOptions")
+configs_options = NodePath("MenuRight/ConfigsOptions")
+direct_connection_options = NodePath("MenuRight/DirectConnection")
+status_panel = NodePath("StatusPanel")
+status_label = NodePath("StatusPanel/StatusLabel")
+
+[node name="MenuLeft" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 350.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gq6qh")
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuLeft"]
+layout_mode = 2
+offset_right = 324.0
+offset_bottom = 424.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuLeft/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuLeft/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PuggosWorld" type="Label" parent="MenuLeft/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "PUGGO'S WORLD"
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuLeft/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuLeft/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="ButtonPlayOpenMenu" type="Button" parent="MenuLeft/MarginContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 30
+text = "PLAY..."
+alignment = 0
+script = ExtResource("3_8khem")
+
+[node name="MarginContainer2" type="MarginContainer" parent="MenuLeft/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuLeft/MarginContainer/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="ButtonCharacters" type="Button" parent="MenuLeft/MarginContainer/VBoxContainer/MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 30
+text = "CHARACTERS"
+alignment = 0
+
+[node name="ButtonEditor" type="Button" parent="MenuLeft/MarginContainer/VBoxContainer/MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 30
+text = "WORLD EDITOR"
+alignment = 0
+
+[node name="ButtonMods" type="Button" parent="MenuLeft/MarginContainer/VBoxContainer/MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 30
+text = "MODS"
+alignment = 0
+
+[node name="ButtonConfigs" type="Button" parent="MenuLeft/MarginContainer/VBoxContainer/MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 30
+text = "CONFIGS"
+alignment = 0
+
+[node name="ButtonExitMain" type="Button" parent="."]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -55.87
+offset_right = 170.0
+offset_bottom = -19.87
+grow_vertical = 0
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 30
+text = "  EXIT..."
+alignment = 0
+
+[node name="MenuRight" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 350.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ron3a")
+
+[node name="PlayOptions" type="VBoxContainer" parent="MenuRight"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.5
+offset_top = -100.0
+offset_right = 110.5
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SinglePlayer" type="Button" parent="MenuRight/PlayOptions"]
+layout_mode = 2
+text = "Single Player"
+
+[node name="Multiplayer" type="Button" parent="MenuRight/PlayOptions"]
+layout_mode = 2
+text = "Multiplayer"
+
+[node name="DirectConnect" type="Button" parent="MenuRight/PlayOptions"]
+layout_mode = 2
+text = "Direct Connection"
+
+[node name="Lobby" type="Button" parent="MenuRight/PlayOptions"]
+layout_mode = 2
+text = "Lobby"
+
+[node name="CharactersOptions" type="VBoxContainer" parent="MenuRight"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -90.5
+offset_top = -19.5
+offset_right = 90.5
+offset_bottom = 19.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="MenuRight/CharactersOptions"]
+layout_mode = 2
+text = "Character Options"
+horizontal_alignment = 1
+
+[node name="WorldEditorOptions" type="VBoxContainer" parent="MenuRight"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -105.5
+offset_top = -19.5
+offset_right = 105.5
+offset_bottom = 19.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label2" type="Label" parent="MenuRight/WorldEditorOptions"]
+layout_mode = 2
+text = "World Editor Options"
+horizontal_alignment = 1
+
+[node name="ModsOptions" type="VBoxContainer" parent="MenuRight"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -69.5
+offset_top = -19.5
+offset_right = 69.5
+offset_bottom = 19.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label3" type="Label" parent="MenuRight/ModsOptions"]
+layout_mode = 2
+text = "Mods Options"
+horizontal_alignment = 1
+
+[node name="ConfigsOptions" type="VBoxContainer" parent="MenuRight"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -74.5
+offset_top = -19.5
+offset_right = 74.5
+offset_bottom = 19.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label4" type="Label" parent="MenuRight/ConfigsOptions"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Config Options"
+horizontal_alignment = 1
+
+[node name="DirectConnection" type="VBoxContainer" parent="MenuRight"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -74.5
+offset_top = -19.5
+offset_right = 74.5
+offset_bottom = 19.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_5o7gv")
+
+[node name="HostJoinLabel" type="Label" parent="MenuRight/DirectConnection"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Direct Connection [Join]"
+horizontal_alignment = 1
+
+[node name="JoinHostCheckButton" type="CheckButton" parent="MenuRight/DirectConnection"]
+layout_mode = 2
+button_pressed = true
+text = "Host / Join"
+
+[node name="IPAddressNoteLabel" type="Label" parent="MenuRight/DirectConnection"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "IP Address:"
+horizontal_alignment = 1
+
+[node name="IPAddressLineEdit" type="LineEdit" parent="MenuRight/DirectConnection"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label7" type="Label" parent="MenuRight/DirectConnection"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Port:"
+horizontal_alignment = 1
+
+[node name="PortLineEdit" type="LineEdit" parent="MenuRight/DirectConnection"]
+layout_mode = 2
+text = "27080"
+alignment = 1
+
+[node name="DirectJoinButton" type="Button" parent="MenuRight/DirectConnection"]
+layout_mode = 2
+text = "Join"
+
+[node name="DirectHostButton" type="Button" parent="MenuRight/DirectConnection"]
+layout_mode = 2
+text = "Host"
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuRight/DirectConnection"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="DirectConnectionBack" type="Button" parent="MenuRight/DirectConnection/MarginContainer"]
+layout_mode = 2
+text = "< Back"
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="StatusPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gkree")
+
+[node name="StatusLabel" type="Label" parent="StatusPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Status"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[connection signal="pressed" from="MenuLeft/MarginContainer/VBoxContainer/MarginContainer/VBoxContainer/ButtonPlayOpenMenu" to="." method="_on_button_play_open_menu_pressed"]
+[connection signal="pressed" from="MenuLeft/MarginContainer/VBoxContainer/MarginContainer2/VBoxContainer/ButtonCharacters" to="." method="_on_button_characters_pressed"]
+[connection signal="pressed" from="MenuLeft/MarginContainer/VBoxContainer/MarginContainer2/VBoxContainer/ButtonEditor" to="." method="_on_button_editor_pressed"]
+[connection signal="pressed" from="MenuLeft/MarginContainer/VBoxContainer/MarginContainer2/VBoxContainer/ButtonMods" to="." method="_on_button_mods_pressed"]
+[connection signal="pressed" from="MenuLeft/MarginContainer/VBoxContainer/MarginContainer2/VBoxContainer/ButtonConfigs" to="." method="_on_button_configs_pressed"]
+[connection signal="pressed" from="ButtonExitMain" to="." method="_on_button_exit_main_pressed"]
+[connection signal="pressed" from="MenuRight/PlayOptions/DirectConnect" to="." method="_on_direct_connect_pressed"]
+[connection signal="toggled" from="MenuRight/DirectConnection/JoinHostCheckButton" to="MenuRight/DirectConnection" method="_on_join_host_check_button_toggled"]
+[connection signal="pressed" from="MenuRight/DirectConnection/DirectJoinButton" to="MenuRight/DirectConnection" method="_on_direct_join_button_pressed"]
+[connection signal="pressed" from="MenuRight/DirectConnection/DirectHostButton" to="MenuRight/DirectConnection" method="_on_direct_host_button_pressed"]
+[connection signal="pressed" from="MenuRight/DirectConnection/MarginContainer/DirectConnectionBack" to="." method="_on_direct_connection_back_pressed"]
