@@ -21,13 +21,12 @@ func _exit_tree():
 		UI.instance = null
 
 func _input(event: InputEvent) -> void:
-		if Input.is_action_just_released("enter"):			
-			var open: bool = toggle_command_input()				
-			if not open:
-				submit_command()
+	if Input.is_action_just_released("enter"):
+		var open: bool = toggle_command_input()
+		if not open:
+			submit_command()
 	
-func toggle_command_input() -> bool:
-	
+func toggle_command_input() -> bool:	
 	if command_input.visible:
 		command_input_close()
 		return false
@@ -46,7 +45,7 @@ func command_input_close():
 	GameManager.instance.lock_mouse()
 
 func submit_command():
-	var text = command_input.text	
+	var text = command_input.text.strip_edges()	
 	Cmd.cmd(text)
 	command_input.clear()
 
@@ -61,6 +60,7 @@ func propogate_messages(peer_id:int, text:String):
 		delete_me.queue_free()
 		text_lines.remove_at(0)
 	
+	
 func activate_based_on_scene(new_level):
 	
 	if new_level == GameManager.SCENES.MENU:
@@ -72,9 +72,10 @@ func activate_based_on_scene(new_level):
 func turn_off_chat_interface():
 	set_process_input(false)
 	set_visible(false)
+	
 
 ## activates chat interface.
-func turn_on_chat_interface():
+func turn_on_chat_interface():	
 	set_process_input(true)	
 	set_visible(true)
 	# so that the line input is not visibile at first, only when you push enter.
@@ -89,4 +90,10 @@ func _on_game_manager_level_changed(old_level: Variant, new_level: Variant) -> v
 ## this function is called from networm manager as a chat message is sent from a player to all.
 func recieve_chat_message_from_server(peer_id:int, message:String):
 	propogate_messages(peer_id, message)
-	
+
+func _on_ui_building_interface_building_interface_visible(old_state: Variant, new_state: Variant) -> void:
+	if new_state == true:
+		# a blocking state exists. Hide chat. 
+		turn_off_chat_interface()
+	else:
+		turn_on_chat_interface()

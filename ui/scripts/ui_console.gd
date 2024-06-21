@@ -30,3 +30,12 @@ func print_to_console(text:String):
 	var console_txt = CONSOLE_TEXT.instantiate()
 	v_box_container.add_child(console_txt)
 	console_txt.add_text(text)
+
+func log_chat_to_console(peer_id:int, text:String):	
+	text = HelperFunctions.remove_bb_code(text)
+	var current_time = Time.get_datetime_string_from_system (false, true)
+	var player:Dictionary = Players.get_player(peer_id)
+	if player == null: 
+		return
+	text = "[%s] %s"%[current_time, text]	
+	print_to_console(text)

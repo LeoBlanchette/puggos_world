@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://g07jtrclhwpj"]
 
 [node name="RichTextLabel" type="RichTextLabel"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 32.0
+offset_bottom = 32.0
 fit_content = true

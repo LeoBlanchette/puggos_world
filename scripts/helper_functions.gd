@@ -27,3 +27,9 @@ func get_directory_contents(dir_path: String, scan_type: Scan = Scan.FULL) -> Ar
 			return contents_files
 	
 	return contents_directories + contents_files
+
+func remove_bb_code(text:String) -> String:
+	var regex = RegEx.new()
+	regex.compile("\\[.*?\\]")
+	return regex.sub(text, "", true)
+	

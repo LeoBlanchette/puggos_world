@@ -217,7 +217,7 @@ func server_chat_message(message:String):
 	broadcast_chat_message_to_players.rpc(peer_id, player_message)
 
 @rpc("any_peer", "call_local", "reliable")
-func broadcast_chat_message_to_players(peer_id:int, message:String):
-	
+func broadcast_chat_message_to_players(peer_id:int, message:String):	
 	UIChat.instance.recieve_chat_message_from_server(peer_id, message)
+	UIConsole.instance.log_chat_to_console(peer_id, message)
 		

@@ -2,6 +2,8 @@ extends Control
 
 class_name UIBuildingInterface
 
+signal building_interface_visible(old_state, new_state)
+
 static var instance: UIBuildingInterface = null
 @onready var grid_container: GridContainer = $GridContainer
 
@@ -26,7 +28,7 @@ func _input(event: InputEvent) -> void:
 static func set_active(active:bool):
 	if active:
 		UIBuildingInterface.instance.show() 
-		GameManager.instance.free_mouse()
+		GameManager.instance.free_mouse()		
 	else:
 		UIBuildingInterface.instance.hide() 
 		GameManager.instance.lock_mouse()
@@ -49,6 +51,8 @@ static func toggle_building_interface():
 		var results:Dictionary = query_index({"query": "structures"})
 		instance.populate_building_interface_grid(results)
 		
+	instance.building_interface_visible.emit(!instance.visible, instance.visible)
+	
 static func query_index(category:Dictionary)->Dictionary:
 	var results:Dictionary = ObjectIndex.query(category)
 	return results

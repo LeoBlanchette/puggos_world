@@ -38,6 +38,8 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="CommandInput" type="LineEdit" parent="MarginContainer/BoxContainer"]
+custom_minimum_size = Vector2(700, 0)
 layout_mode = 2
 size_flags_vertical = 8
 mouse_filter = 1
+max_length = 80
