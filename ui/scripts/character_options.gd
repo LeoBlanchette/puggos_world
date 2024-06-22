@@ -44,8 +44,8 @@ func add_character(character_name:String, character_id:int):
 
 func set_current_character_selection():
 	var selectable_id:int = get_selectable_index_by_character_id(Characters.get_currently_selected_character_id())
-	choose_character_option_button.select(selectable_id)
-	choose_character_option_button.select(Characters.get_currently_selected_character_id()) 
+	
+	choose_character_option_button.select(selectable_id) 
 	
 func get_selectable_index_by_character_id(character_id:int)->int:
 	for x in choose_character_option_button.item_count:
