@@ -92,8 +92,7 @@ func _on_game_manager_level_changed(_old_level: Variant, new_level: Variant) -> 
 func recieve_chat_message_from_server(peer_id:int, message:String):
 	propogate_messages(peer_id, message)
 
-
-func _on_ui_building_interface_building_interface_visible(old_state: Variant, new_state: Variant) -> void:
+func _on_ui_building_interface_building_interface_visible(_old_state: Variant, new_state: Variant) -> void:
 	if new_state == true:
 		# a blocking state exists. Hide chat. 
 		turn_off_chat_interface()
