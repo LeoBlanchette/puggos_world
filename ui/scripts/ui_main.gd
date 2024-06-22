@@ -3,7 +3,7 @@ extends Control
 class_name UIMain
 
 @export var play_options: VBoxContainer
-@export var characters_options: VBoxContainer
+@export var characters_options: Control
 @export var world_editor_options: VBoxContainer
 @export var mod_options: VBoxContainer
 @export var configs_options: VBoxContainer

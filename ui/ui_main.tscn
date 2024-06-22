@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://b7675gqeab4ta"]
+[gd_scene load_steps=10 format=3 uid="uid://b7675gqeab4ta"]
 
 [ext_resource type="Theme" uid="uid://1cgrcgf7at3y" path="res://ui/themes/main_theme.tres" id="1_5j53r"]
 [ext_resource type="Script" path="res://ui/scripts/ui_main.gd" id="2_a3bab"]
 [ext_resource type="Script" path="res://ui/scripts/main_menu/button_play_open_menu.gd" id="3_8khem"]
+[ext_resource type="Texture2D" uid="uid://c1job18gp24nu" path="res://images/icons/game/edit.svg" id="4_1puwn"]
+[ext_resource type="Script" path="res://ui/scripts/character_options.gd" id="4_2ue3u"]
 [ext_resource type="Script" path="res://ui/scripts/main_menu/direct_connection.gd" id="4_5o7gv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gq6qh"]
@@ -24,7 +26,7 @@ grow_vertical = 2
 theme = ExtResource("1_5j53r")
 script = ExtResource("2_a3bab")
 play_options = NodePath("MenuRight/PlayOptions")
-characters_options = NodePath("MenuRight/CharactersOptions")
+characters_options = NodePath("MenuRight/CharacterOptions")
 world_editor_options = NodePath("MenuRight/WorldEditorOptions")
 mod_options = NodePath("MenuRight/ModsOptions")
 configs_options = NodePath("MenuRight/ConfigsOptions")
@@ -172,25 +174,99 @@ text = "Direct Connection"
 layout_mode = 2
 text = "Lobby"
 
-[node name="CharactersOptions" type="VBoxContainer" parent="MenuRight"]
+[node name="CharacterOptions" type="Control" parent="MenuRight" node_paths=PackedStringArray("character_edit_container", "character_name_line_edit", "delete_button", "back_button", "character_manage_container", "choose_character_option_button", "edit_character_button")]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("4_2ue3u")
+character_edit_container = NodePath("CharacterEditMarginContainer")
+character_name_line_edit = NodePath("CharacterEditMarginContainer/VBoxContainer/CharacterNameLineEdit")
+delete_button = NodePath("CharacterEditMarginContainer/VBoxContainer/MarginContainer/DeleteButton")
+back_button = NodePath("CharacterEditMarginContainer/VBoxContainer/BackButton")
+character_manage_container = NodePath("CharacterManageMarginContainer")
+choose_character_option_button = NodePath("CharacterManageMarginContainer/CharacterEditControl/ChooseCharacterOptionButton")
+edit_character_button = NodePath("CharacterManageMarginContainer/CharacterEditControl/EditCharacterButton")
+
+[node name="CharacterEditMarginContainer" type="MarginContainer" parent="MenuRight/CharacterOptions"]
 visible = false
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -90.5
-offset_top = -19.5
-offset_right = 90.5
-offset_bottom = 19.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="Label" type="Label" parent="MenuRight/CharactersOptions"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuRight/CharacterOptions/CharacterEditMarginContainer"]
 layout_mode = 2
-text = "Character Options"
-horizontal_alignment = 1
+
+[node name="CharacterNameLabel" type="Label" parent="MenuRight/CharacterOptions/CharacterEditMarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Character Name:"
+
+[node name="CharacterNameLineEdit" type="LineEdit" parent="MenuRight/CharacterOptions/CharacterEditMarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="MenuRight/CharacterOptions/CharacterEditMarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Back"
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuRight/CharacterOptions/CharacterEditMarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 40
+
+[node name="DeleteButton" type="Button" parent="MenuRight/CharacterOptions/CharacterEditMarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+text = "Delete"
+
+[node name="CharacterManageMarginContainer" type="MarginContainer" parent="MenuRight/CharacterOptions"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="CharacterEditControl" type="Control" parent="MenuRight/CharacterOptions/CharacterManageMarginContainer"]
+custom_minimum_size = Vector2(310, 64)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="ChooseCharacterOptionButton" type="OptionButton" parent="MenuRight/CharacterOptions/CharacterManageMarginContainer/CharacterEditControl"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 47.0
+grow_horizontal = 2
+selected = 1
+
+[node name="EditCharacterButton" type="Button" parent="MenuRight/CharacterOptions/CharacterManageMarginContainer/CharacterEditControl"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -72.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Edit Character"
+icon = ExtResource("4_1puwn")
+flat = true
+alignment = 0
+icon_alignment = 2
 
 [node name="WorldEditorOptions" type="VBoxContainer" parent="MenuRight"]
 visible = false
@@ -254,6 +330,7 @@ text = "Config Options"
 horizontal_alignment = 1
 
 [node name="DirectConnection" type="VBoxContainer" parent="MenuRight"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -322,6 +399,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="StatusPanel" type="Panel" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -350,6 +428,10 @@ autowrap_mode = 3
 [connection signal="pressed" from="MenuLeft/MarginContainer/VBoxContainer/MarginContainer2/VBoxContainer/ButtonConfigs" to="." method="_on_button_configs_pressed"]
 [connection signal="pressed" from="ButtonExitMain" to="." method="_on_button_exit_main_pressed"]
 [connection signal="pressed" from="MenuRight/PlayOptions/DirectConnect" to="." method="_on_direct_connect_pressed"]
+[connection signal="pressed" from="MenuRight/CharacterOptions/CharacterEditMarginContainer/VBoxContainer/BackButton" to="MenuRight/CharacterOptions" method="_on_back_button_pressed"]
+[connection signal="pressed" from="MenuRight/CharacterOptions/CharacterEditMarginContainer/VBoxContainer/MarginContainer/DeleteButton" to="MenuRight/CharacterOptions" method="_on_delete_button_pressed"]
+[connection signal="item_selected" from="MenuRight/CharacterOptions/CharacterManageMarginContainer/CharacterEditControl/ChooseCharacterOptionButton" to="MenuRight/CharacterOptions" method="_on_choose_character_option_button_item_selected"]
+[connection signal="pressed" from="MenuRight/CharacterOptions/CharacterManageMarginContainer/CharacterEditControl/EditCharacterButton" to="MenuRight/CharacterOptions" method="_on_edit_character_button_pressed"]
 [connection signal="toggled" from="MenuRight/DirectConnection/JoinHostCheckButton" to="MenuRight/DirectConnection" method="_on_join_host_check_button_toggled"]
 [connection signal="pressed" from="MenuRight/DirectConnection/DirectJoinButton" to="MenuRight/DirectConnection" method="_on_direct_join_button_pressed"]
 [connection signal="pressed" from="MenuRight/DirectConnection/DirectHostButton" to="MenuRight/DirectConnection" method="_on_direct_host_button_pressed"]

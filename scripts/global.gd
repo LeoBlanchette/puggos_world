@@ -10,6 +10,9 @@ var steam_app_id: int = 2414160
 var steam_id: int = 0
 var steam_username: String = ""
 
+# Character
+var currently_selected_character_id = 0
+
 
 func _init() -> void:
 	# Set your game's Steam app ID here
@@ -50,3 +53,6 @@ func is_steam_running():
 
 func is_playing_from_editor():
 	return OS.has_feature("editor")
+
+func set_currently_selected_character_id(character_id:int)->void:
+	currently_selected_character_id = character_id
