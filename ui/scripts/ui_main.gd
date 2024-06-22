@@ -22,7 +22,6 @@ func _ready():
 		queue_free()
 	close_all_subwindows()
 
-
 func _exit_tree():
 	if instance == self:
 		instance = null
@@ -59,29 +58,6 @@ func open_configs_options():
 func open_direct_connection_options():
 	close_all_subwindows()
 	direct_connection_options.show()
-
-func _on_button_play_open_menu_pressed() -> void:
-	open_play_options()
-
-func _on_button_characters_pressed() -> void:
-	open_characters_options()
-
-func _on_button_editor_pressed() -> void:
-	open_editor_options()
-
-func _on_button_mods_pressed() -> void:
-	open_mods_options()
-	
-
-func _on_button_configs_pressed() -> void:
-	open_configs_options()
-
-func _on_direct_connect_pressed() -> void:
-	open_direct_connection_options()
-
-func _on_direct_connection_back_pressed() -> void:
-	open_play_options()
-
 func close_all_subwindows():
 	play_options.hide()
 	characters_options.hide()
@@ -121,3 +97,25 @@ static func display_status(status:String):
 
 func _on_button_exit_main_pressed() -> void:
 	GameManager.instance.exit_game()
+
+func _on_button_play_open_menu_pressed() -> void:
+	open_play_options()
+
+func _on_button_characters_pressed() -> void:
+	open_characters_options()
+
+func _on_button_editor_pressed() -> void:
+	open_editor_options()
+
+func _on_button_mods_pressed() -> void:
+	open_mods_options()
+	
+
+func _on_button_configs_pressed() -> void:
+	open_configs_options()
+
+func _on_direct_connect_pressed() -> void:
+	open_direct_connection_options()
+
+func _on_direct_connection_back_pressed() -> void:
+	open_play_options()

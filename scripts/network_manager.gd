@@ -96,7 +96,7 @@ func player_loaded():
 
 # When a peer connects, send them my player info.
 # This allows transfer of all desired data for each player, not only the unique ID.
-func _on_player_connected(id, player_info):	
+func _on_player_connected(id, _player_info):	
 	server_announce_status("%s has joined the game."%id)
 	
 
@@ -126,12 +126,12 @@ func _on_connected_ok():
 	register_player_to_server.rpc_id(1, player_info)
 	
 @rpc("any_peer", "call_local", "reliable")
-func register_player_to_server(player_info:Dictionary):
+func register_player_to_server(_player_info:Dictionary):
 	if not multiplayer.is_server():
 		return	
 	var peer_id = multiplayer.get_remote_sender_id()		
-	var steam_id = player_info["steam_id"]
-	var persona_name = player_info["name"]
+	var steam_id = _player_info["steam_id"]
+	var persona_name = _player_info["name"]
 	broadcast_add_player.rpc(peer_id, steam_id, persona_name)	
 	
 	send_server_greeting.rpc_id(peer_id, "Welcome to <SERVER_NAME>, %s"%persona_name)
@@ -162,7 +162,7 @@ func _on_server_disconnected():
 	Players.players.clear()
 	server_disconnected.emit()
 
-func leave_game(id:int = 0):
+func leave_game(_peer_id:int = 0):
 	pass
 
 func _on_leave_game_pressed() -> void:
@@ -182,20 +182,20 @@ func get_machines_ip_address():
 
 	if OS.has_feature("windows"):
 		if OS.has_environment("COMPUTERNAME"):
-			ip_address =  IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")),1)
+			ip_address =  IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")),IP.Type.TYPE_IPV4)
 	elif OS.has_feature("x11"):
 		if OS.has_environment("HOSTNAME"):
-			ip_address =  IP.resolve_hostname(str(OS.get_environment("HOSTNAME")),1)
+			ip_address =  IP.resolve_hostname(str(OS.get_environment("HOSTNAME")),IP.Type.TYPE_IPV4)
 	elif OS.has_feature("OSX"):
 		if OS.has_environment("HOSTNAME"):
-			ip_address =  IP.resolve_hostname(str(OS.get_environment("HOSTNAME")),1)	
+			ip_address =  IP.resolve_hostname(str(OS.get_environment("HOSTNAME")),IP.Type.TYPE_IPV4)	
 	return ip_address
 
 ## This information is provided locally by player.
-func populate_player_info(player_info:Dictionary) ->Dictionary:
-	player_info["steam_id"] = Global.steam_id
-	player_info["name"] = Global.steam_username
-	return player_info
+func populate_player_info(_player_info:Dictionary) ->Dictionary:
+	_player_info["steam_id"] = Global.steam_id
+	_player_info["name"] = Global.steam_username
+	return _player_info
 
 ## communications
 @rpc("any_peer", "call_remote", "reliable")

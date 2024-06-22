@@ -45,7 +45,7 @@ func snap_or_slide_on_target():
 	if builder_ray_cast_3d.is_colliding():	
 		var build_object_validator:BuildObjectValidator = BuildObjectValidator.new(anchored_object, builder_ray_cast_3d.get_collider().get_parent())
 		
-		var target_anchor_type:BuildObjectValidator.AnchorType = build_object_validator.get_anchor_type(builder_ray_cast_3d.get_collider().get_parent())
+		#var target_anchor_type:BuildObjectValidator.AnchorType = build_object_validator.get_anchor_type(builder_ray_cast_3d.get_collider().get_parent())
 		
 		if build_object_validator.is_compatible_target():
 			snap_to_target()
@@ -167,7 +167,7 @@ func update_last_can_place_status(current_can_place:bool):
 		can_place_status_changed.emit(last_can_place_status, current_can_place)
 	last_can_place_status = current_can_place
 
-func _on_can_place_status_changed(old_value:bool, new_value:bool) -> void:
+func _on_can_place_status_changed(_old_value:bool, new_value:bool) -> void:
 	if new_value == true:
 		add_confirmed_overlay()		
 	else:		

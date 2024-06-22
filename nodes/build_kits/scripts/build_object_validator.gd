@@ -9,9 +9,9 @@ enum AnchorType {NONE, FOUNDATION, PILLAR, WALL, FLOOR}
 const FOUNDATION_ANCHOR = "res://nodes/build_kits/anchors/anchors_foundation.tscn"
 const FOUNDATION_FLOOR = "res://nodes/build_kits/anchors/anchors_floor.tscn"
 
-func _init(current_object:Node, target_object:Node = null) -> void:
-	self.current_object = current_object
-	self.target_object = target_object
+func _init(_current_object:Node, _target_object:Node = null) -> void:
+	self.current_object = _current_object
+	self.target_object = _target_object
 
 func get_current_object_anchor_type()->AnchorType:
 	return get_anchor_type(current_object)
@@ -78,4 +78,3 @@ func get_build_detection_collision_layers() -> Array:
 			return [2, 30]
 		_:
 			return [2, 32,31,30]	
-	return []

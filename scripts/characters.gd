@@ -29,9 +29,9 @@ func reset_characters():
 		Save.save_characters_info(self.characters)
 		
 func get_default_character() ->Dictionary:
-	var new_character:Dictionary = new_character()
-	new_character["id"] = 0
-	return new_character
+	var _new_character:Dictionary = new_character()
+	_new_character["id"] = 0
+	return _new_character
 	
 func get_currently_selected_character_id()->int:
 	return self.characters["current_character"]
@@ -41,7 +41,7 @@ func set_currently_selected_character_id(character_id:int)->void:
 	Global.currently_selected_character_id = character_id
 	save_characters()
 
-func new_character(name:String = "")->Dictionary:
+func new_character(_name:String = "")->Dictionary:
 	var character:Dictionary = {
 		"id" = 0,
 		"name" = "",		
@@ -49,7 +49,7 @@ func new_character(name:String = "")->Dictionary:
 	if name.is_empty():
 		character["name"] = Global.steam_username
 	else: 
-		character["name"] = name
+		character["name"] = _name
 		
 	var rng = RandomNumberGenerator.new()
 	character["id"] = rng.randf_range(0, 2147483647)

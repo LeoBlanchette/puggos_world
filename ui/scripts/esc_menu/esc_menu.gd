@@ -48,7 +48,6 @@ func set_active(active:bool):
 		set_visible(false)
 		escape_menu_visible.emit(false, true)
 
-
 func _on_game_manager_level_changed(old_level: Variant, new_level: Variant) -> void:
 	button_main_menu.show()
 	button_world.show()

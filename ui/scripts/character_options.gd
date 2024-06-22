@@ -50,7 +50,7 @@ func set_current_character_selection():
 func get_selectable_index_by_character_id(character_id:int)->int:
 	for x in choose_character_option_button.item_count:
 		var character_id_at_index:int = choose_character_option_button.get_item_id(x)
-		if character_id_at_index == Characters.get_currently_selected_character_id():
+		if character_id_at_index == character_id:
 			return x
 	return 0
 
@@ -94,7 +94,7 @@ func _on_back_button_pressed() -> void:
 func _on_edit_character_button_pressed() -> void:	
 	go_to_character_edit(choose_character_option_button.get_selected_id())
 
-func _on_choose_character_option_button_item_selected(index: int) -> void:
+func _on_choose_character_option_button_item_selected(_index: int) -> void:
 	var selected:int = choose_character_option_button.get_selected_id()
 	if selected == create_new_character_id:
 		go_to_character_edit(choose_character_option_button.get_selected_id())

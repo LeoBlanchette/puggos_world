@@ -20,20 +20,21 @@ func _exit_tree():
 	if UI.instance == self:
 		UI.instance = null
 
-func _input(event: InputEvent) -> void:
-	if Input.is_action_just_released("enter"):
+func _input(_event: InputEvent) -> void:
+	if Input.is_action_just_released("enter"):		
 		var open: bool = toggle_command_input()
 		if not open:
 			submit_command()
 	
 func toggle_command_input() -> bool:	
 	if command_input.visible:
+		print(command_input.visible)
 		command_input_close()
 		return false
 	else:
 		command_input_open()
 		return true
-	return true
+	
 
 func command_input_open():
 	command_input.set_visible(true)
@@ -84,12 +85,13 @@ func turn_on_chat_interface():
 func is_chat_open()->bool:
 	return command_input.visible
 
-func _on_game_manager_level_changed(old_level: Variant, new_level: Variant) -> void:
+func _on_game_manager_level_changed(_old_level: Variant, new_level: Variant) -> void:
 	activate_based_on_scene(new_level)
 
 ## this function is called from networm manager as a chat message is sent from a player to all.
 func recieve_chat_message_from_server(peer_id:int, message:String):
 	propogate_messages(peer_id, message)
+
 
 func _on_ui_building_interface_building_interface_visible(old_state: Variant, new_state: Variant) -> void:
 	if new_state == true:
@@ -97,3 +99,5 @@ func _on_ui_building_interface_building_interface_visible(old_state: Variant, ne
 		turn_off_chat_interface()
 	else:
 		turn_on_chat_interface()
+		
+		

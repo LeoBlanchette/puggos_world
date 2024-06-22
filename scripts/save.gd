@@ -40,7 +40,6 @@ func get_saved_json(file_path:String) -> Dictionary:
 		return {}
 	var saved_data = FileAccess.open(file_path, FileAccess.READ)
 	var data:String = saved_data.get_as_text()	
-	var json = JSON.new()
-		# Check if there is any error while parsing the JSON string, skip in case of failure
-	var parse_result = json.parse_string(data)	
+	# Check if there is any error while parsing the JSON string, skip in case of failure
+	var parse_result = JSON.parse_string(data)	
 	return parse_result

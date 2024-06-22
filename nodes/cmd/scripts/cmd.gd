@@ -44,19 +44,19 @@ func chat(command:String):
 		NetworkManager.server_chat_message.rpc(command)
 		
 ## specific chat messages
-func message(command:String):
+func message(_command:String):
 	pass	
 
 ## gives player a thing
-func give(command: PackedStringArray):
+func give(_command: PackedStringArray):
 	pass
 
 ## equips a thing to the player
-func equip(command: PackedStringArray):
+func equip(_command: PackedStringArray):
 	pass
 
 ## places an object onto the ground
-func place(command: PackedStringArray):
+func place(_command: PackedStringArray):
 	pass
 
 func print_command(command:PackedStringArray):
