@@ -33,8 +33,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if is_first_entry && event.pressed:
 			ui_main.set_active(true)
-			is_first_entry = false
-			
+			is_first_entry = false			
 			return
 			
 		check_esc_menu()
