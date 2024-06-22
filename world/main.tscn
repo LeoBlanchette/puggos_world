@@ -32,6 +32,9 @@ script = ExtResource("6_8k5yp")
 [node name="UI" parent="." node_paths=PackedStringArray("escapable_ui_nodes") instance=ExtResource("8_5tnxo")]
 escapable_ui_nodes = [NodePath("EscMenu"), NodePath("UIBuildingInterface"), NodePath("UIMain/MenuRight/PlayOptions"), null, NodePath("UIMain/MenuRight/WorldEditorOptions"), NodePath("UIMain/MenuRight/ModsOptions"), NodePath("UIMain/MenuRight/ConfigsOptions"), NodePath("UIMain/MenuRight/DirectConnection"), null]
 
+[node name="ChooseCharacterOptionButton" parent="UI/UIMain/MenuRight/CharacterOptions/CharacterManageMarginContainer/CharacterEditControl" index="0"]
+selected = -1
+
 [node name="UIChat" parent="UI" index="6"]
 visible = true
 

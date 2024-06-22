@@ -28,6 +28,9 @@ escapable_ui_nodes = [NodePath("EscMenu"), NodePath("UIChat"), NodePath("UIBuild
 [node name="UIMain" parent="." instance=ExtResource("2_g37sc")]
 layout_mode = 1
 
+[node name="ChooseCharacterOptionButton" parent="UIMain/MenuRight/CharacterOptions/CharacterManageMarginContainer/CharacterEditControl" index="0"]
+selected = -1
+
 [node name="UIWorld" parent="." instance=ExtResource("4_li8md")]
 visible = false
 layout_mode = 1

@@ -101,7 +101,6 @@ func _on_choose_character_option_button_item_selected(index: int) -> void:
 	else:
 		Characters.set_currently_selected_character_id(selected)
 		
-
 func _on_delete_button_pressed() -> void:
 	var to_delete = currently_editing_character_id
 	Characters.delete_character_by_id(to_delete)
