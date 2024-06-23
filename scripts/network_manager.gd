@@ -128,7 +128,7 @@ func _on_connected_ok():
 	player_connected.emit(peer_id, player_info)	
 	player_info = populate_player_info(player_info)
 	register_player_to_server.rpc_id(1, player_info)
-
+	
 	current_world.player_entered_world()
 	
 @rpc("any_peer", "call_local", "reliable")
@@ -254,6 +254,7 @@ func player_entered_world() -> void:
 	if not multiplayer.is_server():
 		return
 	var peer_id:int = multiplayer.get_remote_sender_id()
-	current_world.spawn_player.rpc(peer_id)
+	
+	current_world.do_player_spawn.rpc(peer_id)
 
 #endregion

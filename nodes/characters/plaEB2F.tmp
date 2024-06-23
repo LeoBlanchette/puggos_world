@@ -1,11 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://bgk06cxwm7u8n"]
+[gd_scene load_steps=10 format=3 uid="uid://bgk06cxwm7u8n"]
 
 [ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="1_kprfw"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/register_player.gd" id="2_3b31x"]
 [ext_resource type="PackedScene" uid="uid://bkqfe3f3rwa8g" path="res://nodes/build_kits/builder_node.tscn" id="2_j8xj8"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/view_switch.gd" id="2_vpfrc"]
 [ext_resource type="Material" uid="uid://bdtfprhttv4tp" path="res://materials/green_beacon.tres" id="3_anivm"]
-[ext_resource type="Script" path="res://nodes/characters/multiplayer_synchronizer.gd" id="6_f55i6"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_v7jah"]
 material = ExtResource("3_anivm")
@@ -22,14 +21,11 @@ roughness = 0.15
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:rotation")
+properties/1/path = NodePath(".:peer_authority")
 properties/1/spawn = true
-properties/1/replication_mode = 1
+properties/1/replication_mode = 2
 
-[node name="Player" node_paths=PackedStringArray("nodes3d_to_deactivate", "camera_3d", "multiplayer_synchronizer", "builder_node") groups=["players"] instance=ExtResource("1_kprfw")]
-nodes3d_to_deactivate = [NodePath("Walk Ability 3D"), null, null, null, null, null, null, null, null, null]
-camera_3d = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D")
-multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
+[node name="Player" node_paths=PackedStringArray("builder_node") groups=["players"] instance=ExtResource("1_kprfw")]
 builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
 
 [node name="Register_Player" type="Node" parent="." index="0"]
@@ -63,6 +59,5 @@ surface_material_override/0 = SubResource("StandardMaterial3D_plrjp")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="13"]
 replication_config = SubResource("SceneReplicationConfig_260u7")
-script = ExtResource("6_f55i6")
 
 [editable path="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode"]

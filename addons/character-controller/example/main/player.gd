@@ -13,12 +13,14 @@ class_name Player
 ## This script also adds submerged and emerged signals to change the 
 ## [Environment] when we are in the water.
 
-#region activation deactivation
+#region deactivate if not player
 
-@export var toggleable_nodes_3d:Array[Node3D] = []
-@export var camera:Camera3D
+@export var nodes3d_to_deactivate:Array[Node3D]
+@export var camera_3d:Camera3D
 
 #endregion
+
+@export var multiplayer_synchronizer:MultiplayerSynchronizer
 
 @export var input_back_action_name := "move_backward"
 @export var input_forward_action_name := "move_forward"
@@ -35,34 +37,27 @@ class_name Player
 
 var activated:bool = false
 
-func _ready():
-	activate(false)
-	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	#setup()
-	#emerged.connect(_on_controller_emerged.bind())
-	#submerged.connect(_on_controller_subemerged.bind())
+var peer_id:int = 0
 
 
-func activate(player:bool = true):
-	if not player:
-		remove_player_control()
-	else:
-		restore_player_control()
-		setup()
-
-func remove_player_control():
-	activated = false
-	for child in toggleable_nodes_3d:
-		child.hide()
-		
-func restore_player_control():
-	activated = true
-	for child in toggleable_nodes_3d:
-		child.show()
-	$Register_Player.activate()
-
+func _ready():		
+	if peer_id == multiplayer.get_unique_id():
+		camera_3d.current = true
+	setup()	
+	$Register_Player.activate()	
+	
+	
+func convert_to_nonclient_controller():
+	for deactivate_node in nodes3d_to_deactivate:
+		deactivate_node.hide()
+	#set_physics_process(false)
+	motion_mode = MotionMode.MOTION_MODE_FLOATING
+	camera_3d.hide()
+	
 func _physics_process(delta):
-	if not activated:
+	multiplayer_synchronizer.position = position
+	multiplayer_synchronizer.rotation = rotation
+	if not multiplayer_synchronizer.is_multiplayer_authority():
 		return
 	var is_valid_input := Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 	
@@ -82,15 +77,14 @@ func _physics_process(delta):
 		move(delta)
 
 func _input(event: InputEvent) -> void:
-	if not activated:
+	if not multiplayer_synchronizer.is_multiplayer_authority():
 		return
 	# Mouse look (only if the mouse is captured).
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_head(event.relative)
 
 func enter_placement_mode(object_category:String, object_id:int):
-	if not activated:
-		return
+
 	builder_node.enter_placement_mode(object_category, object_id)
 
 #func _on_controller_emerged():
