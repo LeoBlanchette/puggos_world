@@ -21,5 +21,9 @@ func spawn_player(peer_id:int)->void:
 	var p = PLAYER.instantiate()
 	p.name = str(peer_id)
 	add_child(p)
-	
+
 	p.set_multiplayer_authority(peer_id)
+	if p.is_multiplayer_authority():
+		p.activate(true)
+	else:
+		p.activate(false)

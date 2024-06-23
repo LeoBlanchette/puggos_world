@@ -50,7 +50,7 @@ skeleton = NodePath("../..")
 
 [node name="Anchor" type="Node3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode/HitMarker" index="1"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="12"]
+[node name="PlayerMesh" type="MeshInstance3D" parent="." index="12"]
 mesh = SubResource("CapsuleMesh_o17ca")
 surface_material_override/0 = SubResource("StandardMaterial3D_plrjp")
 

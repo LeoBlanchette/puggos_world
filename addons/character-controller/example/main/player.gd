@@ -26,14 +26,35 @@ class_name Player
 
 @export var builder_node: Node
 
+var activated:bool = false
+
 func _ready():
+	pass
 	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	setup()
+	#setup()
 	#emerged.connect(_on_controller_emerged.bind())
 	#submerged.connect(_on_controller_subemerged.bind())
 
+func activate(player:bool = true):
+	if not player:
+		remove_player_control()
+		return
+	activated = true
+	$Register_Player.activate()
+
+	setup()
+
+func remove_player_control():
+	for child in get_children():
+		if child.name == "MultiplayerSynchronizer":
+			continue
+		if child.name == "PlayerMesh":
+			continue
+		child.queue_free()
 
 func _physics_process(delta):
+	if not activated:
+		return
 	var is_valid_input := Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 	
 	if is_valid_input:
@@ -52,12 +73,15 @@ func _physics_process(delta):
 		move(delta)
 
 func _input(event: InputEvent) -> void:
-	
+	if not activated:
+		return
 	# Mouse look (only if the mouse is captured).
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_head(event.relative)
 
 func enter_placement_mode(object_category:String, object_id:int):
+	if not activated:
+		return
 	builder_node.enter_placement_mode(object_category, object_id)
 
 #func _on_controller_emerged():
