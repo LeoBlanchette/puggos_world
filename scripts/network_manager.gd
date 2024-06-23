@@ -124,7 +124,6 @@ func _on_player_disconnected(id):
 
 func _on_connected_ok():
 	var peer_id = multiplayer.get_unique_id()
-	player_info["character_name"] = Characters.get_currently_selected_character_name()
 	player_connected.emit(peer_id, player_info)	
 	player_info = populate_player_info(player_info)
 	register_player_to_server.rpc_id(1, player_info)
@@ -210,7 +209,7 @@ func send_server_chat_message(message:String):
 		return	
 	var peer_id: int = multiplayer.get_remote_sender_id()
 	player_info = Players.get_player_info_by_peer_id(peer_id)
-	var player_message:String = player_info["name"]+": "+message
+	var player_message:String = format_chat_message(player_info, message)
 	broadcast_chat_message_to_players.rpc(peer_id, player_message)
 
 @rpc("authority", "call_local", "reliable")
@@ -218,17 +217,20 @@ func server_chat_message(message:String):
 	if not multiplayer.is_server():
 		return	
 	var peer_id: int = multiplayer.get_remote_sender_id()
-	player_info = Players.get_player(peer_id)
-	var chat_name = player_info["name"]
-	
-	if not player_info["character_name"].is_empty():
-		chat_name = player_info["character_name"]
-		
-	var player_message:String = "[color=yellow]%s[/color]: %s"%[chat_name, message]
+	player_info = Players.get_player(peer_id)		
+	var player_message:String = format_chat_message(player_info, message)
 	broadcast_chat_message_to_players.rpc(peer_id, player_message)
+
 
 @rpc("any_peer", "call_local", "reliable")
 func broadcast_chat_message_to_players(peer_id:int, message:String):	
 	UIChat.instance.recieve_chat_message_from_server(peer_id, message)
 	UIConsole.instance.log_chat_to_console(peer_id, message)
 		
+
+func format_chat_message(player_info:Dictionary, message:String) -> String:
+	var chat_name = player_info["name"]
+	if not player_info["character_name"].is_empty():
+		chat_name = player_info["character_name"]		
+	var player_message:String = "[color=yellow]%s[/color]: %s"%[chat_name, message]	
+	return player_message

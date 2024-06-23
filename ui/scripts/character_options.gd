@@ -68,6 +68,7 @@ func go_to_character_edit(character_id)->void:
 		currently_editing_character_id = character["id"]	
 	else:
 		character = Characters.get_character_by_id(currently_editing_character_id)
+	
 	character_edit_container.show()
 	character_manage_container.hide()
 	update_character_edit_panel(character)
