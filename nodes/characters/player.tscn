@@ -22,7 +22,9 @@ properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/replication_mode = 1
 
-[node name="Player" node_paths=PackedStringArray("builder_node") groups=["players"] instance=ExtResource("1_kprfw")]
+[node name="Player" node_paths=PackedStringArray("toggleable_nodes_3d", "camera", "builder_node") groups=["players"] instance=ExtResource("1_kprfw")]
+toggleable_nodes_3d = [NodePath("Head Check"), NodePath("Walk Ability 3D"), NodePath("Sprint Ability 3D"), NodePath("Crouch Ability 3D"), NodePath("Jump Ability 3D"), NodePath("Fly Ability 3D"), NodePath("Swim Ability 3D"), NodePath("Head"), NodePath("Player Audios")]
+camera = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D")
 builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
 
 [node name="Register_Player" type="Node" parent="." index="0"]

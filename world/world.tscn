@@ -26,3 +26,5 @@ transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.30424, 0, 0)
 mesh = SubResource("BoxMesh_xbe4c")
 surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
+
+[connection signal="spawned" from="MultiplayerSpawner" to="." method="_on_multiplayer_spawner_spawned"]

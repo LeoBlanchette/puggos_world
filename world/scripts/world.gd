@@ -18,12 +18,16 @@ func player_entered_world():
 ## The player spawner of any given world.
 @rpc("authority", "call_local", "reliable")
 func spawn_player(peer_id:int)->void:
+	
 	var p = PLAYER.instantiate()
 	p.name = str(peer_id)
-	add_child(p)
-
 	p.set_multiplayer_authority(peer_id)
+	
+	add_child(p)
+	
 	if p.is_multiplayer_authority():
 		p.activate(true)
+		print("AUTHORITY %s"%p.name)
 	else:
 		p.activate(false)
+		print("NOT AUTHORITY %s"%p.name)
