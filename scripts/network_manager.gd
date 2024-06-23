@@ -15,7 +15,10 @@ const MAX_CONNECTIONS = 20
 # before the connection is made. It will be passed to every other peer.
 # For example, the value of "name" can be set to something the player
 # entered in a UI scene.
-var player_info = {"steam_id": "0"}
+var player_info = {
+	"steam_id": "0",
+	"character_name":null,
+	}
 
 var players_loaded = 0
 
@@ -56,7 +59,7 @@ func create_game(port = "", announce_status:bool = false):
 		return error
 	multiplayer.multiplayer_peer = peer	
 	
-	Players.add_player(multiplayer.get_unique_id(), Global.steam_id, Global.steam_username)
+	Players.add_player(multiplayer.get_unique_id(), Global.steam_id, Global.steam_username, Characters.get_currently_selected_character_name())
 	register_player_to_server.rpc_id(1, Players.get_player(multiplayer.get_unique_id()))
 	
 	var status = "Created game at %s:%s"%[get_machines_ip_address(), successful_port]
@@ -121,6 +124,7 @@ func _on_player_disconnected(id):
 
 func _on_connected_ok():
 	var peer_id = multiplayer.get_unique_id()
+	player_info["character_name"] = Characters.get_currently_selected_character_name()
 	player_connected.emit(peer_id, player_info)	
 	player_info = populate_player_info(player_info)
 	register_player_to_server.rpc_id(1, player_info)
@@ -132,25 +136,26 @@ func register_player_to_server(_player_info:Dictionary):
 	var peer_id = multiplayer.get_remote_sender_id()		
 	var steam_id = _player_info["steam_id"]
 	var persona_name = _player_info["name"]
-	broadcast_add_player.rpc(peer_id, steam_id, persona_name)	
+	var character_name = _player_info["character_name"]
+	broadcast_add_player.rpc(peer_id, steam_id, persona_name, character_name)	
 	
 	send_server_greeting.rpc_id(peer_id, "Welcome to <SERVER_NAME>, %s"%persona_name)
 	
 	for player_peer_id in Players.players:		
 		var player_info_full:Dictionary = Players.get_player(player_peer_id)
-		add_player_from_server.rpc_id(peer_id, player_peer_id, player_info_full["steam_id"], player_info_full["name"])
+		add_player_from_server.rpc_id(peer_id, player_peer_id, player_info_full["steam_id"], player_info_full["name"], player_info_full["character_name"])
 	
 
 #this is an RPC only
 @rpc("authority", "call_local", "reliable")
-func broadcast_add_player(peer_id, steam_id, persona_name):
-	Players.add_player(peer_id, steam_id, persona_name)	
+func broadcast_add_player(peer_id, steam_id, persona_name, character_name):
+	Players.add_player(peer_id, steam_id, persona_name, character_name)	
 
 
 #this is an RPC_ID function only
 @rpc("authority", "call_local", "reliable")
-func add_player_from_server(peer_id, steam_id, persona_name):
-	Players.add_player(peer_id, steam_id, persona_name)	
+func add_player_from_server(peer_id, steam_id, persona_name, character_name):
+	Players.add_player(peer_id, steam_id, persona_name, character_name)	
 
 #endregion 
 
@@ -195,6 +200,7 @@ func get_machines_ip_address():
 func populate_player_info(_player_info:Dictionary) ->Dictionary:
 	_player_info["steam_id"] = Global.steam_id
 	_player_info["name"] = Global.steam_username
+	_player_info["character_name"] = Characters.get_currently_selected_character_name()
 	return _player_info
 
 ## communications
@@ -213,7 +219,12 @@ func server_chat_message(message:String):
 		return	
 	var peer_id: int = multiplayer.get_remote_sender_id()
 	player_info = Players.get_player(peer_id)
-	var player_message:String = "[color=yellow]%s[/color]: %s"%[player_info["name"], message]
+	var chat_name = player_info["name"]
+	
+	if not player_info["character_name"].is_empty():
+		chat_name = player_info["character_name"]
+		
+	var player_message:String = "[color=yellow]%s[/color]: %s"%[chat_name, message]
 	broadcast_chat_message_to_players.rpc(peer_id, player_message)
 
 @rpc("any_peer", "call_local", "reliable")

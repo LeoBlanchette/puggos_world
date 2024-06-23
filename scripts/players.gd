@@ -12,16 +12,18 @@ var players = {}
 func _ready() -> void:
 	Steam.avatar_loaded.connect(avatar_loaded)
 
-func add_player(peer_id:int, steam_id:int, persona_name:String):
+func add_player(peer_id:int, steam_id:int, persona_name:String, character_name:String = ""):
 	var player: Dictionary = {
 		"peer_id" = peer_id,
 		"steam_id" = steam_id,
 		"name" = persona_name,
+		"character_name" = character_name,
 		"nickname" = Steam.getPlayerNickname(steam_id),
 		"character" = null,
 		"avatar" = null,
 	}
 	players[peer_id] = player
+	
 	retrieve_player_avatar(steam_id)
 	
 func retrieve_player_avatar(steam_id:int):

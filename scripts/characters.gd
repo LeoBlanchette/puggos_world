@@ -33,6 +33,12 @@ func get_default_character() ->Dictionary:
 	_new_character["id"] = 0
 	return _new_character
 	
+func get_currently_selected_character_name()->String:
+	var character_id: int = get_currently_selected_character_id()
+	var character:Dictionary = get_character_by_id(character_id)
+	
+	return character["name"]
+	
 func get_currently_selected_character_id()->int:
 	return self.characters["current_character"]
 

@@ -76,11 +76,11 @@ func save_from_character_edit()->void:
 	var character_template:Dictionary = Characters.new_character()
 	character_template["id"] = currently_editing_character_id
 	character_template["name"] = character_name_line_edit.text	
+	Characters.set_currently_selected_character_id(currently_editing_character_id)
 	Characters.save_character(character_template)
 	
 func update_character_edit_panel(character:Dictionary):
-	character_name_line_edit.text = character["name"]
-	
+	character_name_line_edit.text = character["name"]	
 
 func go_to_character_manage():
 	character_edit_container.hide()
@@ -90,6 +90,7 @@ func go_to_character_manage():
 func _on_back_button_pressed() -> void:
 	save_from_character_edit()
 	go_to_character_manage()
+	
 
 func _on_edit_character_button_pressed() -> void:	
 	go_to_character_edit(choose_character_option_button.get_selected_id())

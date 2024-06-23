@@ -11,8 +11,8 @@ var steam_id: int = 0
 var steam_username: String = ""
 
 # Character
-var currently_selected_character_id = 0
-
+var currently_selected_character_id:int = 0
+var currently_selected_character_name:String = ""
 
 func _init() -> void:
 	# Set your game's Steam app ID here
