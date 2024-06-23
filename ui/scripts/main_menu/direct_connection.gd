@@ -16,6 +16,7 @@ func _ready() -> void:
 	set_to_join()
 
 func join_game_direct():
+	GameManager.change_scene(GameManager.SCENES.WORLD)
 	NetworkManager.join_game(ip_address_line_edit.text, port_line_edit.text)
 	UIMain.display_status("Connecting to server: %s:%s ..."%[ip_address_line_edit.text, port_line_edit.text])
 	UI.turn_off_ui_element_after_seconds(5, UIMain.instance.status_panel)

@@ -43,5 +43,6 @@ visible = true
 
 [editable path="UI"]
 [editable path="UI/UIMain"]
+[editable path="UI/EscMenu"]
 [editable path="UI/UIChat"]
 [editable path="UI/UIConsole"]

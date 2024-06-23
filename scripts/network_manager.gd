@@ -22,6 +22,8 @@ var player_info = {
 
 var players_loaded = 0
 
+var current_world:Node3D = null
+
 func initialize_network():
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
@@ -30,6 +32,7 @@ func initialize_network():
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
 func join_game(address = "", port = ""):
+	
 	if address.is_empty():
 		address = DEFAULT_SERVER_IP
 	if port.is_empty():
@@ -39,6 +42,7 @@ func join_game(address = "", port = ""):
 	if error:
 		return error
 	multiplayer.multiplayer_peer = peer
+
 
 func create_game(port = "", announce_status:bool = false):	
 	multiplayer.multiplayer_peer = null
@@ -99,20 +103,17 @@ func player_loaded():
 
 # When a peer connects, send them my player info.
 # This allows transfer of all desired data for each player, not only the unique ID.
-func _on_player_connected(id, _player_info):	
+func _on_player_connected(id):	
 	server_announce_status("%s has joined the game."%id)
-	
 
 @rpc("any_peer", "reliable")
 func _register_player(new_player_info):
 	var new_player_id = multiplayer.get_remote_sender_id()
 	player_connected.emit(new_player_id, new_player_info)
 
-
 @rpc("authority", "call_local", "reliable")
 func send_server_greeting(greeting:String):
 	UIMain.display_status(greeting)
-
 
 func _on_player_disconnected(id):
 	Players.remove_player_by_peer_id(id)
@@ -127,6 +128,8 @@ func _on_connected_ok():
 	player_connected.emit(peer_id, player_info)	
 	player_info = populate_player_info(player_info)
 	register_player_to_server.rpc_id(1, player_info)
+
+	current_world.player_entered_world()
 	
 @rpc("any_peer", "call_local", "reliable")
 func register_player_to_server(_player_info:Dictionary):
@@ -234,3 +237,23 @@ func format_chat_message(player_info:Dictionary, message:String) -> String:
 		chat_name = player_info["character_name"]		
 	var player_message:String = "[color=yellow]%s[/color]: %s"%[chat_name, message]	
 	return player_message
+
+#region World related network ops
+
+## Notifies the server that the player has entered the world.
+## Called on _ready function in world.
+
+func register_world(world:Node3D) ->void:
+	current_world = world
+
+func unregister_world()->void:
+	current_world = null
+
+@rpc("any_peer", "call_local", "reliable")
+func player_entered_world() -> void:
+	if not multiplayer.is_server():
+		return
+	var peer_id:int = multiplayer.get_remote_sender_id()
+	current_world.spawn_player.rpc(peer_id)
+
+#endregion

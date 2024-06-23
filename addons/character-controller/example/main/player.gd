@@ -52,6 +52,7 @@ func _physics_process(delta):
 		move(delta)
 
 func _input(event: InputEvent) -> void:
+	
 	# Mouse look (only if the mouse is captured).
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_head(event.relative)
