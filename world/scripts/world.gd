@@ -25,9 +25,12 @@ func do_player_spawn(peer_id:int):
 ## The player spawner of any given world.
 
 func spawn_player(peer_id:int):	
-	var p = PLAYER.instantiate()	
+	var p:Player = PLAYER.instantiate()	
+	
+	p.name = "player-%s"%str(peer_id)
 	p.set_multiplayer_authority(peer_id)
 	p.peer_id = peer_id
 	p.multiplayer_synchronizer.set_multiplayer_authority(peer_id)
+	
 	return p
 	 

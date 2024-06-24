@@ -15,7 +15,6 @@ class_name Player
 
 #region deactivate if not player
 
-@export var nodes3d_to_deactivate:Array[Node3D]
 @export var camera_3d:Camera3D
 
 #endregion
@@ -45,12 +44,6 @@ func _ready():
 	setup()	
 	$Register_Player.activate()	
 
-func convert_to_nonclient_controller():
-	for deactivate_node in nodes3d_to_deactivate:
-		deactivate_node.hide()
-	#set_physics_process(false)
-	motion_mode = MotionMode.MOTION_MODE_FLOATING
-	camera_3d.hide()
 
 func _physics_process(delta):
 	multiplayer_synchronizer.position = position
