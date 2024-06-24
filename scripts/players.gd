@@ -29,7 +29,18 @@ func add_player(peer_id:int, steam_id:int, persona_name:String, character_name:S
 func retrieve_player_avatar(steam_id:int):
 	Steam.getPlayerAvatar(Steam.AVATAR_SMALL, steam_id )
 
-
+func get_player_character_name(peer_id:int)->String:
+	var player:Dictionary = get_player(peer_id)
+	if player.is_empty():
+		return "-"
+	return player["character_name"]
+	
+func get_player_name(peer_id:int)->String:
+	var player:Dictionary = get_player(peer_id)
+	if player.is_empty():
+		return "-"
+	return player["name"]
+	
 func get_player_avatar(steam_id:int) -> ImageTexture:	
 	for peer_id in players:
 		if players[peer_id]["steam_id"] == steam_id:

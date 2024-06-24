@@ -13,10 +13,6 @@ albedo_texture = ExtResource("2_nm0jf")
 script = ExtResource("1_5ww64")
 multiplayer_spawner = NodePath("MultiplayerSpawner")
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://nodes/characters/player.tscn")
-spawn_path = NodePath("..")
-
 [node name="GroundPlane" parent="." instance=ExtResource("1_j827f")]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -26,5 +22,9 @@ transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.30424, 0, 0)
 mesh = SubResource("BoxMesh_xbe4c")
 surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://nodes/characters/player.tscn")
+spawn_path = NodePath("..")
 
 [connection signal="spawned" from="MultiplayerSpawner" to="." method="_on_multiplayer_spawner_spawned"]
