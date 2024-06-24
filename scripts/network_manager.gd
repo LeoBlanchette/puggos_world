@@ -43,7 +43,6 @@ func join_game(address = "", port = ""):
 		return error
 	multiplayer.multiplayer_peer = peer
 
-
 func create_game(port = "", announce_status:bool = false):	
 	multiplayer.multiplayer_peer = null
 	
