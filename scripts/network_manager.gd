@@ -230,10 +230,10 @@ func broadcast_chat_message_to_players(peer_id:int, message:String):
 	UIConsole.instance.log_chat_to_console(peer_id, message)
 		
 
-func format_chat_message(player_info:Dictionary, message:String) -> String:
-	var chat_name = player_info["name"]
-	if not player_info["character_name"].is_empty():
-		chat_name = player_info["character_name"]		
+func format_chat_message(_player_info:Dictionary, message:String) -> String:
+	var chat_name = _player_info["name"]
+	if not _player_info["character_name"].is_empty():
+		chat_name = _player_info["character_name"]		
 	var player_message:String = "[color=yellow]%s[/color]: %s"%[chat_name, message]	
 	return player_message
 

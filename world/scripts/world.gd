@@ -26,11 +26,8 @@ func do_player_spawn(peer_id:int):
 
 func spawn_player(peer_id:int):	
 	var p:Player = PLAYER.instantiate()	
-	
-	p.name = "player-%s"%str(peer_id)
 	p.set_multiplayer_authority(peer_id)
-	p.peer_id = peer_id
-	p.multiplayer_synchronizer.set_multiplayer_authority(peer_id)
-	
+	p.name = "player-%s"%str(peer_id)
+	p.peer_id = peer_id	
 	return p
 	 
