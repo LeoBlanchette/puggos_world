@@ -39,7 +39,6 @@ func initialize_network():
 	player_joined_world.connect(_on_player_entered_world)
 
 func join_game(address = "", port = ""):
-	
 	if address.is_empty():
 		address = DEFAULT_SERVER_IP
 	if port.is_empty():
@@ -145,7 +144,7 @@ func _on_connected_ok():
 	player_info = populate_player_info(player_info)
 	register_player_to_server.rpc_id(1, player_info)
 	GameManager.change_scene(GameManager.SCENES.WORLD)
-		
+
 @rpc("any_peer", "call_local", "reliable")
 func register_player_to_server(_player_info:Dictionary):
 	if not multiplayer.is_server():
