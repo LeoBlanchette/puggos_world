@@ -49,7 +49,6 @@ func join_game(address = "", port = ""):
 	if error:
 		return error
 	multiplayer.multiplayer_peer = peer
-	
 
 func create_game(port = "", announce_status:bool = false):	
 	multiplayer.multiplayer_peer = null
@@ -79,22 +78,19 @@ func create_game(port = "", announce_status:bool = false):
 	if announce_status:
 		server_announce_status(status)
 	send_server_greeting.rpc_id(1, status)
-	
+
 func create_single_player_game():
 	create_game(str(PORT), true)
 	server_announce_status("Closed server running...")
-	
-	
+
 func remove_multiplayer_peer():
 	multiplayer.multiplayer_peer = null
-
 
 # When the server decides to start the game from a UI scene,
 # do Lobby.load_game.rpc(filepath)
 @rpc("call_local", "reliable")
 func load_game(game_scene_path):
 	get_tree().change_scene_to_file(game_scene_path)
-
 
 # Every peer will call this when they have loaded the game scene.
 @rpc("any_peer", "call_local", "reliable")
@@ -119,7 +115,6 @@ func _on_player_entered_world(id):
 	var character_name = Players.get_player_character_name(id)
 	server_announce_status("%s (%s) has entered the world..."%[character_name, player_name], false)
 
-
 @rpc("any_peer", "reliable")
 func _register_player(new_player_info):
 	var new_player_id = multiplayer.get_remote_sender_id()
@@ -140,11 +135,9 @@ func _on_player_disconnected(id):
 #region onboarding
 
 func _on_world_loaded():
-	
 	enter_world.rpc_id(1)
 	var message = "Entering world... PORT %s"%str(current_port)
 	UIConsole.instance.log_chat_to_console(multiplayer.get_unique_id(), message)
-	
 
 func _on_connected_ok():
 	var peer_id = multiplayer.get_unique_id()
@@ -168,13 +161,11 @@ func register_player_to_server(_player_info:Dictionary):
 	for player_peer_id in Players.players:		
 		var player_info_full:Dictionary = Players.get_player(player_peer_id)
 		add_player_from_server.rpc_id(peer_id, player_peer_id, player_info_full["steam_id"], player_info_full["name"], player_info_full["character_name"])
-	
 
 #this is an RPC only
 @rpc("authority", "call_local", "reliable")
 func broadcast_add_player(peer_id, steam_id, persona_name, character_name):
 	Players.add_player(peer_id, steam_id, persona_name, character_name)	
-
 
 #this is an RPC_ID function only
 @rpc("authority", "call_local", "reliable")
@@ -182,7 +173,6 @@ func add_player_from_server(peer_id, steam_id, persona_name, character_name):
 	Players.add_player(peer_id, steam_id, persona_name, character_name)	
 
 #endregion 
-
 func _on_connected_fail():
 	multiplayer.multiplayer_peer = null
 
@@ -199,7 +189,6 @@ func _on_leave_game_pressed() -> void:
 	if not multiplayer.is_server():
 		return
 
-	
 func server_announce_status(status:String, print_only:bool = true):
 	if not multiplayer.is_server():
 		return
@@ -207,7 +196,6 @@ func server_announce_status(status:String, print_only:bool = true):
 	if print_only:
 		return
 	server_chat_message.rpc_id(1, status)
-	
 	
 func get_machines_ip_address():
 	var ip_address :String
@@ -247,7 +235,6 @@ func server_chat_message(message:String):
 	var server_message:String = format_server_message( message)
 	broadcast_chat_message_to_players.rpc(1, server_message)
 
-
 @rpc("any_peer", "call_local", "reliable")
 func broadcast_chat_message_to_players(peer_id:int, message:String):	
 	if UIChat.instance == null:
@@ -256,7 +243,7 @@ func broadcast_chat_message_to_players(peer_id:int, message:String):
 		return
 	UIChat.instance.recieve_chat_message_from_server(peer_id, message)
 	UIConsole.instance.log_chat_to_console(peer_id, message)
-		
+
 func format_server_message(message:String) -> String:	
 	var player_message:String = "[color=green]SERVER[/color]: %s"%[message]	
 	return player_message
@@ -286,5 +273,4 @@ func enter_world() -> void:
 	var peer_id:int = multiplayer.get_remote_sender_id()
 	
 	current_world.do_player_spawn.rpc(peer_id)
-
 #endregion
