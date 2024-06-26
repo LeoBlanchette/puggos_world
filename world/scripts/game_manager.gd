@@ -32,10 +32,14 @@ func _ready():
 		GameManager.instance = self
 	else:
 		queue_free()
+	# Activate the achievements system.
+	Achievements.activate()
 	print_steam_integrated_welcome_message()
 	
 	NetworkManager.initialize_network()
 	NetworkManager.create_single_player_game()
+	
+	Achievements.achievement.emit("started_game", {})
 
 func _exit_tree() -> void:
 	if GameManager.instance == self:
