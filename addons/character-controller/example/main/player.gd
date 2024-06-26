@@ -33,6 +33,7 @@ class_name Player
 @export var underwater_env: Environment
 
 @export var builder_node: Node
+@export var spawner_node: Node3D
 
 var activated:bool = false
 
@@ -75,8 +76,11 @@ func _input(event: InputEvent) -> void:
 		rotate_head(event.relative)
 
 func enter_placement_mode(object_category:String, object_id:int):
-
 	builder_node.enter_placement_mode(object_category, object_id)
+
+
+func get_spawner_node()->Node3D:
+	return spawner_node
 
 #func _on_controller_emerged():
 	#camera.environment = null

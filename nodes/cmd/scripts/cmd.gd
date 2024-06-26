@@ -14,14 +14,14 @@ func cmd(command_string:String):
 	
 	command_string = command_string.to_lower()
 	
-	var command:PackedStringArray= parse(command_string)
+	var command:ArgParser = ArgParser.new(command_string)
+
 	
-	if command.size() == 0:
-		return
-	
-	match command[0]:
+	match command.get_command():
 		"/give":
 			give(command)
+		"/spawn":
+			spawn(command)
 		"/equip":
 			equip(command)
 		"/placement":
@@ -48,20 +48,39 @@ func message(_command:String):
 	pass	
 
 ## gives player a thing
-func give(_command: PackedStringArray):
+func spawn(command: ArgParser):
+	var reject_message:String = "Something went wrong."
+	var peer_id:int = multiplayer.get_unique_id()	
+	var object_category = 0
+	var object_id = 0
+	
+	object_category = command.get_argument("1")
+	object_id = int(command.get_argument("2"))
+	
+	var player = Players.get_player_character(peer_id)
+	if player == null:
+		chat(reject_message)
+		return	
+
+	var spawn_node:Node3D = player.get_spawner_node()
+	var ob:Node3D = ObjectIndex.spawn(object_category, object_id)
+	spawn_node.add_child(ob)
+	print(ob)
+
+## gives player a thing
+func give(_command: ArgParser):
 	pass
 
 ## equips a thing to the player
-func equip(_command: PackedStringArray):
+func equip(_command: ArgParser):
 	pass
 
 ## places an object onto the ground
-func place(_command: PackedStringArray):
+func place(_command: ArgParser):
 	pass
 
-func print_command(command:PackedStringArray):
-	var args: ArgParser = ArgParser.new(command)
-	args.print_arguments()
+func print_command(command:ArgParser):
+	print(command)
 
 func print_peer_id():
 	UIConsole.instance.print_to_console(str(multiplayer.get_unique_id()))
@@ -72,35 +91,20 @@ func print_players_object():
 	UIConsole.instance.print_to_console(json_string)
 	
 ## puts user into placement mode with a certain object
-func placement(command: PackedStringArray):
+func placement(command: ArgParser):
 	var reject_message:String = "Something went wrong."
 	var peer_id:int = multiplayer.get_unique_id()	
 	var object_category = 0
 	var object_id = 0
-	if command.size() == 3: #the target user is ommitted...assume user is sender.
-		object_category = command[1]
-		object_id = int(command[2])
-	if command.size() == 4: #the target user is other than sender.
-		object_category = command[2]
-		object_id = int(command[3])
-		if peer_id == 0:
-			chat(reject_message)
-			return 
-		pass
+
+	command.print_arguments()
+	
+	object_category = command.get_argument("1")
+	object_id = int(command.get_argument("2"))
 	
 	var player = Players.get_player_character(peer_id)
 	if player == null:
 		chat(reject_message)
 		return	
-	print(player)
+
 	player.enter_placement_mode(object_category, object_id)
-
-
-func parse(command:String) -> PackedStringArray:
-	var command_parsed = command.split(" ", false)
-	
-	var command_dict:Dictionary = {}
-	
-	command_dict["args"] = command_parsed
-
-	return command_parsed

@@ -9,6 +9,7 @@ static var valid_creator_mod_types: Array = [
 	["structures/modular/", "structure.tscn"],
 	["materials/structures_modular/", "material.tres"],
 	["images/player_faces/", "face.png"],
+	["items/junk/", "item.tscn"],
 ]
 
 # Called when the node enters the scene tree for the first time.
@@ -38,7 +39,7 @@ func load_mods_by_path(asset_paths: Array[String]):
 		#get the mod
 		var instanced_mod = load_mod_from_path(mod)
 		if instanced_mod == null:
-			print_debug("insanced_mod is null mod: "+mod)
+			print_debug("instanced_mod is null mod: "+mod)
 			continue		
 		#get the mod's signature and path info for use in indexer
 		var mod_hierarchy: Dictionary = AssetLoader.asset_loader.get_mod_hierarchy(mod)

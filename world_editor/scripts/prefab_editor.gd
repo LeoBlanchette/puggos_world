@@ -4,16 +4,32 @@ class_name PrefabEditor
 
 var prefab_editor_related_mod_groups: Array[String] = [
 	"structures/modular/",
-	"materials/structures_modular/"
+	"materials/structures_modular/",
+	"items/junk/"
 ]
 
+@export var prefab_root:Node3D
+
+static var instance = null
+
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	
+func _ready():	
+	if PrefabEditor.instance == null:
+		PrefabEditor.instance = self
+	else:
+		PrefabEditor.instance.queue_free()
+		
 	load_prefab_editor_related_mods()
+
+func _exit_tree() -> void:
+	if PrefabEditor.instance == self:
+		PrefabEditor.instance.queue_free()
 
 func load_prefab_editor_related_mods():
 	ModManager.mod_manager.load_mods_by_path(prefab_editor_related_mod_groups)
+
+func get_prefab_root()->Node3D:
+	return prefab_root
 
 func _on_back_to_world_editor_button_pressed():
 	GameManager.change_scene(GameManager.SCENES.WORLD_EDITOR)

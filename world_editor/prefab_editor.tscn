@@ -19,8 +19,9 @@ sky = SubResource("Sky_g70us")
 tonemap_mode = 2
 glow_enabled = true
 
-[node name="PrefabEditor" type="Node"]
+[node name="PrefabEditor" type="Node" node_paths=PackedStringArray("prefab_root")]
 script = ExtResource("1_ubjkp")
+prefab_root = NodePath("PrefabRoot")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)

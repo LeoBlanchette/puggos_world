@@ -1,7 +1,8 @@
 class_name ArgParser
 var arguments = {}
 
-func _init(args: Array):		
+func _init(argument_string:String):		
+	var args = parse(argument_string)
 	var args_named:Dictionary = {"args": args}
 	var named_arg_elements:Array = []
 	var populating_named_arg:bool = false
@@ -12,7 +13,7 @@ func _init(args: Array):
 			continue
 		if arg.begins_with("-"):
 			continue
-		args_named[i] = arg
+		args_named[str(i)] = arg
 		i=i+1
 	
 	#get the named args
@@ -30,6 +31,7 @@ func _init(args: Array):
 			populating_named_arg = true
 			named_arg_elements.append(arg)
 			continue
+			
 		if populating_named_arg:
 			named_arg_elements.append(arg)
 	
@@ -38,11 +40,24 @@ func _init(args: Array):
 
 	arguments = args_named
 
+func parse(command:String) -> PackedStringArray:
+	var command_parsed = command.split(" ", false)
+	
+	var command_dict:Dictionary = {}
+	
+	command_dict["args"] = command_parsed
+
+	return command_parsed
+
 func get_argument(arg: String, default_value = null):
 	if arguments.has(arg):
 		return arguments[arg]
 	else:
 		return default_value
+
+func get_command()->String:
+	return arguments["command"]
+
 
 func print_arguments()-> void:
 	print(arguments)

@@ -158,7 +158,8 @@ func populate_creator_projects():
 ## Populate user mods
 func populate_user_mods():	
 	for creator_project in creator_projects:
-		for valid_creator_mod_type in ModManager.valid_creator_mod_types:		
+		for valid_creator_mod_type in ModManager.valid_creator_mod_types:	
+		
 			var modpath = creator_project+valid_creator_mod_type[0]		
 			#var filename = modpath + valid_creator_mod_type[1]		
 			var valid_mod_directories = HelperFunctions.get_directory_contents(modpath, HelperFunctions.Scan.DIRECTORIES_ONLY)
@@ -201,8 +202,8 @@ func get_mod_hierarchy(mod_path) -> Dictionary:
 func populate_mod_tree():		
 	for mod in mods:		
 		mod_paths.append(mod)
-		var mod_hierarchy = get_mod_hierarchy(mod)
 		
+		var mod_hierarchy = get_mod_hierarchy(mod)
 		# extract mod mod_hierarchy 
 		var creator: String = mod_hierarchy["creator"]
 		var project: String = mod_hierarchy["project"]
@@ -228,7 +229,8 @@ func populate_mod_tree():
 			mod_tree.find_child(creator, false, false)\
 			.find_child(project, false, false)\
 			.add_child(mod_type_node)
-		
+			
+
 		# creator / project / category_1 / category_2 node
 		if not mod_tree.has_node(creator+"/"+project+"/"+mod_type+"/"+mod_type_category):
 			var mod_type_category_node: Node = create_mod_tree_node(mod_type_category, {})
@@ -236,7 +238,8 @@ func populate_mod_tree():
 			.find_child(project, false, false)\
 			.find_child(mod_type, false, false)\
 			.add_child(mod_type_category_node)
-		
+			
+			
 		# endpoint node (the mod)
 		var mod_info: Dictionary = get_mod_info(mod)
 		if not mod_tree.has_node(creator+"/"+project+"/"+mod_type+"/"+mod_type_category+"/"+mod_name):

@@ -32,7 +32,6 @@ static func add_object_to_index(mod_object: Node):
 		id = int(id_check)
 	
 	var signature: String = AssetLoader.asset_loader.get_mod_name_signature(mod_path, "|")
-	
 	mod_object.name = signature
 	if not index.has(mod_type):
 		index[mod_type] = {}
@@ -46,6 +45,7 @@ static func spawn(category: String, id: int):
 	if ob == null:
 		return null
 	var spawned = ob.duplicate()
+	print(spawned)
 	return spawned
 
 static func get_object(category: String, id: int):
