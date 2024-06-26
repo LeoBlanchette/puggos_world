@@ -45,9 +45,13 @@ func command_input_close():
 	GameManager.instance.lock_mouse()
 
 func submit_command():
-	var text = command_input.text.strip_edges()	
+	var text:String = command_input.text.strip_edges()	
 	Cmd.cmd(text)
 	command_input.clear()
+	
+	#check achievement
+	if text.begins_with("/"):
+		Achievements.achievement.emit("did_cmd")
 
 func propogate_messages(peer_id:int, text:String):
 	var chat_message = CHAT_MESSAGE.instantiate()

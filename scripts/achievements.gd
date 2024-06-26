@@ -17,6 +17,8 @@ func do_achievement(api_name, info={})->void:
 	match api_name:
 		"started_game":
 			Steam.setAchievement(api_name)
+		"did_cmd":
+			Steam.setAchievement(api_name)
 		_:
 			pass
 			
