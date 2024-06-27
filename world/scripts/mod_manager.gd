@@ -46,6 +46,8 @@ func load_mods_by_path(asset_paths: Array[String]):
 		for key in mod_hierarchy:
 			instanced_mod.set_meta(key, mod_hierarchy[key])
 		ObjectIndex.add_object_to_index(instanced_mod)
+		if World.instance != null:
+			World.instance.add_spawnable_scene(mod)
 
 '''
 ## unloads mods by path parts supplied, such as "/structures/modular/" 	

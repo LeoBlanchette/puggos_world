@@ -9,6 +9,7 @@ static var object_index = null
 ## mirrors children of ObjectIndex node like this: 9_$Node
 static var index: Dictionary = {}
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if ObjectIndex.object_index == null:
@@ -45,7 +46,6 @@ static func spawn(category: String, id: int):
 	if ob == null:
 		return null
 	var spawned = ob.duplicate()
-	print(spawned)
 	return spawned
 
 static func get_object(category: String, id: int):

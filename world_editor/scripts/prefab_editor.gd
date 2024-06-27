@@ -20,6 +20,7 @@ func _ready():
 		PrefabEditor.instance.queue_free()
 		
 	load_prefab_editor_related_mods()
+	Achievements.achievement.emit("prefab_editor")
 
 func _exit_tree() -> void:
 	if PrefabEditor.instance == self:

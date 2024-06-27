@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dq6t7n8rt4hmw"]
+[gd_scene load_steps=6 format=3 uid="uid://dq6t7n8rt4hmw"]
 
 [ext_resource type="PackedScene" uid="uid://cvv7vr17nmnje" path="res://nodes/models/helpers/ground_plane.tscn" id="1_noxnp"]
+[ext_resource type="Script" path="res://world_editor/scripts/world_editor.gd" id="1_x41r0"]
 [ext_resource type="Texture2D" uid="uid://bxc23f0347sy3" path="res://images/textures/test-blue.png" id="2_1eip5"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_xbe4c"]
@@ -9,6 +10,7 @@
 albedo_texture = ExtResource("2_1eip5")
 
 [node name="World" type="Node3D"]
+script = ExtResource("1_x41r0")
 
 [node name="GroundPlane" parent="." instance=ExtResource("1_noxnp")]
 collision_layer = 8388609

@@ -5,6 +5,8 @@ class_name World
 @export var multiplayer_spawner: MultiplayerSpawner
 const PLAYER = preload("res://nodes/characters/player.tscn")
 
+static var instance = null
+
 var world_mod_groups: Array[String] = [
 	"structures/modular/",
 	"materials/structures_modular/",
@@ -12,16 +14,26 @@ var world_mod_groups: Array[String] = [
 ]
 
 func _ready() -> void:
+	
+	if instance == null:
+		instance = self
+	else:
+		queue_free()
+			
 	load_world_editor_related_mods()
 	
 	NetworkManager.register_world($".")
 	NetworkManager.world_loaded.emit()
+	Achievements.achievement.emit("entered_world")
+	
 
 func _enter_tree() -> void:
 	multiplayer_spawner.spawn_function = spawn_player
 
 func _exit_tree() -> void:
 	NetworkManager.unregister_world()
+	if instance == self:
+		queue_free()
 
 
 @rpc("authority", "call_local", "reliable")
@@ -38,7 +50,18 @@ func spawn_player(peer_id:int):
 	p.peer_id = peer_id	
 	NetworkManager.player_joined_world.emit(peer_id)
 	return p
-	 
+
+@rpc("any_peer", "call_local", "reliable")
+func spawn_object(category:String, id:int, pos:Vector3, rot:Vector3):
+	var ob:Node3D = ObjectIndex.object_index.spawn(category, id)
+	ob.position = pos
+	ob.rotation = rot
+	ob.name = ob.get_meta("name", "spawned_object")
+	add_child(ob, true)
+
+
 func load_world_editor_related_mods():
 	ModManager.mod_manager.load_mods_by_path(world_mod_groups)
 	
+func add_spawnable_scene(scene:String) ->void:
+	multiplayer_spawner.add_spawnable_scene(scene)

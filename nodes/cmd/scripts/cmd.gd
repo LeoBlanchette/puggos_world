@@ -64,8 +64,9 @@ func spawn(command: ArgParser):
 
 	var spawn_node:Node3D = player.get_spawner_node()
 	var ob:Node3D = ObjectIndex.spawn(object_category, object_id)
-	spawn_node.add_child(ob)
-	print(ob)
+	
+	World.instance.spawn_object.rpc_id(1, object_category, object_id, spawn_node.global_position, spawn_node.global_rotation)
+	
 
 ## gives player a thing
 func give(_command: ArgParser):

@@ -79,6 +79,7 @@ func save_from_character_edit()->void:
 	character_template["name"] = character_name_line_edit.text	
 	Characters.set_currently_selected_character_id(currently_editing_character_id)
 	Characters.save_character(character_template)
+	Achievements.achievement.emit("created_character")
 	
 func update_character_edit_panel(character:Dictionary):
 	character_name_line_edit.text = character["name"]	
