@@ -25,6 +25,8 @@ func do_achievement(api_name, info={})->void:
 			Steam.setAchievement(api_name)
 		"pretty_please":
 			Steam.setAchievement(api_name)
+		"got_kicked":
+			Steam.setAchievement(api_name)
 		"prefab_editor":
 			Steam.setAchievement(api_name)
 		"world_editor":

@@ -6,6 +6,7 @@ extends Node
 signal player_connected(peer_id, player_info)
 signal player_disconnected(peer_id)
 signal server_disconnected
+signal kick_notification(text)
 
 signal world_loaded
 signal player_joined_world(peer_id)
@@ -196,11 +197,17 @@ func leave_game(_peer_id:int = 0):
 	GameManager.change_scene(GameManager.SCENES.MENU)
 
 @rpc("any_peer", "call_local", "reliable")
-func drop_user(steam_persona_name:String)->void:
+func drop_user(steam_persona_name:String, message:String = "")->void:
 	var peer_id:int = Players.get_peer_id_by_persona_name(steam_persona_name)
-	print(peer_id)
+	do_kick_notification.rpc_id(peer_id, message)	
+	await get_tree().create_timer(1).timeout
 	multiplayer.multiplayer_peer.disconnect_peer(peer_id)
-	
+
+@rpc("authority", "call_remote", "reliable")
+func do_kick_notification(text:String)->void:
+	kick_notification.emit("Message: %s"%text)
+	Achievements.achievement.emit("got_kicked")
+
 func _on_leave_game_pressed() -> void:
 	remove_multiplayer_peer()
 	if not multiplayer.is_server():

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://ui/scripts/ui_connection_dropped_popup_panel.gd" id="1_jrnrb"]
 
-[node name="UIConnectionDropped" type="Control"]
+[node name="UIConnectionDropped" type="Control" node_paths=PackedStringArray("kick_notice")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,6 +10,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_jrnrb")
+kick_notice = NodePath("Panel/MarginContainer/VBoxContainer/KickNotificationText")
 
 [node name="Panel" type="Panel" parent="."]
 custom_minimum_size = Vector2(300, 180)
@@ -19,10 +20,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -150.0
+offset_top = -90.0
+offset_right = 150.0
+offset_bottom = 90.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -51,5 +52,9 @@ fit_content = true
 layout_mode = 2
 text = "Ok
 "
+
+[node name="KickNotificationText" type="RichTextLabel" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+fit_content = true
 
 [connection signal="pressed" from="Panel/MarginContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]

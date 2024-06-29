@@ -96,17 +96,19 @@ func place(_command: ArgParser):
 
 func kick(command:ArgParser):
 	var user:String = ""
+	var m:Array = command.get_argument("--m", "You were kicked from the server.".split(" "))
+	var message:String = ""
+	command.print_arguments()
+	for word in m:
+		message += "%s "%word
+
 	if command.get_argument("1") != null:
 		user = command.get_argument("1")
-		NetworkManager.drop_user(user)
-	
-	
-	
+		NetworkManager.drop_user(user, message)
+
 func print_command(command:ArgParser):
 	print(command)
 
-
-	
 ## puts user into placement mode with a certain object
 func placement(command: ArgParser):
 	var reject_message:String = "Something went wrong."
