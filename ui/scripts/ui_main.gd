@@ -85,6 +85,7 @@ func is_a_subwindow_open()->bool:
 
 func show_status_panel():
 	status_panel.show()
+	
 
 func hide_status_panel():
 	status_panel.hide()
@@ -94,6 +95,7 @@ static func display_status(status:String):
 		return
 	instance.show_status_panel()
 	instance.status_label.text = status
+	
 
 func _on_button_exit_main_pressed() -> void:
 	GameManager.instance.exit_game()

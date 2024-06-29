@@ -29,6 +29,7 @@ func _ready():
 		UINoSteam.instance.activate(false)
 	
 	GameManager.instance.level_changed.emit(GameManager.SCENES.MENU, GameManager.SCENES.MENU)
+	
 	ui_main.set_active(false)
 	
 

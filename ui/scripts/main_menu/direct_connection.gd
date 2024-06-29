@@ -19,12 +19,12 @@ func join_game_direct():
 	NetworkManager.join_game(ip_address_line_edit.text, port_line_edit.text)
 	UIMain.display_status("Connecting to server: %s:%s ..."%[ip_address_line_edit.text, port_line_edit.text])
 	UI.turn_off_ui_element_after_seconds(5, UIMain.instance.status_panel)
-	
-	
+		
 func host_game_direct():	
 	NetworkManager.create_game(port_line_edit.text)
 	UIMain.display_status("Hosting game on port: %s"%[port_line_edit.text])
 	UI.turn_off_ui_element_after_seconds(3, UIMain.instance.status_panel) 
+	GameManager.change_scene(GameManager.SCENES.WORLD)
 
 func _on_direct_join_button_pressed() -> void:
 	join_game_direct()

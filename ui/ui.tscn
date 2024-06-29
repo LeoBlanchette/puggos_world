@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bi2oakit1yejl"]
+[gd_scene load_steps=16 format=3 uid="uid://bi2oakit1yejl"]
 
 [ext_resource type="Script" path="res://ui/scripts/ui.gd" id="1_w4cnj"]
 [ext_resource type="Theme" uid="uid://1cgrcgf7at3y" path="res://ui/themes/main_theme.tres" id="1_wfx8k"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://cg6td68sf3duf" path="res://ui/ui_chat.tscn" id="12_as3hp"]
 [ext_resource type="PackedScene" uid="uid://158jfcngo378" path="res://ui/ui_console.tscn" id="13_7vgq5"]
 [ext_resource type="PackedScene" uid="uid://12b3h1508pxa" path="res://ui/ui_no_steam.tscn" id="14_1yn0o"]
+[ext_resource type="PackedScene" uid="uid://dvuurktpeckou" path="res://ui/ui_connection_dropped_popup_panel.tscn" id="15_8jmgr"]
 
 [node name="UI" type="Control" node_paths=PackedStringArray("escapable_ui_nodes")]
 layout_mode = 3
@@ -24,7 +25,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_wfx8k")
 script = ExtResource("1_w4cnj")
-escapable_ui_nodes = [NodePath("EscMenu"), NodePath("UIChat"), NodePath("UIBuildingInterface"), NodePath("UIMain/MenuRight/PlayOptions"), null, NodePath("UIMain/MenuRight/WorldEditorOptions"), NodePath("UIMain/MenuRight/ModsOptions"), NodePath("UIMain/MenuRight/ConfigsOptions"), NodePath("UIMain/MenuRight/DirectConnection"), null]
+escapable_ui_nodes = [NodePath("EscMenu"), NodePath("UIChat"), NodePath("UIBuildingInterface"), NodePath("UIMain/MenuRight/PlayOptions"), NodePath("UIMain/MenuRight/WorldEditorOptions"), NodePath("UIMain/MenuRight/ModsOptions"), NodePath("UIMain/MenuRight/ConfigsOptions"), NodePath("UIMain/MenuRight/DirectConnection"), NodePath("UIMain/StatusPanel")]
 
 [node name="UIMain" parent="." instance=ExtResource("2_g37sc")]
 layout_mode = 1
@@ -62,6 +63,9 @@ layout_mode = 1
 
 [node name="UINoSteam" parent="." instance=ExtResource("14_1yn0o")]
 visible = false
+layout_mode = 1
+
+[node name="UIConnectionDropped" parent="." instance=ExtResource("15_8jmgr")]
 layout_mode = 1
 
 [connection signal="building_interface_visible" from="UIBuildingInterface" to="UIChat" method="_on_ui_building_interface_building_interface_visible"]

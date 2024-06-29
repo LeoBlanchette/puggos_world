@@ -40,6 +40,7 @@ func get_character_object_by_peer_id(peer_id:int)->Player:
 			return player
 	return null
 
+
 func retrieve_player_avatar(steam_id:int):
 	Steam.getPlayerAvatar(Steam.AVATAR_SMALL, steam_id )
 
@@ -109,6 +110,12 @@ func get_player_peer_id_by_steam_id(steam_id:int)->int:
 func get_player_steam_id_by_peer_id(peer_id:int)->int:
 	if players.has(peer_id):
 		return players[peer_id]["steam_id"]
+	return 0
+
+func get_peer_id_by_persona_name(persona_name:String)->int:
+	for peer_id in players:
+		if players[peer_id]["name"].to_lower() == persona_name.to_lower().strip_edges():
+			return peer_id
 	return 0
 
 func remove_player_by_peer_id(peer_id:int):

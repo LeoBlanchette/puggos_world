@@ -9,6 +9,7 @@ signal server_disconnected
 
 signal world_loaded
 signal player_joined_world(peer_id)
+signal connection_dropped_notification 
 
 const PORT = 27080
 const DEFAULT_SERVER_IP = "127.0.0.1" # IPv4 localhost
@@ -49,6 +50,7 @@ func join_game(address = "", port = ""):
 		return error
 	multiplayer.multiplayer_peer = peer
 
+
 func create_game(port = "", announce_status:bool = false):	
 	multiplayer.multiplayer_peer = null
 	current_port = PORT
@@ -77,6 +79,7 @@ func create_game(port = "", announce_status:bool = false):
 	if announce_status:
 		server_announce_status(status)
 	send_server_greeting.rpc_id(1, status)
+	
 
 func create_single_player_game():
 	create_game(str(PORT), true)
@@ -122,6 +125,8 @@ func _register_player(new_player_info):
 
 @rpc("authority", "call_local", "reliable")
 func send_server_greeting(greeting:String):
+	return
+	#not using this yet
 	UIMain.display_status(greeting)
 
 func _on_player_disconnected(id):
@@ -130,7 +135,7 @@ func _on_player_disconnected(id):
 	server_announce_status("%s (%s) has left the game."%[character_name, player_name], false)
 	Players.remove_player_by_peer_id(id)
 	player_disconnected.emit(id)
-	leave_game()	
+	
 
 #region onboarding
 
@@ -179,13 +184,23 @@ func _on_connected_fail():
 	multiplayer.multiplayer_peer = null
 
 func _on_server_disconnected():
+	UI.instance.close_blocking_ui()
 	multiplayer.multiplayer_peer = null
 	Players.players.clear()
-	server_disconnected.emit()
-
+	server_disconnected.emit()	
+	leave_game()
+	connection_dropped_notification.emit()
+	
+	
 func leave_game(_peer_id:int = 0):
-	pass
+	GameManager.change_scene(GameManager.SCENES.MENU)
 
+@rpc("any_peer", "call_local", "reliable")
+func drop_user(steam_persona_name:String)->void:
+	var peer_id:int = Players.get_peer_id_by_persona_name(steam_persona_name)
+	print(peer_id)
+	multiplayer.multiplayer_peer.disconnect_peer(peer_id)
+	
 func _on_leave_game_pressed() -> void:
 	remove_multiplayer_peer()
 	if not multiplayer.is_server():

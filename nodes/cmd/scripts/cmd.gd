@@ -31,6 +31,8 @@ func cmd(command_string:String):
 			placement(command)
 		"/place":
 			place(command)
+		"/kick":
+			kick(command)		
 		"/print_command":
 			print_command(command)
 		"/print_object":
@@ -92,6 +94,14 @@ func equip(_command: ArgParser):
 func place(_command: ArgParser):
 	pass
 
+func kick(command:ArgParser):
+	var user:String = ""
+	if command.get_argument("1") != null:
+		user = command.get_argument("1")
+		NetworkManager.drop_user(user)
+	
+	
+	
 func print_command(command:ArgParser):
 	print(command)
 

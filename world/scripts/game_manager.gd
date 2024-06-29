@@ -67,6 +67,7 @@ func change_to_menu_scene():
 	load_level(menu)
 	free_mouse()	
 	update_scene_status(current_level, GameManager.SCENES.MENU)
+	NetworkManager.create_single_player_game()
 
 func change_to_world_scene():
 	clear_level()
