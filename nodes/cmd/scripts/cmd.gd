@@ -72,8 +72,13 @@ func spawn(command: ArgParser):
 	
 	var pos = command.vector_from_array(command.get_argument("--p", default_pos))
 	var rot = command.vector_from_array(command.get_argument("--r", default_rot))
-			
-	World.instance.spawn_object.rpc_id(1, object_category, object_id, pos, rot)
+	
+	# now spawn object according to context / level
+	match GameManager.current_level:
+		GameManager.SCENES.WORLD:
+			World.instance.spawn_object.rpc_id(1, object_category, object_id, pos, rot)
+		GameManager.SCENES.PREFAB_EDITOR:
+			PrefabEditor.instance.spawn_object(object_category, object_id, pos, rot)
 
 ## gives player a thing
 func give(_command: ArgParser):
