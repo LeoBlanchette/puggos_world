@@ -20,6 +20,6 @@ func _ready() -> void:
 	
 	
 	var anchors_foundation:Marker3D = anchor_set_object.instantiate()
-	self.add_child(anchors_foundation)
+	self.add_child(anchors_foundation, true)
 	anchors_foundation.position = Vector3.ZERO
 	anchors_foundation.rotation = Vector3.ZERO

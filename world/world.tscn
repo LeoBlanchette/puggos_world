@@ -25,7 +25,7 @@ mesh = SubResource("BoxMesh_xbe4c")
 surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://nodes/characters/player.tscn")
+_spawnable_scenes = PackedStringArray("res://nodes/characters/player.tscn", "res://nodes/build_kits/anchors/anchors_floor.tscn", "res://nodes/build_kits/anchors/anchors_foundation.tscn", "res://nodes/build_kits/modular_object_initiator.tscn")
 spawn_path = NodePath("..")
 
 [connection signal="spawned" from="MultiplayerSpawner" to="." method="_on_multiplayer_spawner_spawned"]

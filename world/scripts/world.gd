@@ -71,5 +71,5 @@ func add_spawnable_scene(scene:String) ->void:
 	multiplayer_spawner.add_spawnable_scene(scene)
 	
 func _on_object_spawned(ob:Node):
-	ob.add_child(MODULAR_OBJECT_INITIATOR.instantiate())
+	ob.add_child(MODULAR_OBJECT_INITIATOR.instantiate(), true)
 	
