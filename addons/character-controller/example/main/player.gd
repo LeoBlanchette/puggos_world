@@ -82,6 +82,9 @@ func enter_placement_mode(object_category:String, object_id:int):
 func get_spawner_node()->Node3D:
 	return spawner_node
 
+func get_peer_id()->int:
+	return peer_id
+
 #func _on_controller_emerged():
 	#camera.environment = null
 #

@@ -57,13 +57,14 @@ func spawn_player(peer_id:int):
 
 @rpc("any_peer", "call_local", "reliable")
 func spawn_object(category:String, id:int, pos:Vector3, rot:Vector3):
-	var ob:Node3D = ObjectIndex.object_index.spawn(category, id, self)
+	if not multiplayer.is_server():
+		return
+	var ob:Node3D = ObjectIndex.object_index.spawn(category, id)
 	ob.position = pos
 	ob.rotation_degrees = rot
 	ob.name = ob.get_meta("name", "spawned_object")
+	self.add_child(ob, true)
 	
-
-
 func load_world_editor_related_mods():
 	ModManager.mod_manager.load_mods_by_path(world_mod_groups)
 	
@@ -72,4 +73,5 @@ func add_spawnable_scene(scene:String) ->void:
 	
 func _on_object_spawned(ob:Node):
 	pass
+
 	

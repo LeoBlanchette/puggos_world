@@ -109,9 +109,10 @@ func player_loaded():
 func _on_player_connected(id):	
 	server_announce_status("%s has joined the game."%id)
 
-func _on_player_entered_world(id):
-	var player_name = Players.get_player_name(id)
-	var character_name = Players.get_player_character_name(id)
+func _on_player_entered_world(peer_id):
+	var player_name = Players.get_player_name(peer_id)
+	var character_name = Players.get_player_character_name(peer_id)
+	update_character_objects.rpc() #this is called here so that the newly spawned charcter object is added to player lists
 	server_announce_status("%s (%s) has entered the world..."%[character_name, player_name], false)
 
 @rpc("any_peer", "reliable")
@@ -156,10 +157,12 @@ func register_player_to_server(_player_info:Dictionary):
 	broadcast_add_player.rpc(peer_id, steam_id, persona_name, character_name)	
 	
 	send_server_greeting.rpc_id(peer_id, "Welcome to <SERVER_NAME>, %s"%persona_name)
-	
-	for player_peer_id in Players.players:		
-		var player_info_full:Dictionary = Players.get_player(player_peer_id)
-		add_player_from_server.rpc_id(peer_id, player_peer_id, player_info_full["steam_id"], player_info_full["name"], player_info_full["character_name"])
+
+## Upon new character spawning in, update the player dictionary
+## with new character object info
+@rpc("any_peer", "call_local", "reliable")
+func update_character_objects():
+	Players.update_character_objects()
 
 #this is an RPC only
 @rpc("authority", "call_local", "reliable")

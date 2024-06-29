@@ -39,7 +39,6 @@ func cmd(command_string:String):
 			print_peer_id()
 
 
-
 ## general chat messages
 func chat(command:String):
 	if not multiplayer.is_server():
@@ -51,13 +50,13 @@ func chat(command:String):
 func message(_command:String):
 	pass	
 
-## gives player a thing
+## The main spawning command.
 func spawn(command: ArgParser):
 	var reject_message:String = "Something went wrong."
 	var peer_id:int = multiplayer.get_unique_id()	
 	var object_category = 0
 	var object_id = 0
-
+	
 	object_category = command.get_argument("1")
 	object_id = int(command.get_argument("2"))
 	
@@ -73,9 +72,7 @@ func spawn(command: ArgParser):
 	
 	var pos = command.vector_from_array(command.get_argument("--p", default_pos))
 	var rot = command.vector_from_array(command.get_argument("--r", default_rot))
-		
-	var ob:Node3D = ObjectIndex.spawn(object_category, object_id)
-	
+			
 	World.instance.spawn_object.rpc_id(1, object_category, object_id, pos, rot)
 
 ## gives player a thing

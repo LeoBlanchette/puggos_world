@@ -22,10 +22,24 @@ func add_player(peer_id:int, steam_id:int, persona_name:String, character_name:S
 		"character" = null,
 		"avatar" = null,
 	}
-	players[peer_id] = player
 	
+	player["character"] = get_character_object_by_peer_id(peer_id)
+	
+	players[peer_id] = player	
 	retrieve_player_avatar(steam_id)
-	
+
+func update_character_objects():
+	for peer_id in players:
+		players[peer_id]["character"] = get_character_object_by_peer_id(peer_id)
+
+func get_character_object_by_peer_id(peer_id:int)->Player:
+	var players = get_tree().get_nodes_in_group("players")
+	for player:Player in players:
+		var character_peer_id:int = player.get_peer_id()
+		if character_peer_id == peer_id:
+			return player
+	return null
+
 func retrieve_player_avatar(steam_id:int):
 	Steam.getPlayerAvatar(Steam.AVATAR_SMALL, steam_id )
 
