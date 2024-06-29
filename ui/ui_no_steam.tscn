@@ -1,0 +1,54 @@
+[gd_scene load_steps=3 format=3 uid="uid://12b3h1508pxa"]
+
+[ext_resource type="Script" path="res://ui/scripts/ui_no_steam_popup_panel.gd" id="1_nndvh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tmcj4"]
+bg_color = Color(0.278431, 0.54902, 0.74902, 1)
+
+[node name="UINoSteam" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nndvh")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tmcj4")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -52.0
+offset_right = 200.0
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = "Steam is not running. Activate Steam before playing Puggo's World."
+autowrap_mode = 2
+
+[node name="ShutDownButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "OK"
+
+[connection signal="pressed" from="Panel/VBoxContainer/ShutDownButton" to="." method="_on_shut_down_button_pressed"]

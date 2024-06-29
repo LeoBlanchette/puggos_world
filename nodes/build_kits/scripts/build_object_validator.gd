@@ -37,6 +37,18 @@ func get_anchor_type(ob)->AnchorType:
 	
 	return AnchorType.NONE
 
+func set_anchors(ob:Node3D)->void:
+	var anchor_type:AnchorType = get_anchor_type(ob)
+	var anchor_path = ""
+	match anchor_type:
+		AnchorType.FLOOR:
+			anchor_path = FOUNDATION_FLOOR
+		AnchorType.FOUNDATION:
+			anchor_path = FOUNDATION_ANCHOR
+	if anchor_path.is_empty():
+		return
+	
+
 func is_compatible_target()->bool:
 	var current_object_anchor_type = get_anchor_type(current_object)
 	var target_object_anchor_type = get_anchor_type(target_object)

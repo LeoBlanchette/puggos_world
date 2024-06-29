@@ -22,8 +22,16 @@ func _ready():
 		UI.instance = self
 	else:
 		queue_free()
+	
+	if not Global.steam_initialized:
+		UINoSteam.instance.activate()
+	else:
+		UINoSteam.instance.activate(false)
+	
 	GameManager.instance.level_changed.emit(GameManager.SCENES.MENU, GameManager.SCENES.MENU)
 	ui_main.set_active(false)
+	
+
 	
 func _exit_tree():
 	if UI.instance == self:

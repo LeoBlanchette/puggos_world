@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bi2oakit1yejl"]
+[gd_scene load_steps=15 format=3 uid="uid://bi2oakit1yejl"]
 
 [ext_resource type="Script" path="res://ui/scripts/ui.gd" id="1_w4cnj"]
 [ext_resource type="Theme" uid="uid://1cgrcgf7at3y" path="res://ui/themes/main_theme.tres" id="1_wfx8k"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://cy04nuesstfd0" path="res://ui/esc_menu.tscn" id="11_qns1x"]
 [ext_resource type="PackedScene" uid="uid://cg6td68sf3duf" path="res://ui/ui_chat.tscn" id="12_as3hp"]
 [ext_resource type="PackedScene" uid="uid://158jfcngo378" path="res://ui/ui_console.tscn" id="13_7vgq5"]
+[ext_resource type="PackedScene" uid="uid://12b3h1508pxa" path="res://ui/ui_no_steam.tscn" id="14_1yn0o"]
 
 [node name="UI" type="Control" node_paths=PackedStringArray("escapable_ui_nodes")]
 layout_mode = 3
@@ -56,6 +57,10 @@ visible = false
 layout_mode = 1
 
 [node name="UIConsole" parent="." instance=ExtResource("13_7vgq5")]
+visible = false
+layout_mode = 1
+
+[node name="UINoSteam" parent="." instance=ExtResource("14_1yn0o")]
 visible = false
 layout_mode = 1
 

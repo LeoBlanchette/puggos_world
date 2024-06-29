@@ -198,6 +198,21 @@ func get_mod_hierarchy(mod_path) -> Dictionary:
 		
 	return mod_hierarchy
 
+func get_mod_creator(mod_path:String)->String:
+	return get_mod_hierarchy(mod_path)["creator"]
+	
+func get_mod_project(mod_path:String)->String:
+	return get_mod_hierarchy(mod_path)["project"]	
+	
+func get_mod_type(mod_path:String)->String:
+	return get_mod_hierarchy(mod_path)["mod_type"]	
+
+func get_mod_type_category(mod_path:String)->String:
+	return get_mod_hierarchy(mod_path)["mod_type_category"]	
+	
+func get_mod_name(mod_path:String)->String:
+	return get_mod_hierarchy(mod_path)["mod_name"]	
+
 ## Sets up the mod tree itself which contains more info for UI.
 func populate_mod_tree():		
 	for mod in mods:		

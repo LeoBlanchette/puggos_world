@@ -7,6 +7,8 @@ const PLAYER = preload("res://nodes/characters/player.tscn")
 
 static var instance = null
 
+const MODULAR_OBJECT_INITIATOR: Resource = preload("res://nodes/build_kits/modular_object_initiator.tscn")
+
 var world_mod_groups: Array[String] = [
 	"structures/modular/",
 	"materials/structures_modular/",
@@ -24,6 +26,8 @@ func _ready() -> void:
 	
 	NetworkManager.register_world($".")
 	NetworkManager.world_loaded.emit()
+	ObjectIndex.object_index.spawned.connect(_on_object_spawned)
+	
 	Achievements.achievement.emit("entered_world")
 	
 
@@ -55,7 +59,7 @@ func spawn_player(peer_id:int):
 func spawn_object(category:String, id:int, pos:Vector3, rot:Vector3):
 	var ob:Node3D = ObjectIndex.object_index.spawn(category, id)
 	ob.position = pos
-	ob.rotation = rot
+	ob.rotation_degrees = rot
 	ob.name = ob.get_meta("name", "spawned_object")
 	add_child(ob, true)
 
@@ -65,3 +69,7 @@ func load_world_editor_related_mods():
 	
 func add_spawnable_scene(scene:String) ->void:
 	multiplayer_spawner.add_spawnable_scene(scene)
+	
+func _on_object_spawned(ob:Node):
+	ob.add_child(MODULAR_OBJECT_INITIATOR.instantiate())
+	

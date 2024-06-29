@@ -3,6 +3,8 @@ extends Node
 
 class_name ObjectIndex 
 
+signal spawned(ob:Node)
+
 static var object_index = null
 
 ## main mod index of game. {ID: Object} format.
@@ -46,6 +48,7 @@ static func spawn(category: String, id: int):
 	if ob == null:
 		return null
 	var spawned = ob.duplicate()
+	ObjectIndex.object_index.spawned.emit(spawned)
 	return spawned
 
 static func get_object(category: String, id: int):

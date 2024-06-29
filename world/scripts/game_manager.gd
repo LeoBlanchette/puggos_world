@@ -32,6 +32,7 @@ func _ready():
 		GameManager.instance = self
 	else:
 		queue_free()
+		
 	# Activate the achievements system.
 	Achievements.activate()
 	print_steam_integrated_welcome_message()

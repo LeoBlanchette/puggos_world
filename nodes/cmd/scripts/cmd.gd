@@ -5,6 +5,9 @@ extends Node
 ## beginning root of the cmd cycle
 func cmd(command_string:String):	
 	
+	if command_string.is_empty():
+		return
+	
 	if command_string.begins_with("/message"):
 		message(command_string)
 		return	
@@ -53,7 +56,7 @@ func spawn(command: ArgParser):
 	var peer_id:int = multiplayer.get_unique_id()	
 	var object_category = 0
 	var object_id = 0
-	
+
 	object_category = command.get_argument("1")
 	object_id = int(command.get_argument("2"))
 	
@@ -63,10 +66,16 @@ func spawn(command: ArgParser):
 		return	
 
 	var spawn_node:Node3D = player.get_spawner_node()
+	
+	var default_pos = [spawn_node.global_position.x, spawn_node.global_position.y, spawn_node.global_position.z]
+	var default_rot = [spawn_node.global_rotation_degrees.x, spawn_node.global_rotation_degrees.y, spawn_node.global_rotation_degrees.z]
+	
+	var pos = command.vector_from_array(command.get_argument("--p", default_pos))
+	var rot = command.vector_from_array(command.get_argument("--r", default_rot))
+		
 	var ob:Node3D = ObjectIndex.spawn(object_category, object_id)
 	
-	World.instance.spawn_object.rpc_id(1, object_category, object_id, spawn_node.global_position, spawn_node.global_rotation)
-	
+	World.instance.spawn_object.rpc_id(1, object_category, object_id, pos, rot)
 
 ## gives player a thing
 func give(_command: ArgParser):
@@ -97,8 +106,6 @@ func placement(command: ArgParser):
 	var peer_id:int = multiplayer.get_unique_id()	
 	var object_category = 0
 	var object_id = 0
-
-	command.print_arguments()
 	
 	object_category = command.get_argument("1")
 	object_id = int(command.get_argument("2"))

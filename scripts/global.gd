@@ -4,6 +4,7 @@ extends Node
 var is_on_steam_deck: bool = false
 var is_online: bool = false
 var is_owned: bool = false
+var steam_initialized:bool = false
 var steam_app_id: int = 2414160
 
 # User
@@ -33,8 +34,9 @@ func initialize_steam() -> void:
 	
 	if initialize_response['status'] > 0:
 		print("Failed to initialize Steam. Shutting down. %s" % initialize_response)
-		get_tree().quit()
-
+	else:
+		steam_initialized = true
+	
 	# Gather additional data
 	is_on_steam_deck = Steam.isSteamRunningOnSteamDeck()
 	is_online = Steam.loggedOn()
@@ -45,8 +47,7 @@ func initialize_steam() -> void:
 
 	# Check if account owns the game
 	if is_owned == false:
-		print("User does not own this game")
-		get_tree().quit()
+		print("User does not own this game or steam is not running.")
 
 func is_steam_running():
 	return Steam.isSteamRunning()

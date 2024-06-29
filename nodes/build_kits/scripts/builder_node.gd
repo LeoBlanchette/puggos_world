@@ -18,8 +18,11 @@ signal can_place_status_changed(old_value:bool, new_value:bool)
 
 var target_position:Vector3 = Vector3.ZERO
 
-@export var anchor:Node = null
-var anchored_object:Node = null
+@export var anchor:Node3D = null
+var anchored_object:Node3D = null
+
+var current_object_category:String = ""
+var current_object_id:int = 0
 
 var current_anchor_type:BuildObjectValidator.AnchorType = BuildObjectValidator.AnchorType.NONE
 
@@ -42,6 +45,8 @@ func _physics_process(_delta):
 	
 
 func snap_or_slide_on_target():
+	if current_object_id == 0:
+		return
 	if builder_ray_cast_3d.is_colliding():	
 		var build_object_validator:BuildObjectValidator = BuildObjectValidator.new(anchored_object, builder_ray_cast_3d.get_collider().get_parent())
 		
@@ -81,6 +86,8 @@ func slide_to_target():
 		
 func enter_placement_mode(object_category:String, object_id:int):
 	cancel_place_item()
+	current_object_category = object_category
+	current_object_id = object_id
 	var ob:Node = ObjectIndex.spawn(object_category, object_id)
 	if ob == null:
 		return
@@ -115,13 +122,18 @@ func convert_active_object_to_holographic(hographic:bool = true):
 func place_item()->void:
 	if not can_place():
 		return	
-	anchored_object.reparent(get_tree().current_scene)
-	anchored_object.add_child(MODULAR_OBJECT_INITIATOR.instantiate())
-	is_in_item_placement_mode = false
+	var pos = ArgParser.string_argument_from_vector("--p", anchored_object.global_position)
+	var rot = ArgParser.string_argument_from_vector("--r", anchored_object.global_rotation_degrees)
+	
+	Cmd.cmd("/spawn {cat} {id} {p} {r}".format({"cat":current_object_category, "id":current_object_id, "p":pos, "r":rot}))
+	
 	convert_active_object_to_holographic(false)
-	anchored_object = null
-
+	cancel_place_item()
+	
 func cancel_place_item():
+	current_object_category = ""
+	current_object_id = 0
+	anchored_object = null
 	for ob in anchor.get_children():
 		ob.queue_free()
 
@@ -174,16 +186,22 @@ func _on_can_place_status_changed(_old_value:bool, new_value:bool) -> void:
 		add_error_overlay()
 
 func add_error_overlay():
+	if not is_object_anchored():
+		return
 	for child in anchored_object.get_children():
 		if child is MeshInstance3D:
 			child.material_overlay = ERROR_OVERLAY
 
 func add_confirmed_overlay():
+	if not is_object_anchored():
+		return
 	for child in anchored_object.get_children():
 		if child is MeshInstance3D:
 			child.material_overlay = CONFIRMED_OVERLAY
 
 func remove_overlay():
+	if not is_object_anchored():
+		return
 	for child in anchored_object.get_children():
 		if child is MeshInstance3D:
 			child.material_overlay = null
@@ -200,3 +218,8 @@ func is_space_occupied() -> bool:
 		return true
 	
 	return false
+
+func is_object_anchored()->bool:
+	if anchored_object == null:
+		return false
+	return true

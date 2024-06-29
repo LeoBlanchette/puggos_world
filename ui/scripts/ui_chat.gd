@@ -1,7 +1,6 @@
 extends Control
 class_name  UIChat
 
-
 const CHAT_MESSAGE = preload("res://ui/chat_interface_elements/chat_message.tscn")
 
 @export var chat_messages_vbox: VBoxContainer
@@ -25,7 +24,7 @@ func _input(_event: InputEvent) -> void:
 		var open: bool = toggle_command_input()
 		if not open:
 			submit_command()
-	
+
 func toggle_command_input() -> bool:	
 	if command_input.visible:
 		command_input_close()
@@ -33,19 +32,20 @@ func toggle_command_input() -> bool:
 	else:
 		command_input_open()
 		return true
-	
 
 func command_input_open():
 	command_input.set_visible(true)
 	GameManager.instance.hide_mouse()
 	command_input.grab_focus()
-	
+
 func command_input_close():	
 	command_input.set_visible(false)
 	GameManager.instance.lock_mouse()
 
 func submit_command():
 	var text:String = command_input.text.strip_edges()	
+	if text.is_empty():
+		return
 	Cmd.cmd(text)
 	command_input.clear()	
 	#check achievement
@@ -74,7 +74,7 @@ func activate_based_on_scene(new_level):
 func turn_off_chat_interface():
 	set_process_input(false)
 	set_visible(false)
-	
+
 
 ## activates chat interface.
 func turn_on_chat_interface():	
@@ -93,11 +93,9 @@ func recieve_chat_message_from_server(peer_id:int, message:String):
 func _on_game_manager_level_changed(_old_level: Variant, new_level: Variant) -> void:
 	activate_based_on_scene(new_level)
 
-
 func _on_ui_building_interface_building_interface_visible(_old_state: Variant, new_state: Variant) -> void:
 	if new_state == true:
 		# a blocking state exists. Hide chat. 
 		turn_off_chat_interface()
 	else:
 		turn_on_chat_interface()
-		
