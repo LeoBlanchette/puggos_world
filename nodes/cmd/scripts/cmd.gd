@@ -39,6 +39,7 @@ func cmd(command_string:String):
 			print_peer_id()
 
 
+
 ## general chat messages
 func chat(command:String):
 	if not multiplayer.is_server():
@@ -95,6 +96,7 @@ func print_command(command:ArgParser):
 func print_peer_id():
 	UIConsole.instance.print_to_console(str(multiplayer.get_unique_id()))
 
+	
 func print_players_object():
 	var json_string = JSON.stringify(Players.players)	
 	print(json_string)
@@ -114,5 +116,5 @@ func placement(command: ArgParser):
 	if player == null:
 		chat(reject_message)
 		return	
-
+	
 	player.enter_placement_mode(object_category, object_id)

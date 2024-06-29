@@ -102,7 +102,7 @@ func anchor_placement_object(ob:Node3D):
 
 	if ob == null: 
 		return
-	anchor.add_child(ob)
+	anchor.add_child(ob, true)
 	ob.position = anchor.position
 	ob.rotation = anchor.rotation
 	anchored_object = ob

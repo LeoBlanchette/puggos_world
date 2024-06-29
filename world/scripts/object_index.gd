@@ -43,11 +43,18 @@ static func add_object_to_index(mod_object: Node):
 ## important function that "spawns" an item by duplicating it.
 ## .duplicate() function
 ## https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-method-duplicate
-static func spawn(category: String, id: int):
+static func spawn(category: String, id: int, parent:Node3D = null):
 	var ob: Node = get_object(category, id)
+	var mod_path:String = ob.get_meta("mod_path", "")
+	if mod_path.is_empty():
+		print("mod_path meta not found on %s"%ob)
+		return
+		
 	if ob == null:
 		return null
-	var spawned = ob.duplicate()
+	var spawned = ResourceLoader.load(mod_path).instantiate()
+	if parent != null:
+		parent.add_child(spawned, true)
 	ObjectIndex.object_index.spawned.emit(spawned)
 	return spawned
 
