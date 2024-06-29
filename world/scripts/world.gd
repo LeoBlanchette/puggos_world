@@ -37,7 +37,7 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	NetworkManager.unregister_world()
 	if instance == self:
-		queue_free()
+		instance = null
 
 
 @rpc("authority", "call_local", "reliable")

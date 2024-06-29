@@ -33,8 +33,8 @@ func cmd(command_string:String):
 			place(command)
 		"/print_command":
 			print_command(command)
-		"/print_players_object":
-			print_players_object()
+		"/print_object":
+			print_object(command)
 		"/print_peer_id":
 			print_peer_id()
 
@@ -95,14 +95,7 @@ func place(_command: ArgParser):
 func print_command(command:ArgParser):
 	print(command)
 
-func print_peer_id():
-	UIConsole.instance.print_to_console(str(multiplayer.get_unique_id()))
 
-	
-func print_players_object():
-	var json_string = JSON.stringify(Players.players)	
-	print(json_string)
-	UIConsole.instance.print_to_console(json_string)
 	
 ## puts user into placement mode with a certain object
 func placement(command: ArgParser):
@@ -120,3 +113,24 @@ func placement(command: ArgParser):
 		return	
 	
 	player.enter_placement_mode(object_category, object_id)
+
+func print_peer_id():
+	UIConsole.instance.print_to_console(str(multiplayer.get_unique_id()))
+
+func print_object(command:ArgParser):
+	var print_string:String = ""
+
+	var arg:Array = command.get_argument("--o")	
+	if arg == null || arg.size() == 0:
+		print("Command should appear as --o <object>.")
+		print("/print_object --o players")
+		print("/print_object --o loaded_mods")	
+	
+	match arg[0]:
+		"players":
+			print_string = JSON.stringify(Players.players)	
+		"loaded_mods":
+			print_string = JSON.stringify(ObjectIndex.index)	
+	
+	print(print_string)
+	UIConsole.instance.print_to_console(print_string)

@@ -24,7 +24,7 @@ func _ready():
 
 func _exit_tree() -> void:
 	if PrefabEditor.instance == self:
-		PrefabEditor.instance.queue_free()
+		PrefabEditor.instance = null
 
 func load_prefab_editor_related_mods():
 	ModManager.mod_manager.load_mods_by_path(prefab_editor_related_mod_groups)

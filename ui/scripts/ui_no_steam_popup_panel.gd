@@ -14,7 +14,7 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	if instance == self:
-		queue_free()
+		instance = null
 
 func activate(show:bool=true):
 	if show:
