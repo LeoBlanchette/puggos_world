@@ -18,9 +18,14 @@ func cmd(command_string:String):
 	command_string = command_string.to_lower()
 	
 	var command:ArgParser = ArgParser.new(command_string)
-
 	
 	match command.get_command():
+		"/save":
+			do_save(command)
+		"/load":
+			do_load(command)
+		"/clear":
+			do_clear(command)
 		"/give":
 			give(command)
 		"/spawn":
@@ -40,6 +45,30 @@ func cmd(command_string:String):
 		"/print_peer_id":
 			print_peer_id()
 
+#region level editing 
+
+func do_save(command:ArgParser):
+	match GameManager.current_level:
+		GameManager.SCENES.PREFAB_EDITOR:
+			Save.save_prefab_editor()
+		GameManager.SCENES.WORLD_EDITOR:
+			Save.save_world_editor()
+		GameManager.SCENES.WORLD:
+			Save.save_world()
+
+func do_load(command:ArgParser):
+	match GameManager.current_level:
+		GameManager.SCENES.PREFAB_EDITOR:
+			Save.load_prefab_editor()
+		GameManager.SCENES.WORLD_EDITOR:
+			Save.load_world_editor()
+		GameManager.SCENES.WORLD:
+			Save.load_world()
+
+func do_clear(command:ArgParser):
+	pass
+
+#endregion
 
 ## general chat messages
 func chat(command:String):
@@ -134,9 +163,9 @@ func print_object(command:ArgParser):
 
 	var arg:Array = command.get_argument("--o")	
 	if arg == null || arg.size() == 0:
-		print("Command should appear as --o <object>.")
-		print("/print_object --o players")
-		print("/print_object --o loaded_mods")	
+		print_to_console("Command should appear as --o <object>.")
+		print_to_console("/print_object --o players")
+		print_to_console("/print_object --o loaded_mods")	
 	
 	match arg[0]:
 		"players":
@@ -145,4 +174,7 @@ func print_object(command:ArgParser):
 			print_string = JSON.stringify(ObjectIndex.index)	
 	
 	print(print_string)
+	print_to_console(print_string)
+
+func print_to_console(print_string:String)->void:
 	UIConsole.instance.print_to_console(print_string)

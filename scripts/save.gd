@@ -1,5 +1,8 @@
 extends Node
 
+const DATA_PATH = "user://data/"
+const PLAYER_PATH = "user://data/player/"
+const SERVER_PATH = "user://data/server/"
 
 func _ready() -> void:
 	create_directory_paths()	
@@ -22,16 +25,16 @@ func create_directory_paths():
 #region paths
 
 func get_data_path()->String:
-	return "user://data/"
+	return DATA_PATH
 
 func get_player_path()->String:
-	return "user://data/player/"
+	return PLAYER_PATH
 
 func get_character_data_path():
 	return get_player_path()+"characters.json"
 
 func get_server_path()->String:
-	return "user://data/server/"
+	return SERVER_PATH
 	
 #endregion
 
@@ -43,3 +46,25 @@ func get_saved_json(file_path:String) -> Dictionary:
 	# Check if there is any error while parsing the JSON string, skip in case of failure
 	var parse_result = JSON.parse_string(data)	
 	return parse_result
+
+#region save / load levels
+
+func save_prefab_editor():
+	pass
+
+func save_world_editor():
+	pass
+	
+func save_world():
+	pass
+
+func load_prefab_editor():
+	pass
+
+func load_world_editor():
+	pass
+	
+func load_world():
+	pass
+
+#endregion 
