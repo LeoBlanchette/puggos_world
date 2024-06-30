@@ -72,6 +72,6 @@ func add_spawnable_scene(scene:String) ->void:
 	multiplayer_spawner.add_spawnable_scene(scene)
 	
 func _on_object_spawned(ob:Node):
-	pass
+	ObjectGrouper.apply_default_groups(ob)
 
 	

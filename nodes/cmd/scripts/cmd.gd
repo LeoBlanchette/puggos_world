@@ -48,18 +48,29 @@ func cmd(command_string:String):
 #region level editing 
 
 func do_save(command:ArgParser):
+	var file_name = command.get_argument("1", null)
+	if file_name==null:
+		print_to_console("Please save with a file name...")
+		print_to_console("Example: /save some_prefab_name")
+		return
+	
 	match GameManager.current_level:
 		GameManager.SCENES.PREFAB_EDITOR:
-			Save.save_prefab_editor()
+			Save.save_prefab_editor(file_name)
 		GameManager.SCENES.WORLD_EDITOR:
 			Save.save_world_editor()
 		GameManager.SCENES.WORLD:
 			Save.save_world()
 
 func do_load(command:ArgParser):
+	var file_name = command.get_argument("1", null)
+	if file_name==null:
+		print_to_console("Please load by a file name...")
+		print_to_console("Example: /load some_prefab_name")
+		return
 	match GameManager.current_level:
 		GameManager.SCENES.PREFAB_EDITOR:
-			Save.load_prefab_editor()
+			Save.load_prefab_editor(file_name)
 		GameManager.SCENES.WORLD_EDITOR:
 			Save.load_world_editor()
 		GameManager.SCENES.WORLD:

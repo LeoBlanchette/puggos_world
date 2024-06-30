@@ -25,6 +25,7 @@ Cmd="*res://nodes/cmd/scripts/cmd.gd"
 Characters="*res://scripts/characters.gd"
 Save="*res://scripts/save.gd"
 Achievements="*res://scripts/achievements.gd"
+ObjectGrouper="*res://scripts/object_grouper.gd"
 
 [debug]
 

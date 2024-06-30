@@ -12,6 +12,8 @@ var prefab_editor_related_mod_groups: Array[String] = [
 
 static var instance = null
 
+var prefab_name = ""
+
 # Called when the node enters the scene tree for the first time.
 func _ready():	
 	if PrefabEditor.instance == null:
@@ -41,3 +43,11 @@ func spawn_object(category:String, id:int, pos:Vector3, rot:Vector3):
 	ob.rotation_degrees = rot
 	ob.name = ob.get_meta("name", "spawned_object")
 	prefab_root.add_child(ob, true)
+	ObjectGrouper.apply_default_groups(ob)
+
+
+func load_prefab(meta:={}, commands:=[])->void:
+	if meta.has("name"):
+		prefab_name = meta["name"]
+	for command in commands:
+		Cmd.cmd(command)

@@ -41,12 +41,9 @@ func _init(argument_string:String):
 	arguments = args_named
 
 func parse(command:String) -> PackedStringArray:
-	var command_parsed = command.split(" ", false)
-	
-	var command_dict:Dictionary = {}
-	
+	var command_parsed = command.split(" ", false)	
+	var command_dict:Dictionary = {}	
 	command_dict["args"] = command_parsed
-
 	return command_parsed
 
 func get_argument(arg: String, default_value = null):
