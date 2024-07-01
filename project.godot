@@ -26,6 +26,7 @@ Characters="*res://scripts/characters.gd"
 Save="*res://scripts/save.gd"
 Achievements="*res://scripts/achievements.gd"
 ObjectGrouper="*res://scripts/object_grouper.gd"
+Workshop="*res://scripts/workshop.gd"
 
 [debug]
 
