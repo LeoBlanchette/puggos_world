@@ -44,6 +44,11 @@ func cmd(command_string:String):
 			print_object(command)
 		"/print_peer_id":
 			print_peer_id()
+		# MODDING
+		"/upload_mod":
+			upload_mod(command)
+		"/update_mod":
+			update_mod(command)
 
 #region level editing 
 
@@ -189,3 +194,9 @@ func print_object(command:ArgParser):
 
 func print_to_console(print_string:String)->void:
 	UIConsole.instance.print_to_console(print_string)
+
+func upload_mod(command:ArgParser):
+	Workshop.register_mod("HELLOWORLD")
+
+func update_mod(command:ArgParser):
+	pass

@@ -39,7 +39,7 @@ func _ready():
 	
 	NetworkManager.initialize_network()
 	NetworkManager.create_single_player_game()
-	
+	Workshop.activate()
 	Achievements.achievement.emit("started_game", {})
 
 func _exit_tree() -> void:

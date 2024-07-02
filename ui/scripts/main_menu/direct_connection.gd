@@ -6,7 +6,6 @@ extends VBoxContainer
 @onready var ip_address_line_edit: LineEdit = $IPAddressLineEdit
 @onready var port_line_edit: LineEdit = $PortLineEdit
 
-
 @onready var direct_join_button: Button = $DirectJoinButton
 @onready var direct_host_button: Button = $DirectHostButton
 

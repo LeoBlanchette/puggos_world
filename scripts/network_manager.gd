@@ -12,7 +12,7 @@ signal world_loaded
 signal player_joined_world(peer_id)
 signal connection_dropped_notification 
 
-const PORT = 27080
+const PORT = 14160
 const DEFAULT_SERVER_IP = "127.0.0.1" # IPv4 localhost
 const MAX_CONNECTIONS = 20
 

@@ -50,8 +50,20 @@ func initialize_steam() -> void:
 	if is_owned == false:
 		print("User does not own this game or steam is not running.")
 
+func is_user_subscribed():
+	return Steam.isSubscribed()
+
 func is_steam_running():
 	return Steam.isSteamRunning()
+
+func check_steam() -> bool:
+	if !Steam.isSteamRunning():
+		print_debug("Steam is not running")
+		return false
+	if !Steam.isSubscribed():
+		print_debug("Not subscribed / Ownership is not confirmed")
+		return false
+	return true
 
 func is_playing_from_editor():
 	return OS.has_feature("editor")

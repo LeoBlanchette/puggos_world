@@ -373,7 +373,7 @@ horizontal_alignment = 1
 
 [node name="PortLineEdit" type="LineEdit" parent="MenuRight/DirectConnection"]
 layout_mode = 2
-text = "27080"
+text = "14160"
 alignment = 1
 
 [node name="DirectJoinButton" type="Button" parent="MenuRight/DirectConnection"]
