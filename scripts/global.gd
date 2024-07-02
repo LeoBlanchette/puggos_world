@@ -44,6 +44,7 @@ func initialize_steam() -> void:
 	steam_id = Steam.getSteamID()
 	steam_username = Steam.getPersonaName()
 	Steam.getPersonaName()
+	Steam.requestCurrentStats()
 
 	# Check if account owns the game
 	if is_owned == false:

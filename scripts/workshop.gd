@@ -14,7 +14,6 @@ var current_file_id
 var current_ugc_query_handler_id:int=-1
 var current_loading_level_id:int=-1
 
-
 func _ready():
 	'''
 	Steam.connect("steamworks_error", self, "_log_error", [], CONNECT_PERSIST)
@@ -24,26 +23,16 @@ func _ready():
 	Steam.connect("ugc_query_completed", self, "_on_ugc_query_completed", [], CONNECT_PERSIST)
 	Steam.connect("item_downloaded", self, "_on_item_downloaded", [], CONNECT_PERSIST)
 	'''
-	
 	Steam.steamworks_error.connect(_log_error, CONNECT_PERSIST)
 	Steam.current_stats_received.connect(_steam_Stats_Ready, CONNECT_PERSIST)
 	Steam.item_created.connect(_on_item_created, CONNECT_PERSIST)
 	Steam.item_updated.connect(_on_item_updated, CONNECT_PERSIST)
 	Steam.ugc_query_completed.connect(_on_ugc_query_completed, CONNECT_PERSIST)
 	Steam.item_downloaded.connect(_on_item_downloaded, CONNECT_PERSIST)
-	
-	Steam.steamInit()
-	Steam.requestCurrentStats()
-
-
-func _process(delta):
-	Steam.run_callbacks()
-
 
 func _log_error(err_signal:String, err_msg:String):
 	print_debug("Error with signal: %s" % err_signal)
 	print_debug(err_msg)
-
 
 func checkSteam() -> bool:
 	if !Steam.isSteamRunning():
@@ -54,18 +43,10 @@ func checkSteam() -> bool:
 		return false
 	return true
 
-
 func _steam_Stats_Ready(game: int, result: int, user: int) -> void:
+	
 	appId = game
 	is_initialized = true
-
-
-func unlock_achievement(achievent_name):
-	if !checkSteam():
-		return
-	Steam.setAchievement(achievent_name)
-	Steam.storeStats()
-
 
 func get_workshop_levels(page :int= 1, filters :Array= []):
 	if current_ugc_query_handler_id > 0:
@@ -83,7 +64,6 @@ func get_workshop_levels(page :int= 1, filters :Array= []):
 	# Finally, send the query
 	Steam.sendQueryUGCRequest(current_ugc_query_handler_id)
 
-
 func download_level(lvl_id):
 	if current_loading_level_id==lvl_id:
 		# This means that we are already downloading this item. Probably just a second click on a button.
@@ -96,11 +76,9 @@ func download_level(lvl_id):
 		current_loading_level_id = lvl_id
 		# Here you can block user input to prevent send clicks a launch loading animation.
 
-
 func upload_level(lvl_id):
 	current_item_id = lvl_id
 	Steam.createItem(appId, 0)
-
 
 func upvote_level(file_id:int):
 	if !checkSteam():
