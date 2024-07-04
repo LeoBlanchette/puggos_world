@@ -35,7 +35,6 @@ func activate():
 	update_subscribed_mods_info()
 
 #region Mod Management
-
 func upload_mod(mod_folder:String):
 	# set up path structure
 	mod_folder = mod_folder.strip_edges().replace("\\", "/")
@@ -60,10 +59,11 @@ func upload_mod(mod_folder:String):
 
 func update_mod(file_id:int):
 	var handler_id = Steam.startItemUpdate(Global.steam_app_id, file_id)
-	var mod_title = meta_data.get_value("puggos_world", "title", "A Puggo Mod")
+	var mod_title = meta_data.get_value("puggos_world", "title", "A Puggo's World Mod")
 	var mod_tags = []
 	# Saving file_id into the metadata file so I can update this item later if needed
 	meta_data.set_value("steam", "id", file_id)
+	meta_data.set_value("puggos_world", "title", mod_title)
 	meta_data.save(meta_file)
 
 	# Setting UGC item title - it will appear in the workshop
