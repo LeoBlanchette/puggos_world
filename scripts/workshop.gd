@@ -28,7 +28,7 @@ func activate():
 	Steam.item_updated.connect(_on_item_updated, CONNECT_PERSIST)
 	Steam.ugc_query_completed.connect(_on_ugc_query_completed, CONNECT_PERSIST)
 	Steam.item_downloaded.connect(_on_item_downloaded, CONNECT_PERSIST)
-	
+	get_installed_mod_paths()
 
 
 #region Mod Management
@@ -65,8 +65,9 @@ func update_mod(file_id:int):
 
 	# Setting UGC item title - it will appear in the workshop
 	Steam.setItemTitle(handler_id, mod_title)
+	#Steam.setItemDescription(handler_id, "")
 	# Setting the path to directory containing the item files
-	Steam.setItemContent(handler_id, mod_path)
+	Steam.setItemContent(handler_id, mod_path)	
 	# Setting UGC item tags - they will be visible in the workshop	
 	Steam.setItemTags(handler_id, mod_tags)
 	# Attaching a preview file is an optional step. The preview file is just a .png image. For example, you can take a screenshot in Godot and save it as file.
@@ -107,6 +108,33 @@ func reset():
 
 #endregion
 
+#region Subscriptions
+
+## Gets a list of mods user is SUBSCRIBED to
+func get_subscribed_mods():	
+	return Steam.getSubscribedItems()
+
+## Gets the paths to user INSTALLED mods
+func get_installed_mod_paths():	
+	var paths:Array = []
+	var mods:Array = get_subscribed_mods()
+	for mod in mods:
+		var info:Dictionary = Steam.getItemInstallInfo(mod)
+		paths.append(info["folder"])
+	return paths
+
+## Starts a query for mod info based on mod_ids.
+func get_mod_info(item_ids:Array):
+	if current_ugc_query_handler_id > 0:
+		# There is already a query in the works, so will just release its handler because we need the new one to work its way.
+		Steam.releaseQueryUGCRequest(current_ugc_query_handler_id)
+	# Creating a query with type 0 - ordered by upvotes for all time.
+	current_ugc_query_handler_id = Steam.createQueryUGCDetailsRequest(item_ids)
+	Steam.setAllowCachedResponse(current_ugc_query_handler_id, 30)
+	# Finally, send the query
+	Steam.sendQueryUGCRequest(current_ugc_query_handler_id)
+#endregion
+
 func _log_error(err_signal:String, err_msg:String):
 	print_debug("Error with signal: %s" % err_signal)
 	print_debug(err_msg)
@@ -142,7 +170,6 @@ func download_mod(mod_id):
 		current_loading_mod_id = mod_id
 		# Here you can block user input to prevent send clicks a launch loading animation.
 
-	
 
 func upvote_mod(file_id:int):
 	if !Global.check_steam():
@@ -179,7 +206,10 @@ func _on_ugc_query_completed(handle:int, result:int, results_returned:int, total
 	Steam.releaseQueryUGCRequest(handle)
 	current_ugc_query_handler_id = 0
 	# Now we can show the list of results to the player
+	process_mod_list_results(list_of_results)
 
+func process_mod_list_results(list_of_results:Array):
+	print(list_of_results)
 
 func _on_item_downloaded(result, file_id, app_id):
 	if result != 1:
