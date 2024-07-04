@@ -196,7 +196,8 @@ func print_to_console(print_string:String)->void:
 	UIConsole.instance.print_to_console(print_string)
 
 func upload_mod(command:ArgParser):
-	Workshop.register_mod("HELLOWORLD")
+	var mod_path:String = command.get_argument("1")
+	Workshop.upload_mod(mod_path)
 
 func update_mod(command:ArgParser):
 	pass
