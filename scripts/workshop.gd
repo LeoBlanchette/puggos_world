@@ -4,11 +4,15 @@ extends Node
 const LVLS_PER_PAGE = 10.0
 const STEAM_LVLS_PER_PAGE = 50.0
 
-var is_initialized :bool= false
+#region subscribed mods
 
-var user_id : int
+var subscribed_mods:Array = []
+var subscribed_mods_paths:Array = []
 
-#region update
+#endregion 
+
+
+#region update user-submitted mods
 var current_file_id 
 
 var mod_path:String = ""
@@ -28,8 +32,7 @@ func activate():
 	Steam.item_updated.connect(_on_item_updated, CONNECT_PERSIST)
 	Steam.ugc_query_completed.connect(_on_ugc_query_completed, CONNECT_PERSIST)
 	Steam.item_downloaded.connect(_on_item_downloaded, CONNECT_PERSIST)
-	get_installed_mod_paths()
-
+	update_subscribed_mods_info()
 
 #region Mod Management
 
@@ -120,7 +123,8 @@ func get_installed_mod_paths():
 	var mods:Array = get_subscribed_mods()
 	for mod in mods:
 		var info:Dictionary = Steam.getItemInstallInfo(mod)
-		paths.append(info["folder"])
+		if info.has("folder"):
+			paths.append(info["folder"])
 	return paths
 
 ## Starts a query for mod info based on mod_ids.
@@ -133,6 +137,17 @@ func get_mod_info(item_ids:Array):
 	Steam.setAllowCachedResponse(current_ugc_query_handler_id, 30)
 	# Finally, send the query
 	Steam.sendQueryUGCRequest(current_ugc_query_handler_id)
+
+## This starts a query for subscribed mods. The operation is completed with a callback.
+func trigger_update_subscribed_mods_info():
+	var mods:Array = get_subscribed_mods()
+	get_mod_info(mods)
+	
+## Updates mod lists / paths. Should be run after installing a mod or deleting, etc.
+func update_subscribed_mods_info():
+	subscribed_mods_paths = get_installed_mod_paths()
+	trigger_update_subscribed_mods_info()
+	
 #endregion
 
 func _log_error(err_signal:String, err_msg:String):
@@ -140,7 +155,7 @@ func _log_error(err_signal:String, err_msg:String):
 	print_debug(err_msg)
 
 func _steam_stats_ready(game: int, result: int, user: int) -> void:
-	is_initialized = true
+	pass
 
 func get_workshop_mods(page :int= 1, filters :Array= []):
 	if current_ugc_query_handler_id > 0:
@@ -208,8 +223,10 @@ func _on_ugc_query_completed(handle:int, result:int, results_returned:int, total
 	# Now we can show the list of results to the player
 	process_mod_list_results(list_of_results)
 
+## used for bringing mod sta
 func process_mod_list_results(list_of_results:Array):
-	print(list_of_results)
+	subscribed_mods = list_of_results
+
 
 func _on_item_downloaded(result, file_id, app_id):
 	if result != 1:
