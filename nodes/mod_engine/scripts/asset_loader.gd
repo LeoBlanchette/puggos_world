@@ -57,6 +57,18 @@ func _exit_tree() -> void:
 		asset_loader = null
 		
 
+## Sets up mod content library.
+## called from "_on_asset_loader_ready()" in ModManager
+func populate_mod_content():
+	populate_mod_packs()
+	load_mods()
+	populate_creator_directories()
+	populate_creator_projects()
+	populate_user_mods()
+	populate_mod_tree()
+	generate_icons()
+	assets_loaded.emit()
+
 ## gets creator info from the info.tscn node in /mods/creator folder.
 func get_mod_info(mod_path: String) -> Dictionary:	
 	var mod_info_node: String	
@@ -81,18 +93,6 @@ func generate_icons():
 		await get_tree().process_frame		
 		icon_generator.generate_icon(mod_path)
 		
-		
-## Sets up mod content library.
-## called from "_on_asset_loader_ready()" in ModManager
-func populate_mod_content():
-	populate_mod_packs()
-	load_mods()
-	populate_creator_directories()
-	populate_creator_projects()
-	populate_user_mods()
-	populate_mod_tree()
-	generate_icons()
-	assets_loaded.emit()
 
 func create_mod_tree_node(node_name: String, meta: Dictionary) -> Node:
 	var mod_tree_node: Node = Node.new()

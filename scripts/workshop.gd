@@ -85,17 +85,17 @@ func update_mod(file_id:int):
 	var console_report_info:={"id":file_id, "title":mod_title, "path":mod_path}
 	UIConsole.instance.print_to_console("Uploaded mod id: {id} - {title}, at {path}".format(console_report_info))
 	
-## 1 Create a NEW mod.
+## 1 Create a NEW mod. Simply adds a database entry on steam. Starts the process.
 func register_mod():
 	UIConsole.instance.print_to_console("Registering new mod...")
 	Steam.createItem(Global.steam_app_id, 0)
 
-## 2 Update an existing record.
+## 2 Update an existing record. This is callback to update an existing record.
 func _on_item_created(result: int, file_id: int, accept_tos: bool):
 	update_mod(file_id)	
 	reset()
 	
-## 3 Update complete. 
+## 3 Update complete. After item update, do whatever.
 func _on_item_updated(result: int, accept_tos):
 	var item_page_template = "steam://url/CommunityFilePage/%s"
 	if accept_tos:

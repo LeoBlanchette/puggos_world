@@ -33,13 +33,21 @@ func _ready():
 	else:
 		queue_free()
 		
+	# Start steamworks, first priority.
+	Global.initialize_steam()
+	
 	# Activate the achievements system.
 	Achievements.activate()
 	print_steam_integrated_welcome_message()
 	
+	# Activate the network manager....		
 	NetworkManager.initialize_network()
 	NetworkManager.create_single_player_game()
+	
+	# Activate the workshop.
 	Workshop.activate()
+	
+	# Do achievement 
 	Achievements.achievement.emit("started_game", {})
 
 func _exit_tree() -> void:

@@ -21,10 +21,6 @@ func _init() -> void:
 	OS.set_environment("SteamGameId", str(steam_app_id))
 
 
-func _ready() -> void:
-	initialize_steam()
-
-
 func _process(_delta: float) -> void:
 	Steam.run_callbacks()
 
