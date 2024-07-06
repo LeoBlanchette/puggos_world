@@ -121,17 +121,23 @@ func populate_mod_packs():
 	if Global.is_playing_from_editor():
 		MOD_DIRECTORY = MOD_FOLDER
 	
-	var modpacks: Array[String] = HelperFunctions.get_directory_contents(MOD_DIRECTORY, HelperFunctions.Scan.FILES_ONLY)
+	## This is populated with other directories as well, especially steam mods.
+	var mod_directories:Array = [MOD_DIRECTORY]
+
+	for mod_path in Workshop.get_mod_paths():
+		mod_directories.append(mod_path)
 	
-	for mod in modpacks:
-		if mod.ends_with(".pck"):
-			print("Found a puggo mod!: " + mod)
-			mod_packs.append(mod)
+	for mod_dir in mod_directories:
+		var modpacks: Array[String] = HelperFunctions.get_directory_contents(mod_dir, HelperFunctions.Scan.FILES_ONLY)
+		for mod in modpacks:
+			if mod.ends_with(".pck"):
+				print("Found a puggo mod!: " + mod)
+				mod_packs.append(mod_dir+"/"+mod)
 
 ## Loads all mods registered by populate_mod_paths()
 func load_mods():
-	for mod_path in mod_packs:		
-		mod_path = MOD_DIRECTORY+mod_path		
+	for mod_path in mod_packs:
+		print(mod_path)
 		ProjectSettings.load_resource_pack(mod_path)
 
 ## This runs after load_mods() and populates a list of user mods.
