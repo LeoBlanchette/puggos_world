@@ -39,7 +39,6 @@ visible = true
 [connection signal="level_changed" from="GameManager" to="UI/EscMenu" method="_on_game_manager_level_changed"]
 [connection signal="level_changed" from="GameManager" to="UI/UIChat" method="_on_game_manager_level_changed"]
 [connection signal="assets_loaded" from="GameManager/AssetLoader" to="GameManager/ModManager" method="_on_asset_loader_assets_loaded"]
-[connection signal="ready" from="GameManager/AssetLoader" to="GameManager/ModManager" method="_on_asset_loader_ready"]
 
 [editable path="UI"]
 [editable path="UI/UIMain"]

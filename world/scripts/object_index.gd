@@ -1,6 +1,9 @@
 @icon("res://images/icons/stack.svg")
 extends Node
 
+## This is the main object index. It gets it's information from the 
+## asset loader.
+
 class_name ObjectIndex 
 
 signal spawned(ob:Node)

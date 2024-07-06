@@ -1,5 +1,9 @@
 @icon("res://images/icons/blocks.svg")
 extends Node
+
+## The central manager for loading and managing mods on game start
+## and world loading.
+
 class_name ModManager
 
 static var mod_manager: ModManager = null
@@ -16,8 +20,11 @@ static var valid_creator_mod_types: Array = [
 func _ready() -> void:	
 	if ModManager.mod_manager == null:
 		ModManager.mod_manager = self
+		Workshop.mod_paths_updated.connect(populate_mod_content_from_workshop_update)
+		
 	else:
 		queue_free()
+	
 
 func _exit_tree() -> void:
 	if ModManager.mod_manager == self:
@@ -79,5 +86,12 @@ func clear_mods(asset_paths: Array[String]):
 func _on_asset_loader_assets_loaded() -> void:	
 	pass
 	
-func _on_asset_loader_ready() -> void:
+## Triggered at Workshop.mod_paths_updated.emit()
+## This happens when the workshop updates from steam.
+## This will fire twice if after initial loading, more subscriptions
+## are found.
+func populate_mod_content_from_workshop_update():
+	await AssetLoader.asset_loader != null
+	await AssetLoader.asset_loader.is_node_ready()
 	AssetLoader.asset_loader.populate_mod_content()
+	print(Workshop.get_mod_paths())

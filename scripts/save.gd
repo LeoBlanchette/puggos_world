@@ -114,3 +114,15 @@ func load_world():
 	pass
 
 #endregion 
+
+#region save / get mod paths
+func save_mod_paths():
+	var saveable_text_array:SaveableTextArray = SaveableTextArray.new(Workshop.get_mod_paths())
+	saveable_text_array.save(get_data_path()+"mod_paths.txt")
+
+func restore_saved_mod_paths()->void:
+	var saveable_text_array:SaveableTextArray = SaveableTextArray.new()
+	var mod_paths:Array = saveable_text_array.load_array(get_data_path()+"mod_paths.txt")	 
+	Workshop.subscribed_mods_paths = mod_paths 
+	
+#endregion 

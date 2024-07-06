@@ -1,16 +1,14 @@
 extends Node
 
-
 const LVLS_PER_PAGE = 10.0
 const STEAM_LVLS_PER_PAGE = 50.0
 
 #region subscribed mods
-
+signal subscribed_mods_updated
+signal mod_paths_updated
 var subscribed_mods:Array = []
 var subscribed_mods_paths:Array = []
-
 #endregion 
-
 
 #region update user-submitted mods
 var current_file_id 
@@ -26,6 +24,8 @@ var current_ugc_query_handler_id:int=-1
 var current_loading_mod_id:int=-1
 
 func activate():
+	Save.restore_saved_mod_paths()
+	mod_paths_updated.emit()
 	Steam.steamworks_error.connect(_log_error, CONNECT_PERSIST)
 	Steam.current_stats_received.connect(_steam_stats_ready, CONNECT_PERSIST)
 	Steam.item_created.connect(_on_item_created, CONNECT_PERSIST)
@@ -84,7 +84,7 @@ func update_mod(file_id:int):
 	
 	var console_report_info:={"id":file_id, "title":mod_title, "path":mod_path}
 	UIConsole.instance.print_to_console("Uploaded mod id: {id} - {title}, at {path}".format(console_report_info))
-	
+
 ## 1 Create a NEW mod. Simply adds a database entry on steam. Starts the process.
 func register_mod():
 	UIConsole.instance.print_to_console("Registering new mod...")
@@ -94,7 +94,7 @@ func register_mod():
 func _on_item_created(result: int, file_id: int, accept_tos: bool):
 	update_mod(file_id)	
 	reset()
-	
+
 ## 3 Update complete. After item update, do whatever.
 func _on_item_updated(result: int, accept_tos):
 	var item_page_template = "steam://url/CommunityFilePage/%s"
@@ -103,7 +103,6 @@ func _on_item_updated(result: int, accept_tos):
 
 func reset():
 	current_file_id = 0
-
 	mod_path= ""
 	meta_file = ""
 	preview_file = ""
@@ -112,7 +111,6 @@ func reset():
 #endregion
 
 #region Subscriptions
-
 ## Gets a list of mods user is SUBSCRIBED to
 func get_subscribed_mods():	
 	return Steam.getSubscribedItems()
@@ -126,6 +124,10 @@ func get_installed_mod_paths():
 		if info.has("folder"):
 			paths.append(info["folder"])
 	return paths
+
+## A getter for mod paths.
+func get_mod_paths()->Array:
+	return subscribed_mods_paths
 
 ## Starts a query for mod info based on mod_ids.
 func get_mod_info(item_ids:Array):
@@ -145,9 +147,12 @@ func trigger_update_subscribed_mods_info():
 	
 ## Updates mod lists / paths. Should be run after installing a mod or deleting, etc.
 func update_subscribed_mods_info():
-	subscribed_mods_paths = get_installed_mod_paths()
+	var updated_mods_paths = get_installed_mod_paths()
+	if updated_mods_paths != subscribed_mods_paths:
+		subscribed_mods_paths = updated_mods_paths
+		Save.save_mod_paths()
+		mod_paths_updated.emit()
 	trigger_update_subscribed_mods_info()
-	
 #endregion
 
 func _log_error(err_signal:String, err_msg:String):
@@ -206,9 +211,11 @@ func _on_ugc_query_completed(handle:int, result:int, results_returned:int, total
 	# If the current handler id changed - it means that we requested a list of items again, so we can dismiss these results. 
 	if handle != current_ugc_query_handler_id:
 		Steam.releaseQueryUGCRequest(handle)
+		subscribed_mods_updated.emit()
 		return
 	if result != 1:
 		# The query failed. See steam result codes for possible reasons.
+		subscribed_mods_updated.emit()
 		return
 	var list_of_results = []
 	for item_id in range(results_returned):
@@ -223,11 +230,11 @@ func _on_ugc_query_completed(handle:int, result:int, results_returned:int, total
 	# Now we can show the list of results to the player
 	process_mod_list_results(list_of_results)
 
-## used for bringing mod sta
+
 func process_mod_list_results(list_of_results:Array):
 	subscribed_mods = list_of_results
-
-
+	subscribed_mods_updated.emit()
+	
 func _on_item_downloaded(result, file_id, app_id):
 	if result != 1:
 		# See steam result codes for more details
