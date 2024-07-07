@@ -45,6 +45,8 @@ static func add_object_to_index(mod_object: Node):
 
 static func spawn(category: String, id: int):
 	var ob: Node = get_object(category, id)
+	if ob == null:
+		return
 	var mod_path:String = ob.get_meta("mod_path", "")
 	if mod_path.is_empty():
 		print("mod_path meta not found on %s"%ob)

@@ -3,14 +3,10 @@
 [ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="1_kprfw"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/register_player.gd" id="2_3b31x"]
 [ext_resource type="PackedScene" uid="uid://bkqfe3f3rwa8g" path="res://nodes/build_kits/builder_node.tscn" id="2_j8xj8"]
+[ext_resource type="PackedScene" uid="uid://7qxa2xlrunw0" path="res://ui/ui_hud.tscn" id="2_nmrc8"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/view_switch.gd" id="2_vpfrc"]
-[ext_resource type="Material" uid="uid://bdtfprhttv4tp" path="res://materials/green_beacon.tres" id="3_anivm"]
+[ext_resource type="Script" path="res://nodes/characters/scripts/interaction_node.gd" id="5_3n0vt"]
 [ext_resource type="Script" path="res://nodes/characters/multiplayer_synchronizer.gd" id="6_f55i6"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_v7jah"]
-material = ExtResource("3_anivm")
-radius = 0.2
-height = 50.0
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_o17ca"]
 
@@ -32,10 +28,12 @@ multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
 builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
 spawner_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/SpawnerNode")
 
-[node name="Register_Player" type="Node" parent="." index="0"]
+[node name="UIHUD" parent="." index="0" instance=ExtResource("2_nmrc8")]
+
+[node name="Register_Player" type="Node" parent="." index="1"]
 script = ExtResource("2_3b31x")
 
-[node name="View Switch" type="Node" parent="." index="2"]
+[node name="View Switch" type="Node" parent="." index="3"]
 script = ExtResource("2_vpfrc")
 
 [node name="ViewInteraction" type="Node3D" parent="Head/ThirdPersonCameraReference" index="0"]
@@ -53,20 +51,29 @@ collide_with_bodies = true
 
 [node name="HitMarker" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode" index="1"]
 
-[node name="HitVisualizer" type="MeshInstance3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode/HitMarker" index="0"]
-mesh = SubResource("SphereMesh_v7jah")
-skeleton = NodePath("../..")
+[node name="Anchor" type="Node3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode/HitMarker" index="0"]
 
-[node name="Anchor" type="Node3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode/HitMarker" index="1"]
+[node name="InteractionNode" type="Node3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D" index="1" node_paths=PackedStringArray("interaction_ray_cast_3d", "marker_3d")]
+script = ExtResource("5_3n0vt")
+interaction_ray_cast_3d = NodePath("InteractionRayCast3D")
+marker_3d = NodePath("Marker3D")
+
+[node name="InteractionRayCast3D" type="RayCast3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/InteractionNode" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+target_position = Vector3(0, 0, -5)
+collide_with_areas = true
+debug_shape_custom_color = Color(0.0812519, 0.589243, 3.85046e-07, 1)
+
+[node name="Marker3D" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/InteractionNode" index="1"]
 
 [node name="SpawnerNode" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -5)
 
-[node name="PlayerMesh" type="MeshInstance3D" parent="." index="12"]
+[node name="PlayerMesh" type="MeshInstance3D" parent="." index="13"]
 mesh = SubResource("CapsuleMesh_o17ca")
 surface_material_override/0 = SubResource("StandardMaterial3D_plrjp")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="13"]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="14"]
 replication_config = SubResource("SceneReplicationConfig_260u7")
 script = ExtResource("6_f55i6")
 

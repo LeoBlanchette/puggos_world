@@ -26,10 +26,6 @@ var current_object_id:int = 0
 
 var current_anchor_type:BuildObjectValidator.AnchorType = BuildObjectValidator.AnchorType.NONE
 
-const MODULAR_OBJECT_INITIATOR: Resource = preload("res://nodes/build_kits/modular_object_initiator.tscn")
-
-func remove_object(ob:Node)->void:
-	ob.queue_free()
 
 func _input(event: InputEvent) -> void:
 	if not is_in_item_placement_mode:
@@ -42,7 +38,11 @@ func _physics_process(_delta):
 	if anchored_object == null:
 		return
 	snap_or_slide_on_target()
-	
+
+func remove_object(ob:Node)->void:
+	ob.queue_free()
+
+#region snapping
 
 func snap_or_slide_on_target():
 	if current_object_id == 0:
@@ -60,7 +60,6 @@ func snap_or_slide_on_target():
 	else:
 		hit_marker.hide()
 	can_place()
-	
 	
 func snap_to_target():	
 	is_snap_mode_active = true
@@ -95,30 +94,27 @@ func enter_placement_mode(object_category:String, object_id:int):
 	anchor_placement_object(ob)
 	add_error_overlay()
 
+#endregion snapping
+
+#region placement
 ## puts the spawned object to be placed into the anchor
 ## necessary for moving the future placement of object.
 ## not to be confused with actual placement of object.
 func anchor_placement_object(ob:Node3D):
-
 	if ob == null: 
 		return
 	anchor.add_child(ob, true)
 	ob.position = anchor.position
 	ob.rotation = anchor.rotation
 	anchored_object = ob
+	#Check for an "anchors" anchors child and remove it. 
+	for child in ob.get_children():
+		if child.name.to_lower().begins_with("anchors"):
+			child.queue_free()	 
+	
 	convert_active_object_to_holographic()
 	set_raycast_collision_mask_for_placeable_object(anchored_object)
-	
-func convert_active_object_to_holographic(hographic:bool = true):	
-	if anchored_object == null:
-		return
-	for child in anchored_object.get_children():
-		if child.name == "BuildAreaOccupied":
-			var build_area: Area3D = child
-			build_area.monitorable = !hographic
-			build_area.monitoring = !hographic
-	remove_overlay()
-	
+
 func place_item()->void:
 	if not can_place():
 		return	
@@ -136,17 +132,17 @@ func cancel_place_item():
 	anchored_object = null
 	for ob in anchor.get_children():
 		ob.queue_free()
-
-func set_raycast_collision_mask_for_placeable_object(ob:Node) -> void:
-	var build_object_validator:BuildObjectValidator = BuildObjectValidator.new(ob)
-	var anchor_type:BuildObjectValidator.AnchorType = build_object_validator.get_current_object_anchor_type()
-	current_anchor_type = anchor_type
 	
-	var detectable_layers: Array = build_object_validator.get_build_detection_collision_layers()
+func convert_active_object_to_holographic(hographic:bool = true):	
+	if anchored_object == null:
+		return
+	for child in anchored_object.get_children():
+		if child.name == "BuildAreaOccupied":
+			var build_area: Area3D = child
+			build_area.monitorable = !hographic
+			build_area.monitoring = !hographic
+	remove_overlay()
 	
-	for i in range(32):
-		builder_ray_cast_3d.set_collision_mask_value(i+1, detectable_layers.has(i+1))
-
 func can_place() -> bool:		
 	if anchored_object == null:
 		update_last_can_place_status(false)
@@ -173,7 +169,7 @@ func can_place() -> bool:
 	
 	update_last_can_place_status(false)
 	return false
-
+	
 func update_last_can_place_status(current_can_place:bool):
 	if current_can_place != last_can_place_status:		
 		can_place_status_changed.emit(last_can_place_status, current_can_place)
@@ -184,6 +180,20 @@ func _on_can_place_status_changed(_old_value:bool, new_value:bool) -> void:
 		add_confirmed_overlay()		
 	else:		
 		add_error_overlay()
+	
+#endregion placment
+
+#region detection
+
+func set_raycast_collision_mask_for_placeable_object(ob:Node) -> void:
+	var build_object_validator:BuildObjectValidator = BuildObjectValidator.new(ob)
+	var anchor_type:BuildObjectValidator.AnchorType = build_object_validator.get_current_object_anchor_type()
+	current_anchor_type = anchor_type
+	
+	var detectable_layers: Array = build_object_validator.get_build_detection_collision_layers()
+	
+	for i in range(32):
+		builder_ray_cast_3d.set_collision_mask_value(i+1, detectable_layers.has(i+1))
 
 func add_error_overlay():
 	if not is_object_anchored():
@@ -206,7 +216,6 @@ func remove_overlay():
 		if child is MeshInstance3D:
 			child.material_overlay = null
 
-
 func is_space_occupied() -> bool:
 	if not builder_ray_cast_3d.is_colliding():
 		return false
@@ -223,3 +232,5 @@ func is_object_anchored()->bool:
 	if anchored_object == null:
 		return false
 	return true
+
+#endregion detection

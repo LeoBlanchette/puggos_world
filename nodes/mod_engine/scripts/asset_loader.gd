@@ -137,7 +137,6 @@ func populate_mod_packs():
 ## Loads all mods registered by populate_mod_paths()
 func load_mods():
 	for mod_path in mod_packs:
-		print(mod_path)
 		ProjectSettings.load_resource_pack(mod_path)
 
 ## This runs after load_mods() and populates a list of user mods.

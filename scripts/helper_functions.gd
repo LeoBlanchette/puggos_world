@@ -15,9 +15,7 @@ func get_directory_contents(dir_path: String, scan_type: Scan = Scan.FULL) -> Ar
 			else:
 				contents_files.append(file_name)
 			file_name = dir.get_next()
-	else:
-		print("An error occurred when trying to access the path: "+dir_path)
-
+	
 	match scan_type:
 		Scan.FULL:
 			return contents_directories + contents_files

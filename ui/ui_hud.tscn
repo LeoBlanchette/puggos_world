@@ -1,0 +1,74 @@
+[gd_scene load_steps=5 format=3 uid="uid://7qxa2xlrunw0"]
+
+[ext_resource type="Script" path="res://ui/scripts/hud/ui_hud.gd" id="1_o61sd"]
+[ext_resource type="Texture2D" uid="uid://dj3162s3omnwx" path="res://images/crosshairs/White/crosshair001.png" id="2_bjrlq"]
+[ext_resource type="Script" path="res://ui/scripts/hud/interaction_label.gd" id="3_l6k2e"]
+[ext_resource type="Script" path="res://ui/scripts/hud/focus_info_panel.gd" id="3_tm4ir"]
+
+[node name="UIHUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o61sd")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="Control" type="Control" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Reticle" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_bjrlq")
+
+[node name="FocusInfoPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -76.0
+offset_top = -43.0
+offset_right = 76.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("3_tm4ir")
+floating_offset = Vector2(0, -20)
+
+[node name="MarginContainer" type="MarginContainer" parent="FocusInfoPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="InteractionLabel" type="Label" parent="FocusInfoPanel/MarginContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+text = "Interaction Label"
+horizontal_alignment = 1
+script = ExtResource("3_l6k2e")
