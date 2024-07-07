@@ -58,9 +58,17 @@ func spawn_player(peer_id:int):
 	NetworkManager.player_joined_world.emit(peer_id)
 	return p
 
-
-	
-	
+@rpc("any_peer", "call_local", "reliable")
+func do_player_interaction(ob_path:String)->void:
+	if not multiplayer.is_server():
+		return
+	var ob:Node3D = get_node(ob_path)
+	if ob.is_in_group("items"):
+		ob.queue_free()
+		return
+	if ob.is_in_group("structures"):
+		ob.queue_free()
+	return
 	
 func load_world_editor_related_mods():
 	ModManager.mod_manager.load_mods_by_path(world_mod_groups)

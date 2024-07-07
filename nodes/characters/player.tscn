@@ -77,4 +77,5 @@ surface_material_override/0 = SubResource("StandardMaterial3D_plrjp")
 replication_config = SubResource("SceneReplicationConfig_260u7")
 script = ExtResource("6_f55i6")
 
+[editable path="UIHUD"]
 [editable path="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode"]

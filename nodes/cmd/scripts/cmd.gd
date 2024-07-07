@@ -30,6 +30,8 @@ func cmd(command_string:String):
 			give(command)
 		"/spawn":
 			spawn(command)
+		"/interact":
+			interact(command)
 		"/equip":
 			equip(command)
 		"/placement":
@@ -126,6 +128,18 @@ func spawn(command: ArgParser):
 			World.instance.spawn_object.rpc_id(1, object_category, object_id, pos, rot)
 		GameManager.SCENES.PREFAB_EDITOR:
 			PrefabEditor.instance.spawn_object(object_category, object_id, pos, rot)
+
+## Basic interaction.
+func interact(command:ArgParser):
+	var instance_id_string = command.get_argument("1")
+	if instance_id_string == null:
+		return
+	var instance_id = int(instance_id_string)
+	var ob:Node3D = instance_from_id(instance_id)
+	if World.instance == null:
+		return
+	World.instance.do_player_interaction.rpc_id(1, ob.get_path())
+	pass
 
 ## gives player a thing
 func give(_command: ArgParser):

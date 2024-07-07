@@ -5,6 +5,8 @@ extends PanelContainer
 var offset:Vector2 = Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
 	establish_offset()
 	update_interaction_label()
 
