@@ -9,9 +9,25 @@ static var focused_point:Vector3 = Vector3.ZERO
 static var focused_object:Node = null
 static var focused_collider:CollisionObject3D = null
 
+var time_interaction_minimum := 1
+var time_interacted:float = 2
+var is_interacting := false
+
 static var instance = null
 
 # Called when the node enters the scene tree for the first time.
+func _input(event: InputEvent) -> void:
+	if get_focused_object() == null:
+		return
+	if not event.is_action("basic_interact"):
+		return
+	if event.is_action_pressed("basic_interact"):
+		is_interacting = true
+	if event.is_action_released("basic_interact"):
+		is_interacting = false
+		do_basic_interaction()
+		
+
 func _ready() -> void:
 	if instance == null:
 		instance = self
@@ -25,6 +41,30 @@ func _exit_tree() -> void:
 func _physics_process(delta: float) -> void:
 	update_collision_point()
 
+#region interaction
+func _process(delta: float) -> void:
+	update_interaction_timer(delta)
+	do_timed_interaction()
+
+func do_basic_interaction():
+	print(get_focused_object())
+	
+func do_timed_interaction():	
+	if not is_interacting:
+		return
+	if time_interacted < time_interaction_minimum:
+		return
+	time_interacted = 0
+	print(get_focused_object())
+
+func update_interaction_timer(delta:float):
+	if is_interacting:		
+		time_interacted += delta
+	else: 
+		time_interacted = 0
+#endregion interaction
+
+
 func update_collision_point():
 	if interaction_ray_cast_3d.is_colliding():
 		focused_point = interaction_ray_cast_3d.get_collision_point()
@@ -37,6 +77,8 @@ func update_collision_point():
 			focused_collider = interaction_ray_cast_3d.get_collider()
 	else:
 		focused_point = Vector3.ZERO
+		focused_object = null
+		focused_collider = null
 
 func get_focused_point()->Vector3:
 	return focused_point

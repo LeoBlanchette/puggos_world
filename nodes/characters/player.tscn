@@ -45,7 +45,7 @@ marker_follow_speed = 0.8
 anchor = NodePath("HitMarker/Anchor")
 
 [node name="BuilderRayCast3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -4.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -2.375)
 target_position = Vector3(0, 0, -10)
 collide_with_bodies = true
 
@@ -60,7 +60,7 @@ marker_3d = NodePath("Marker3D")
 
 [node name="InteractionRayCast3D" type="RayCast3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/InteractionNode" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
-target_position = Vector3(0, 0, -5)
+target_position = Vector3(0, 0, -8)
 collide_with_areas = true
 debug_shape_custom_color = Color(0.0812519, 0.589243, 3.85046e-07, 1)
 

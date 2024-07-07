@@ -45,6 +45,7 @@ grow_vertical = 2
 texture = ExtResource("2_bjrlq")
 
 [node name="FocusInfoPanel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(1.66, 0)
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -53,14 +54,14 @@ anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -76.0
 offset_top = -43.0
-offset_right = 76.0
+offset_right = -42.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("3_tm4ir")
-floating_offset = Vector2(0, -20)
 
 [node name="MarginContainer" type="MarginContainer" parent="FocusInfoPanel"]
 layout_mode = 2
+size_flags_horizontal = 4
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -68,7 +69,9 @@ theme_override_constants/margin_bottom = 10
 
 [node name="InteractionLabel" type="Label" parent="FocusInfoPanel/MarginContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-text = "Interaction Label"
+text = "..."
 horizontal_alignment = 1
+vertical_alignment = 1
 script = ExtResource("3_l6k2e")
