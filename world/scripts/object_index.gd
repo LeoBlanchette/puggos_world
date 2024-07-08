@@ -27,7 +27,6 @@ func _exit_tree() -> void:
 		ObjectIndex.object_index = null
 
 static func add_object_to_index(mod_object: Node):
-	
 	var mod_path = mod_object.get_meta("mod_path")
 	var mod_type = mod_object.get_meta("mod_type")
 	#var mod_type_category = mod_object.get_meta("mod_type_category")
@@ -39,6 +38,7 @@ static func add_object_to_index(mod_object: Node):
 	
 	var signature: String = AssetLoader.asset_loader.get_mod_name_signature(mod_path, "|")
 	mod_object.name = signature
+	
 	if not index.has(mod_type):
 		index[mod_type] = {}
 	index[mod_type][id]=mod_object

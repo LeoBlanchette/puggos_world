@@ -78,5 +78,3 @@ func add_spawnable_scene(scene:String) ->void:
 	
 func _on_object_spawned(ob:Node):
 	ObjectGrouper.apply_default_groups(ob)
-
-	

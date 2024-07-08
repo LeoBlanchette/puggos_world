@@ -28,7 +28,8 @@ multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
 builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
 spawner_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/SpawnerNode")
 
-[node name="UIHUD" parent="." index="0" instance=ExtResource("2_nmrc8")]
+[node name="UIHUD" parent="." index="0" node_paths=PackedStringArray("player") instance=ExtResource("2_nmrc8")]
+player = NodePath("..")
 
 [node name="Register_Player" type="Node" parent="." index="1"]
 script = ExtResource("2_3b31x")

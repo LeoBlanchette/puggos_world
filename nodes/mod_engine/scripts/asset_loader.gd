@@ -175,6 +175,7 @@ func populate_user_mods():
 				else:
 					print("Valid path '"+mod_object+"' not found. See documentation for proper mod folder / filename convention.")
 
+
 func get_mod_name_signature(mod_path: String, delimiter: String) -> String:
 	var mod_hierarchy = get_mod_hierarchy(mod_path)
 	

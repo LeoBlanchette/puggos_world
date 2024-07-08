@@ -44,7 +44,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_bjrlq")
 
-[node name="FocusInfoPanel" type="PanelContainer" parent="."]
+[node name="FocusInfoPanel" type="PanelContainer" parent="." node_paths=PackedStringArray("uihud")]
 custom_minimum_size = Vector2(1.66, 0)
 layout_mode = 1
 anchors_preset = 7
@@ -58,6 +58,7 @@ offset_right = -42.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("3_tm4ir")
+uihud = NodePath("..")
 
 [node name="MarginContainer" type="MarginContainer" parent="FocusInfoPanel"]
 layout_mode = 2

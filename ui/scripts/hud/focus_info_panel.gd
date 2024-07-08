@@ -1,5 +1,8 @@
 extends PanelContainer
 
+@export var uihud: Control
+
+
 @onready var interaction_label: Label = $MarginContainer/InteractionLabel
 @export var floating_offset:Vector2
 var offset:Vector2 = Vector2.ZERO
@@ -9,6 +12,7 @@ func _physics_process(delta: float) -> void:
 		return
 	establish_offset()
 	update_interaction_label()
+	
 
 func establish_offset():
 	offset = Vector2(size.x / 2, 0)
@@ -30,7 +34,7 @@ func update_interaction_label():
 	position_info_panel()
 	
 func position_info_panel():	
-	var camera_3d:Camera3D = get_viewport().get_camera_3d()	
+	var camera_3d:Camera3D = uihud.get_player_camera()
 	if camera_3d == null:
 		display(false)
 		return
@@ -39,14 +43,16 @@ func position_info_panel():
 	var final_position:Vector2 = Vector2.ZERO
 	var initial_ui_position:Vector2 = Vector2.ZERO
 	
-	if focused_object.is_in_group("items"):
-		initial_ui_position = camera_3d.unproject_position(InteractionNode.instance.get_focused_object_position())
-		final_position = initial_ui_position - offset
-
-	elif focused_object.is_in_group("structures"):
-		var view_area:Vector2 = get_viewport_rect().size
-		final_position = Vector2(view_area.x/2, view_area.y-size.y) - size/2
-
+	var mod_type:String = focused_object.get_meta("mod_type", "")
+	
+	match mod_type:
+		"items":
+			initial_ui_position = camera_3d.unproject_position(InteractionNode.instance.get_focused_object_position())
+			final_position = initial_ui_position - offset
+		"structures":
+			var view_area:Vector2 = get_viewport_rect().size
+			final_position = Vector2(view_area.x/2, view_area.y-size.y) - size/2
+	
 	position = final_position
 
 func display(_visible = false):

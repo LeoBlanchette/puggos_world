@@ -42,4 +42,5 @@ marker_follow_speed = 0.5
 
 [editable path="GroundPlane"]
 [editable path="Player"]
+[editable path="Player/UIHUD"]
 [editable path="Player/Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode"]

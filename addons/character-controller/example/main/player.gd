@@ -85,6 +85,9 @@ func get_spawner_node()->Node3D:
 func get_peer_id()->int:
 	return peer_id
 
+func get_camera()->Camera3D:
+	return camera_3d
+
 #func _on_controller_emerged():
 	#camera.environment = null
 #
