@@ -11,7 +11,6 @@ const HT_IntervalSlider = preload("../util/interval_slider.gd")
 const HT_BrushSettingsDialogScene = preload("./settings_dialog/brush_settings_dialog.tscn")
 const HT_BrushSettingsDialog = preload("./settings_dialog/brush_settings_dialog.gd")
 
-
 @onready var _size_slider : Slider = $GridContainer/BrushSizeControl/Slider
 @onready var _size_value_label : Label = $GridContainer/BrushSizeControl/Label
 #onready var _size_label = _params_container.get_node("BrushSizeLabel")
@@ -87,16 +86,6 @@ func _exit_tree():
 		_brush_settings_dialog.queue_free()
 		_brush_settings_dialog = null
 
-# Testing display modes
-#var mode = 0
-#func _input(event):
-#	if event is InputEventKey:
-#		if event.pressed:
-#			set_display_mode(mode)
-#			mode += 1
-#			if mode >= Brush.MODE_COUNT:
-#				mode = 0
-
 func set_terrain_painter(terrain_painter: HT_TerrainPainter):
 	if _terrain_painter != null:
 		_terrain_painter.flatten_height_changed.disconnect(_on_flatten_height_changed)
@@ -129,7 +118,7 @@ func set_terrain_painter(terrain_painter: HT_TerrainPainter):
 		# Load default brush
 		var brush := _terrain_painter.get_brush()
 		var default_shape_fpath := HT_Brush.DEFAULT_BRUSH_TEXTURE_PATH
-		var default_shape := HT_Brush.load_shape_from_image_file(default_shape_fpath, _logger)
+		var default_shape:Texture2D = HT_Brush.load_shape_from_image_file(default_shape_fpath, _logger)
 		brush.set_shapes([default_shape])
 		_update_shape_preview()
 		
@@ -153,7 +142,7 @@ func _on_brush_shape_index_changed():
 
 func _update_shape_preview():
 	var brush := _terrain_painter.get_brush()
-	var i := brush.get_shape_index()
+	var i:int = brush.get_shape_index()
 	_shape_texture_rect.texture = brush.get_shape(i)
 
 
