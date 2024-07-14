@@ -5,12 +5,12 @@
 @tool
 extends Resource
 
-const HT_Grid = preload("./util/grid.gd")
-const HT_Util = preload("./util/util.gd")
-const HT_Errors = preload("./util/errors.gd")
-const HT_Logger = preload("./util/logger.gd")
-const HT_ImageFileCache = preload("./util/image_file_cache.gd")
-const HT_XYZFormat = preload("./util/xyz_format.gd")
+const HT_Grid = preload("util/grid.gd")
+const HT_Util = preload("util/util.gd")
+const HT_Errors = preload("util/errors.gd")
+const HT_Logger = preload("util/logger.gd")
+const HT_ImageFileCache = preload("util/image_file_cache.gd")
+const HT_XYZFormat = preload("util/xyz_format.gd")
 
 # Note: indexes matters for saving, don't re-order
 # TODO Rename "CHANNEL" to "MAP", makes more sense and less confusing with RGBA channels

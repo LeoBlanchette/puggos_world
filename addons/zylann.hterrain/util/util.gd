@@ -1,6 +1,6 @@
 @tool
 
-const HT_Errors = preload("./errors.gd")
+const HT_Errors = preload("errors.gd")
 
 
 # Godot has this internally but doesn't expose it

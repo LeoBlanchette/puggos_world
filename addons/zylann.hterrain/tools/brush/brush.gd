@@ -6,7 +6,7 @@
 # This is separate from Painter because it could apply to multiple Painters at once.
 
 const HT_Errors = preload("../../util/errors.gd")
-const HT_Painter = preload("./painter.gd")
+const HT_Painter = preload("painter.gd")
 
 const SHAPES_DIR = "addons/zylann.hterrain/tools/brush/shapes"
 const DEFAULT_BRUSH_TEXTURE_PATH = SHAPES_DIR + "/round2.exr"
@@ -18,6 +18,7 @@ const MAX_SIZE = 4000
 signal size_changed(new_size)
 signal shapes_changed
 signal shape_index_changed
+
 
 var _size := 32
 var _opacity := 1.0
@@ -213,5 +214,3 @@ func configure_paint_input(painters: Array[HT_Painter], position: Vector2, press
 func on_paint_end():
 	_prev_position = Vector2(-999, -999)
 	_prev_time_ms = 0
-
-

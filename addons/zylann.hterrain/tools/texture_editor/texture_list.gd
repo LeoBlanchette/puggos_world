@@ -8,8 +8,8 @@
 @tool
 extends ScrollContainer
 
-const HT_TextureListItemScene = preload("./texture_list_item.tscn")
-const HT_TextureListItem = preload("./texture_list_item.gd")
+const HT_TextureListItemScene = preload("texture_list_item.tscn")
+const HT_TextureListItem = preload("texture_list_item.gd")
 
 signal item_selected(index)
 signal item_activated(index)

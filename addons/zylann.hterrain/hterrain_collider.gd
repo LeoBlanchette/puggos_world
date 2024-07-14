@@ -1,7 +1,7 @@
 @tool
 
-const HT_Logger = preload("./util/logger.gd")
-const HTerrainData = preload("./hterrain_data.gd")
+const HT_Logger = preload("util/logger.gd")
+const HTerrainData = preload("hterrain_data.gd")
 
 var _shape_rid := RID()
 var _body_rid := RID()

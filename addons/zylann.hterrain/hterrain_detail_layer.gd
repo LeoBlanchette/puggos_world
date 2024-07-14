@@ -11,11 +11,11 @@ extends Node3D
 # and they also do NOT scale with map scale. Indeed, scaling the heightmap
 # doesn't mean we want to scale grass blades (which is not a use case I know of).
 
-const HTerrainData = preload("./hterrain_data.gd")
-const HT_DirectMultiMeshInstance = preload("./util/direct_multimesh_instance.gd")
-const HT_DirectMeshInstance = preload("./util/direct_mesh_instance.gd")
-const HT_Util = preload("./util/util.gd")
-const HT_Logger = preload("./util/logger.gd")
+const HTerrainData = preload("hterrain_data.gd")
+const HT_DirectMultiMeshInstance = preload("util/direct_multimesh_instance.gd")
+const HT_DirectMeshInstance = preload("util/direct_mesh_instance.gd")
+const HT_Util = preload("util/util.gd")
+const HT_Logger = preload("util/logger.gd")
 # TODO Can't preload because it causes the plugin to fail loading if assets aren't imported
 const DEFAULT_MESH_PATH = "res://addons/zylann.hterrain/models/grass_quad.obj"
 

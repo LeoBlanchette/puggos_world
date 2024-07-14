@@ -14,7 +14,6 @@ script = ExtResource("1_5ww64")
 multiplayer_spawner = NodePath("MultiplayerSpawner")
 
 [node name="GroundPlane" parent="." instance=ExtResource("1_j827f")]
-visible = false
 collision_layer = 3
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]

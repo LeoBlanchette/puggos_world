@@ -27,6 +27,7 @@ Save="*res://scripts/save.gd"
 Achievements="*res://scripts/achievements.gd"
 ObjectGrouper="*res://scripts/object_grouper.gd"
 Workshop="*res://scripts/workshop.gd"
+AeroUnits="*res://addons/godot_aerodynamic_physics/core/singletons/aero_units.gd"
 
 [debug]
 
@@ -34,7 +35,7 @@ file_logging/enable_file_logging=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/character-controller/plugin.cfg")
+enabled=PackedStringArray("res://addons/character-controller/plugin.cfg", "res://addons/godot_aerodynamic_physics/plugin.cfg", "res://addons/zylann.hterrain/plugin.cfg")
 
 [file_customization]
 

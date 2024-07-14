@@ -1,8 +1,8 @@
 @tool
 extends Node
 
-const HT_Painter = preload("./../painter.gd")
-const HT_Brush = preload("./../brush.gd")
+const HT_Painter = preload("../painter.gd")
+const HT_Brush = preload("../brush.gd")
 
 const HT_ColorShader = preload("../shaders/color.gdshader")
 

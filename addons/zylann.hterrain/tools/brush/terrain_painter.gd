@@ -1,22 +1,22 @@
 @tool
 extends Node
 
-const HT_Painter = preload("./painter.gd")
+const HT_Painter = preload("painter.gd")
 const HTerrain = preload("../../hterrain.gd")
 const HTerrainData = preload("../../hterrain_data.gd")
 const HT_Logger = preload("../../util/logger.gd")
-const HT_Brush = preload("./brush.gd")
+const HT_Brush = preload("brush.gd")
 
-const HT_RaiseShader = preload("./shaders/raise.gdshader")
-const HT_SmoothShader = preload("./shaders/smooth.gdshader")
-const HT_LevelShader = preload("./shaders/level.gdshader")
-const HT_FlattenShader = preload("./shaders/flatten.gdshader")
-const HT_ErodeShader = preload("./shaders/erode.gdshader")
-const HT_Splat4Shader = preload("./shaders/splat4.gdshader")
-const HT_Splat16Shader = preload("./shaders/splat16.gdshader")
-const HT_SplatIndexedShader = preload("./shaders/splat_indexed.gdshader")
-const HT_ColorShader = preload("./shaders/color.gdshader")
-const HT_AlphaShader = preload("./shaders/alpha.gdshader")
+const HT_RaiseShader = preload("shaders/raise.gdshader")
+const HT_SmoothShader = preload("shaders/smooth.gdshader")
+const HT_LevelShader = preload("shaders/level.gdshader")
+const HT_FlattenShader = preload("shaders/flatten.gdshader")
+const HT_ErodeShader = preload("shaders/erode.gdshader")
+const HT_Splat4Shader = preload("shaders/splat4.gdshader")
+const HT_Splat16Shader = preload("shaders/splat16.gdshader")
+const HT_SplatIndexedShader = preload("shaders/splat_indexed.gdshader")
+const HT_ColorShader = preload("shaders/color.gdshader")
+const HT_AlphaShader = preload("shaders/alpha.gdshader")
 
 const MODE_RAISE = 0
 const MODE_LOWER = 1

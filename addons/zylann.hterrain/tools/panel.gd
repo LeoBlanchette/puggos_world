@@ -1,7 +1,7 @@
 @tool
 extends Control
 
-const HT_DetailEditor = preload("./detail_editor/detail_editor.gd")
+const HT_DetailEditor = preload("detail_editor/detail_editor.gd")
 
 
 # Emitted when a texture item is selected

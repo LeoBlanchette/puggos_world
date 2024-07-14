@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-const DefaultActions = preload("./default_actions.gd")
+const DefaultActions = preload("default_actions.gd")
 
 const ACTIONS = [
 	DefaultActions.CHARACTER_CONTROLLER_FORWARD,
