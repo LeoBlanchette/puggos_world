@@ -1,0 +1,58 @@
+[gd_scene load_steps=6 format=3 uid="uid://c4r4owshak6pp"]
+
+[ext_resource type="PackedScene" uid="uid://cwuh18m4teyej" path="res://models/utility/gizmo.blend" id="1_dfj68"]
+[ext_resource type="Script" path="res://world_editor/scripts/gizmo.gd" id="2_ttxhk"]
+[ext_resource type="Material" uid="uid://dckg1uwxvinr2" path="res://materials/ui/flat_red.tres" id="3_8fg80"]
+[ext_resource type="Material" uid="uid://debs0ghjmhqyw" path="res://materials/ui/flat_green.tres" id="4_yvumg"]
+[ext_resource type="Material" uid="uid://cywywweq6old1" path="res://materials/ui/flat_blue.tres" id="5_tddbq"]
+
+[node name="EditorGizmo" node_paths=PackedStringArray("rotate_x_handle", "rotate_y_handle", "rotate_z_handle", "translate_x_handle", "translate_y_handle", "translate_z_handle", "scale_x_handle", "scale_y_handle", "scale_z_handle", "slide_x_handle", "slide_y_handle", "slide_z_handle") instance=ExtResource("1_dfj68")]
+script = ExtResource("2_ttxhk")
+rotate_x_handle = NodePath("Gizmo/Rotate_X")
+rotate_y_handle = NodePath("Gizmo/Rotate_Y")
+rotate_z_handle = NodePath("Gizmo/Rotate_Z")
+translate_x_handle = NodePath("Gizmo/Translate_X")
+translate_y_handle = NodePath("Gizmo/Translate_Y")
+translate_z_handle = NodePath("Gizmo/Translate_Z")
+scale_x_handle = NodePath("Gizmo/Scale_X")
+scale_y_handle = NodePath("Gizmo/Scale_Y")
+scale_z_handle = NodePath("Gizmo/Scale_Z")
+slide_x_handle = NodePath("Gizmo/Slide_X")
+slide_y_handle = NodePath("Gizmo/Slide_Y")
+slide_z_handle = NodePath("Gizmo/Slide_Z")
+
+[node name="Rotate_X" parent="Gizmo" index="1"]
+surface_material_override/0 = ExtResource("3_8fg80")
+
+[node name="Rotate_Y" parent="Gizmo" index="2"]
+surface_material_override/0 = ExtResource("4_yvumg")
+
+[node name="Rotate_Z" parent="Gizmo" index="3"]
+surface_material_override/0 = ExtResource("5_tddbq")
+
+[node name="Scale_X" parent="Gizmo" index="4"]
+surface_material_override/0 = ExtResource("3_8fg80")
+
+[node name="Scale_Y" parent="Gizmo" index="5"]
+surface_material_override/0 = ExtResource("4_yvumg")
+
+[node name="Scale_Z" parent="Gizmo" index="6"]
+surface_material_override/0 = ExtResource("5_tddbq")
+
+[node name="Slide_X" parent="Gizmo" index="7"]
+surface_material_override/0 = ExtResource("3_8fg80")
+
+[node name="Slide_Y" parent="Gizmo" index="8"]
+surface_material_override/0 = ExtResource("4_yvumg")
+
+[node name="Slide_Z" parent="Gizmo" index="9"]
+surface_material_override/0 = ExtResource("5_tddbq")
+
+[node name="Translate_X" parent="Gizmo" index="10"]
+surface_material_override/0 = ExtResource("3_8fg80")
+
+[node name="Translate_Y" parent="Gizmo" index="11"]
+surface_material_override/0 = ExtResource("4_yvumg")
+
+[node name="Translate_Z" parent="Gizmo" index="12"]
+surface_material_override/0 = ExtResource("5_tddbq")

@@ -32,6 +32,10 @@ script = ExtResource("6_8k5yp")
 [node name="UI" parent="." node_paths=PackedStringArray("escapable_ui_nodes") instance=ExtResource("8_5tnxo")]
 escapable_ui_nodes = [NodePath("EscMenu"), NodePath("UIBuildingInterface"), NodePath("UIMain/MenuRight/PlayOptions"), NodePath("UIMain/MenuRight/WorldEditorOptions"), NodePath("UIMain/MenuRight/ModsOptions"), NodePath("UIMain/MenuRight/ConfigsOptions"), NodePath("UIMain/MenuRight/DirectConnection")]
 
+[node name="UIWorldEditor" parent="UI" index="2"]
+visible = true
+mouse_filter = 1
+
 [node name="UIChat" parent="UI" index="6"]
 visible = true
 
@@ -42,6 +46,7 @@ visible = true
 
 [editable path="UI"]
 [editable path="UI/UIMain"]
+[editable path="UI/UIWorldEditor"]
 [editable path="UI/EscMenu"]
 [editable path="UI/UIChat"]
 [editable path="UI/UIConsole"]

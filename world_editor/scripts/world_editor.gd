@@ -1,5 +1,7 @@
 extends WorldSystems
 
+class_name WorldEditor
+
 static var instance = null
 
 # Called when the node enters the scene tree for the first time.

@@ -1,4 +1,13 @@
-[gd_scene format=3 uid="uid://1066jn4an0tp"]
+[gd_scene load_steps=7 format=3 uid="uid://1066jn4an0tp"]
+
+[ext_resource type="Theme" uid="uid://b8qsxvqsy2clq" path="res://ui/themes/editor_theme.tres" id="1_qqvw4"]
+[ext_resource type="Script" path="res://ui/scripts/ui_world_editor.gd" id="2_aa4iq"]
+[ext_resource type="Texture2D" uid="uid://tvpdsxfkf12t" path="res://images/icons/editor/ToolMove.svg" id="3_uq4xh"]
+[ext_resource type="Texture2D" uid="uid://bca1hogpwnu6f" path="res://images/icons/editor/ToolRotate.svg" id="4_88a0x"]
+[ext_resource type="Texture2D" uid="uid://nwxindhka2lp" path="res://images/icons/editor/ToolScale.svg" id="5_blp3l"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onsc0"]
+bg_color = Color(0.122252, 0.122252, 0.122252, 1)
 
 [node name="UIWorldEditor" type="Control"]
 layout_mode = 3
@@ -7,9 +16,109 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_qqvw4")
+script = ExtResource("2_aa4iq")
 
-[node name="Label" type="Label" parent="."]
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 1
-offset_right = 97.0
-offset_bottom = 23.0
-text = "World Editor"
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_onsc0")
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+offset_right = 162.0
+offset_bottom = 43.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="Panel/MarginContainer"]
+layout_mode = 2
+text = "MODE: Object Ops"
+
+[node name="ControlTop" type="Panel" parent="."]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 60.0
+offset_bottom = 120.0
+grow_horizontal = 2
+
+[node name="ObjectOps" type="MarginContainer" parent="ControlTop"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlTop/ObjectOps"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="ButtonTranslateMode" type="Button" parent="ControlTop/ObjectOps/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+icon = ExtResource("3_uq4xh")
+icon_alignment = 1
+
+[node name="ButtonRotateMode" type="Button" parent="ControlTop/ObjectOps/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+icon = ExtResource("4_88a0x")
+icon_alignment = 1
+
+[node name="ButtonScaleMode" type="Button" parent="ControlTop/ObjectOps/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+icon = ExtResource("5_blp3l")
+icon_alignment = 1
+
+[node name="ControlLeft" type="Panel" parent="."]
+custom_minimum_size = Vector2(250, 60)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_top = 120.0
+offset_right = 250.0
+offset_bottom = -120.0
+grow_vertical = 2
+
+[node name="ControlRight" type="Panel" parent="."]
+custom_minimum_size = Vector2(250, 60)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = 120.0
+offset_bottom = -120.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="ControlBottom" type="Panel" parent="."]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="pressed" from="ControlTop/ObjectOps/HBoxContainer/ButtonTranslateMode" to="." method="_on_button_translate_mode_pressed"]
+[connection signal="pressed" from="ControlTop/ObjectOps/HBoxContainer/ButtonRotateMode" to="." method="_on_button_rotate_mode_pressed"]
+[connection signal="pressed" from="ControlTop/ObjectOps/HBoxContainer/ButtonScaleMode" to="." method="_on_button_scale_mode_pressed"]
