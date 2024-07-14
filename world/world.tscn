@@ -1,27 +1,20 @@
-[gd_scene load_steps=10 format=3 uid="uid://lkraphbmh3h6"]
+[gd_scene load_steps=6 format=3 uid="uid://c6884jk8hs0bh"]
 
 [ext_resource type="Script" path="res://world/scripts/world.gd" id="1_5ww64"]
 [ext_resource type="PackedScene" uid="uid://cvv7vr17nmnje" path="res://nodes/models/helpers/ground_plane.tscn" id="1_j827f"]
 [ext_resource type="Texture2D" uid="uid://c4ucmpkapw4eb" path="res://images/textures/test-green.png" id="2_nm0jf"]
-[ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="4_dbri2"]
-[ext_resource type="Resource" path="res://tmp/data.hterrain" id="5_ixx2b"]
-[ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain_texture_set.gd" id="6_qs3km"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_xbe4c"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_osw4o"]
 albedo_texture = ExtResource("2_nm0jf")
 
-[sub_resource type="Resource" id="Resource_1t1xq"]
-script = ExtResource("6_qs3km")
-mode = 0
-textures = [[], []]
-
 [node name="World" type="Node3D" node_paths=PackedStringArray("multiplayer_spawner")]
 script = ExtResource("1_5ww64")
 multiplayer_spawner = NodePath("MultiplayerSpawner")
 
 [node name="GroundPlane" parent="." instance=ExtResource("1_j827f")]
+visible = false
 collision_layer = 3
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -35,24 +28,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://nodes/characters/player.tscn", "res://nodes/build_kits/anchors/anchors_floor.tscn", "res://nodes/build_kits/anchors/anchors_foundation.tscn", "res://nodes/build_kits/modular_object_initiator.tscn")
 spawn_path = NodePath("..")
-
-[node name="HTerrain" type="Node3D" parent="."]
-script = ExtResource("4_dbri2")
-_terrain_data = ExtResource("5_ixx2b")
-chunk_size = 32
-collision_enabled = true
-collision_layer = 1
-collision_mask = 1
-shader_type = "Classic4Lite"
-custom_shader = null
-custom_globalmap_shader = null
-texture_set = SubResource("Resource_1t1xq")
-render_layers = 1
-cast_shadow = 1
-shader_params/u_ground_uv_scale = 20
-shader_params/u_depth_blending = true
-shader_params/u_triplanar = null
-shader_params/u_tile_reduction = null
 
 [connection signal="spawned" from="MultiplayerSpawner" to="." method="_on_multiplayer_spawner_spawned"]
 

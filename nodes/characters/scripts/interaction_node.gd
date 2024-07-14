@@ -82,12 +82,13 @@ func update_collision_point():
 	if interaction_ray_cast_3d.is_colliding():
 		focused_point = interaction_ray_cast_3d.get_collision_point()
 		var focused_object_hit:Node3D = interaction_ray_cast_3d.get_collider()
-		if focused_object_hit  != null:
+		if focused_object_hit  != null :
 			if focused_object_hit.owner != null:
 				focused_object = focused_object_hit.owner
 			else:
 				focused_object = focused_object_hit
-			focused_collider = interaction_ray_cast_3d.get_collider()
+			if interaction_ray_cast_3d.get_collider() is CollisionObject3D:
+				focused_collider = interaction_ray_cast_3d.get_collider()
 	else:
 		focused_point = Vector3.ZERO
 		focused_object = null

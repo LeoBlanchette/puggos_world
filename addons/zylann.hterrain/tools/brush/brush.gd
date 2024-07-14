@@ -116,7 +116,6 @@ func set_shapes(shapes: Array[Texture2D]):
 	if _shape_index >= len(_shapes):
 		_shape_index = len(_shapes) - 1
 	shapes_changed.emit()
-	
 
 
 func get_shapes() -> Array[Texture2D]:
@@ -214,3 +213,5 @@ func configure_paint_input(painters: Array[HT_Painter], position: Vector2, press
 func on_paint_end():
 	_prev_position = Vector2(-999, -999)
 	_prev_time_ms = 0
+
+
