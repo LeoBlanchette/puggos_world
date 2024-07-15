@@ -89,6 +89,7 @@ func change_to_world_editor_scene():
 	free_mouse()
 	update_scene_status(current_level, GameManager.SCENES.WORLD_EDITOR)
 
+
 func change_to_prefab_editor_scene():
 	clear_level()
 	load_level(prefab_editor)

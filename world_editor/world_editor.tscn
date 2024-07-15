@@ -18,6 +18,18 @@ script = ExtResource("1_x41r0")
 
 [node name="EditorGizmo" parent="." instance=ExtResource("2_2gok1")]
 
+[node name="Rotate_X" parent="EditorGizmo/Gizmo" index="1"]
+surface_material_override/0 = null
+
+[node name="Scale_X" parent="EditorGizmo/Gizmo" index="4"]
+surface_material_override/0 = null
+
+[node name="Slide_X" parent="EditorGizmo/Gizmo" index="7"]
+surface_material_override/0 = null
+
+[node name="Translate_X" parent="EditorGizmo/Gizmo" index="10"]
+surface_material_override/0 = null
+
 [node name="GroundPlane" parent="." instance=ExtResource("1_noxnp")]
 collision_layer = 8388609
 
@@ -34,6 +46,7 @@ current = true
 [node name="Target_1" type="Area3D" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Target_1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.67271, 0, 0)
 mesh = SubResource("BoxMesh_xbe4c")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
@@ -62,3 +75,5 @@ surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Target_2"]
 shape = SubResource("BoxShape3D_6bjwf")
+
+[editable path="EditorGizmo"]

@@ -1,6 +1,7 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://cywywweq6old1"]
 
 [resource]
+no_depth_test = true
 shading_mode = 0
 diffuse_mode = 3
 specular_mode = 2
