@@ -43,17 +43,6 @@ script = ExtResource("4_gg6m7")
 [node name="Camera3D" type="Camera3D" parent="EditorInteractor"]
 current = true
 
-[node name="Target_1" type="Area3D" parent="."]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Target_1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.67271, 0, 0)
-mesh = SubResource("BoxMesh_xbe4c")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Target_1"]
-shape = SubResource("BoxShape3D_6bjwf")
-
 [node name="Target_3" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.3261)
 
@@ -63,6 +52,17 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Target_3"]
+shape = SubResource("BoxShape3D_6bjwf")
+
+[node name="Target_4" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.36067, 0, -1.13503)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Target_4"]
+mesh = SubResource("BoxMesh_xbe4c")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Target_4"]
 shape = SubResource("BoxShape3D_6bjwf")
 
 [node name="Target_2" type="Area3D" parent="."]

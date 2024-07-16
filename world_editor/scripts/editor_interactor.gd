@@ -52,8 +52,8 @@ var viewport_interaction:bool = false
 static var instance = null
 
 func _ready() -> void:
-	await UIWorldEditor.instance != null
-	await UIWorldEditor.instance.is_node_ready()	
+	await UIEditor.instance != null
+	await UIEditor.instance.is_node_ready()	
 	await EditorGizmo.instance != null
 	await EditorGizmo.instance.is_node_ready()	
 	if instance == null:
@@ -196,4 +196,4 @@ func _on_entered_viewport(in_viewport:bool):
 		set_process(false)
 
 func _on_object_selected(ob:Node3D)->void:
-	UIWorldEditor.instance.on_object_selected(ob)
+	UIEditor.instance.on_object_selected(ob)

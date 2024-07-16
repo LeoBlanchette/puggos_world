@@ -2,6 +2,18 @@ extends Node3D
 
 class_name EditorGizmo
 
+const RAY_LENGTH:float = 1000
+
+#region materials
+const FLAT_BLUE:StandardMaterial3D = preload("res://materials/ui/flat_blue.tres")
+const FLAT_BLUE_HIGHLIGHTED:StandardMaterial3D = preload("res://materials/ui/flat_blue_highlighted.tres")
+const FLAT_GREEN:StandardMaterial3D = preload("res://materials/ui/flat_green.tres")
+const FLAT_GREEN_HIGHLIGHTED:StandardMaterial3D = preload("res://materials/ui/flat_green_highlighted.tres")
+const FLAT_RED:StandardMaterial3D = preload("res://materials/ui/flat_red.tres")
+const FLAT_RED_HIGHLIGHTED:StandardMaterial3D = preload("res://materials/ui/flat_red_highlighted.tres")
+#endregion materials
+
+#region handle parents
 # rotation
 @export var rotate_x_handle:MeshInstance3D
 @export var rotate_y_handle:MeshInstance3D
@@ -18,6 +30,30 @@ class_name EditorGizmo
 @export var slide_x_handle:MeshInstance3D
 @export var slide_y_handle:MeshInstance3D
 @export var slide_z_handle:MeshInstance3D
+var handles:Array[MeshInstance3D] = []
+#endregion
+
+#region handle static bodies
+# rotation
+@export var rotate_x_handle_static_body:StaticBody3D
+@export var rotate_y_handle_static_body:StaticBody3D
+@export var rotate_z_handle_static_body:StaticBody3D
+#translation
+@export var translate_x_handle_static_body:StaticBody3D
+@export var translate_y_handle_static_body:StaticBody3D
+@export var translate_z_handle_static_body:StaticBody3D
+#scaling
+@export var scale_x_handle_static_body:StaticBody3D
+@export var scale_y_handle_static_body:StaticBody3D
+@export var scale_z_handle_static_body:StaticBody3D
+#sliding
+@export var slide_x_handle_static_body:StaticBody3D
+@export var slide_y_handle_static_body:StaticBody3D
+@export var slide_z_handle_static_body:StaticBody3D
+var handles_static_bodies:Array[StaticBody3D] = []
+#endregion
+
+var gizmo_distance_scale:float = 0.1
 
 static var instance = null
 
@@ -27,13 +63,17 @@ func _ready() -> void:
 		instance = self
 	else:
 		queue_free()
-	await UIWorldEditor.instance != null
-	await UIWorldEditor.instance.is_node_ready()	
-	UIWorldEditor.instance.changed_transform_mode.connect(_on_transform_mode_changed)
-	reset()
+	await UIEditor.instance != null
+	await UIEditor.instance.is_node_ready()	
+	UIEditor.instance.changed_transform_mode.connect(_on_transform_mode_changed)
+	assign_arrays()
+	connect_signals()
+	reset()	
 	enter_translate_mode()
 	
+	
 func _exit_tree() -> void:
+	disconnect_signals()
 	if instance == self:
 		instance = null
 
@@ -43,36 +83,90 @@ func set_target(ob:Node3D):
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	if not GameManager.current_level == GameManager.SCENES.WORLD_EDITOR || not GameManager.current_level == GameManager.SCENES.WORLD_EDITOR:
+		return
 
+	var cam_distance:float = global_position.distance_to(get_viewport().get_camera_3d().global_position)
+	scale = Vector3(cam_distance, cam_distance, cam_distance)*gizmo_distance_scale
+	get_handle_target()
+	
+func get_handle_target():
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		return 
+	var space_state = get_world_3d().direct_space_state
+	var cam:Camera3D = get_viewport().get_camera_3d()
+	var mousepos = get_viewport().get_mouse_position()
+
+	var origin = cam.project_ray_origin(mousepos)
+	var end = origin + cam.project_ray_normal(mousepos) * RAY_LENGTH
+	var query = PhysicsRayQueryParameters3D.create(origin, end, 8)
+	query.collide_with_areas = true
+	var target_result = space_state.intersect_ray(query) 
+	print(target_result)
+	
+func assign_arrays()->void:
+	handles= [
+		# rotation
+		rotate_x_handle,
+		rotate_y_handle,
+		rotate_z_handle,
+		#translation
+		translate_x_handle,
+		translate_y_handle,
+		translate_z_handle,
+		#scaling
+		scale_x_handle,
+		scale_y_handle,
+		scale_z_handle,
+		#sliding
+		slide_x_handle,
+		slide_y_handle,
+		slide_z_handle,
+	]
+	handles_static_bodies = [
+		rotate_x_handle_static_body,
+		rotate_y_handle_static_body,
+		rotate_z_handle_static_body,
+		#translation
+		translate_x_handle_static_body,
+		translate_y_handle_static_body,
+		translate_z_handle_static_body,
+		#scaling
+		scale_x_handle_static_body,
+		scale_y_handle_static_body,
+		scale_z_handle_static_body,
+		#sliding
+		slide_x_handle_static_body,
+		slide_y_handle_static_body,
+		slide_z_handle_static_body,
+	]
+
+func connect_signals()->void:
+	for handle:StaticBody3D in handles_static_bodies:
+		handle.mouse_entered.connect(_handle_mouse_entered.bind(handle))
+	for handle:StaticBody3D in handles_static_bodies:
+		handle.mouse_exited.connect(_handle_mouse_exited.bind(handle))
+		
+func disconnect_signals()->void:
+	for handle:StaticBody3D in handles_static_bodies:
+		handle.mouse_entered.disconnect(_handle_mouse_entered.bind(handle))
+	for handle:StaticBody3D in handles_static_bodies:
+		handle.mouse_exited.disconnect(_handle_mouse_exited.bind(handle))
+		
 #region mode change
 func _on_transform_mode_changed(old_mode, new_mode):
 	reset()
 	match new_mode:
-		UIWorldEditor.instance.TranformMode.TRANSLATE:
+		UIEditor.instance.TranformMode.TRANSLATE:
 			enter_translate_mode()
-		UIWorldEditor.instance.TranformMode.ROTATE:
+		UIEditor.instance.TranformMode.ROTATE:
 			enter_rotate_mode()
-		UIWorldEditor.instance.TranformMode.SCALE:
+		UIEditor.instance.TranformMode.SCALE:
 			enter_scale_mode()
-
+	
 func reset()->void:
-	# rotation
-	rotate_x_handle.hide()
-	rotate_y_handle.hide()
-	rotate_z_handle.hide()
-	#translation
-	translate_x_handle.hide()
-	translate_y_handle.hide()
-	translate_z_handle.hide()
-	#scaling
-	scale_x_handle.hide()
-	scale_y_handle.hide()
-	scale_z_handle.hide()
-	#sliding
-	slide_x_handle.hide()
-	slide_y_handle.hide()
-	slide_z_handle.hide()
+	for handle:MeshInstance3D in handles:
+		handle.hide()
 
 func show_sliders():
 	slide_x_handle.show()
@@ -96,3 +190,27 @@ func enter_scale_mode():
 	scale_z_handle.show()
 	show_sliders()
 #endregion
+
+#region hover indictators
+func _handle_mouse_entered(handle:StaticBody3D):
+	set_handle_material_highlighted(handle.get_parent())
+
+func _handle_mouse_exited(handle:StaticBody3D):
+	set_handle_material_normal(handle.get_parent())
+
+func set_handle_material_highlighted(handle:MeshInstance3D)->void:
+	if handle.name.ends_with("_X"):
+		handle.material_override = FLAT_RED_HIGHLIGHTED
+	if handle.name.ends_with("_Y"):
+		handle.material_override = FLAT_GREEN_HIGHLIGHTED
+	if handle.name.ends_with("_Z"):
+		handle.material_override = FLAT_BLUE_HIGHLIGHTED
+		
+func set_handle_material_normal(handle:MeshInstance3D)->void:
+	if handle.name.ends_with("_X"):
+		handle.material_override = FLAT_RED
+	if handle.name.ends_with("_Y"):
+		handle.material_override = FLAT_GREEN
+	if handle.name.ends_with("_Z"):
+		handle.material_override = FLAT_BLUE
+#endregion 

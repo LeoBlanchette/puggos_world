@@ -7,7 +7,7 @@
 [ext_resource type="Material" uid="uid://debs0ghjmhqyw" path="res://materials/ui/flat_green.tres" id="4_yvumg"]
 [ext_resource type="Material" uid="uid://cywywweq6old1" path="res://materials/ui/flat_blue.tres" id="5_tddbq"]
 
-[node name="EditorGizmo" node_paths=PackedStringArray("rotate_x_handle", "rotate_y_handle", "rotate_z_handle", "translate_x_handle", "translate_y_handle", "translate_z_handle", "scale_x_handle", "scale_y_handle", "scale_z_handle", "slide_x_handle", "slide_y_handle", "slide_z_handle") instance=ExtResource("1_dfj68")]
+[node name="EditorGizmo" node_paths=PackedStringArray("rotate_x_handle", "rotate_y_handle", "rotate_z_handle", "translate_x_handle", "translate_y_handle", "translate_z_handle", "scale_x_handle", "scale_y_handle", "scale_z_handle", "slide_x_handle", "slide_y_handle", "slide_z_handle", "rotate_x_handle_static_body", "rotate_y_handle_static_body", "rotate_z_handle_static_body", "translate_x_handle_static_body", "translate_y_handle_static_body", "translate_z_handle_static_body", "scale_x_handle_static_body", "scale_y_handle_static_body", "scale_z_handle_static_body", "slide_x_handle_static_body", "slide_y_handle_static_body", "slide_z_handle_static_body") instance=ExtResource("1_dfj68")]
 script = ExtResource("2_ttxhk")
 rotate_x_handle = NodePath("Gizmo/Rotate_X")
 rotate_y_handle = NodePath("Gizmo/Rotate_Y")
@@ -21,46 +21,110 @@ scale_z_handle = NodePath("Gizmo/Scale_Z")
 slide_x_handle = NodePath("Gizmo/Slide_X")
 slide_y_handle = NodePath("Gizmo/Slide_Y")
 slide_z_handle = NodePath("Gizmo/Slide_Z")
+rotate_x_handle_static_body = NodePath("Gizmo/Rotate_X/StaticBody3D")
+rotate_y_handle_static_body = NodePath("Gizmo/Rotate_Y/StaticBody3D")
+rotate_z_handle_static_body = NodePath("Gizmo/Rotate_Z/StaticBody3D")
+translate_x_handle_static_body = NodePath("Gizmo/Translate_X/StaticBody3D")
+translate_y_handle_static_body = NodePath("Gizmo/Translate_Y/StaticBody3D")
+translate_z_handle_static_body = NodePath("Gizmo/Translate_Z/StaticBody3D")
+scale_x_handle_static_body = NodePath("Gizmo/Scale_X/StaticBody3D")
+scale_y_handle_static_body = NodePath("Gizmo/Scale_Y/StaticBody3D")
+scale_z_handle_static_body = NodePath("Gizmo/Scale_Z/StaticBody3D")
+slide_x_handle_static_body = NodePath("Gizmo/Slide_X/StaticBody3D")
+slide_y_handle_static_body = NodePath("Gizmo/Slide_Y/StaticBody3D")
+slide_z_handle_static_body = NodePath("Gizmo/Slide_Z/StaticBody3D")
 
 [node name="Center" parent="Gizmo" index="0"]
 material_override = ExtResource("3_8fg80")
+
+[node name="StaticBody3D" parent="Gizmo/Center" index="0"]
+collision_layer = 129
+collision_mask = 129
 
 [node name="Rotate_X" parent="Gizmo" index="1"]
 material_override = ExtResource("4_4mbm8")
 surface_material_override/0 = ExtResource("3_8fg80")
 
+[node name="StaticBody3D" parent="Gizmo/Rotate_X" index="0"]
+collision_layer = 128
+collision_mask = 128
+
 [node name="Rotate_Y" parent="Gizmo" index="2"]
 surface_material_override/0 = ExtResource("4_yvumg")
 
+[node name="StaticBody3D" parent="Gizmo/Rotate_Y" index="0"]
+collision_layer = 129
+collision_mask = 129
+
 [node name="Rotate_Z" parent="Gizmo" index="3"]
 surface_material_override/0 = ExtResource("5_tddbq")
+
+[node name="StaticBody3D" parent="Gizmo/Rotate_Z" index="0"]
+collision_layer = 129
+collision_mask = 129
 
 [node name="Scale_X" parent="Gizmo" index="4"]
 material_override = ExtResource("4_4mbm8")
 surface_material_override/0 = ExtResource("3_8fg80")
 
+[node name="StaticBody3D" parent="Gizmo/Scale_X" index="0"]
+collision_layer = 129
+collision_mask = 129
+
 [node name="Scale_Y" parent="Gizmo" index="5"]
 surface_material_override/0 = ExtResource("4_yvumg")
 
+[node name="StaticBody3D" parent="Gizmo/Scale_Y" index="0"]
+collision_layer = 129
+collision_mask = 129
+
 [node name="Scale_Z" parent="Gizmo" index="6"]
 surface_material_override/0 = ExtResource("5_tddbq")
+
+[node name="StaticBody3D" parent="Gizmo/Scale_Z" index="0"]
+collision_layer = 129
+collision_mask = 129
 
 [node name="Slide_X" parent="Gizmo" index="7"]
 material_override = ExtResource("4_4mbm8")
 surface_material_override/0 = ExtResource("3_8fg80")
 
+[node name="StaticBody3D" parent="Gizmo/Slide_X" index="0"]
+collision_layer = 129
+collision_mask = 129
+
 [node name="Slide_Y" parent="Gizmo" index="8"]
 surface_material_override/0 = ExtResource("4_yvumg")
 
+[node name="StaticBody3D" parent="Gizmo/Slide_Y" index="0"]
+collision_layer = 129
+collision_mask = 129
+
 [node name="Slide_Z" parent="Gizmo" index="9"]
 surface_material_override/0 = ExtResource("5_tddbq")
+
+[node name="StaticBody3D" parent="Gizmo/Slide_Z" index="0"]
+collision_layer = 129
+collision_mask = 129
 
 [node name="Translate_X" parent="Gizmo" index="10"]
 material_override = ExtResource("4_4mbm8")
 surface_material_override/0 = ExtResource("3_8fg80")
 
+[node name="StaticBody3D" parent="Gizmo/Translate_X" index="0"]
+collision_layer = 129
+collision_mask = 129
+
 [node name="Translate_Y" parent="Gizmo" index="11"]
 surface_material_override/0 = ExtResource("4_yvumg")
 
+[node name="StaticBody3D" parent="Gizmo/Translate_Y" index="0"]
+collision_layer = 129
+collision_mask = 129
+
 [node name="Translate_Z" parent="Gizmo" index="12"]
 surface_material_override/0 = ExtResource("5_tddbq")
+
+[node name="StaticBody3D" parent="Gizmo/Translate_Z" index="0"]
+collision_layer = 129
+collision_mask = 129
