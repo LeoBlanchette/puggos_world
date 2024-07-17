@@ -53,13 +53,15 @@ var handles:Array[MeshInstance3D] = []
 var handles_static_bodies:Array[StaticBody3D] = []
 #endregion
 
-var gizmo_distance_scale:float = 0.1
+var gizmo_distance_scale:float = 0.2
 
 var targeted_handle:StaticBody3D
 
+var last_targeted_handle:StaticBody3D
+
 static var instance = null
 
-# Called when the node enters the scene tree for the first time.
+#region built-ins 
 func _ready() -> void:
 	if instance == null:
 		instance = self
@@ -67,30 +69,35 @@ func _ready() -> void:
 		queue_free()
 	await UIEditor.instance != null
 	await UIEditor.instance.is_node_ready()	
-	UIEditor.instance.changed_transform_mode.connect(_on_transform_mode_changed)
 	assign_arrays()
 	connect_signals()
 	reset()	
 	enter_translate_mode()
 	
-	
+
 func _exit_tree() -> void:
 	disconnect_signals()
 	if instance == self:
 		instance = null
 
-func set_target(ob:Node3D):
-	global_position = ob.global_position
-	global_rotation = ob.global_rotation
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not GameManager.current_level == GameManager.SCENES.WORLD_EDITOR || not GameManager.current_level == GameManager.SCENES.WORLD_EDITOR:
 		return
 
 	var cam_distance:float = global_position.distance_to(get_viewport().get_camera_3d().global_position)
 	scale = Vector3(cam_distance, cam_distance, cam_distance)*gizmo_distance_scale
+	
+
+func _physics_process(delta: float) -> void:
 	get_handle_target()
+	update_handle_indication()
+	
+#endregion builtins
+
+#region targeting 
+func set_target(ob:Node3D):
+	global_position = ob.global_position
+	global_rotation = ob.global_rotation
 
 ## sends a raycast to layer 8 looking for gizmo handles. Assigns targeted_handle if found.
 func get_handle_target():
@@ -102,16 +109,17 @@ func get_handle_target():
 
 	var origin = cam.project_ray_origin(mousepos)
 	var end = origin + cam.project_ray_normal(mousepos) * RAY_LENGTH
-	var query = PhysicsRayQueryParameters3D.create(origin, end, 0b00000000_00000000_00000000_10000000)
+	var query = PhysicsRayQueryParameters3D.create(origin, end, HelperFunctions.get_layer_mask([8]))
 	query.collide_with_areas = false
 	query.collide_with_bodies = true
 	var target_result = space_state.intersect_ray(query) 
+	
 	if not target_result.is_empty():
 		targeted_handle = target_result["collider"]
 	else:
 		targeted_handle = null
-	print(targeted_handle)
-	
+#endregion 
+
 func assign_arrays()->void:
 	handles= [
 		# rotation
@@ -148,19 +156,20 @@ func assign_arrays()->void:
 		slide_y_handle_static_body,
 		slide_z_handle_static_body,
 	]
-
+	
+#region signals
 func connect_signals()->void:
+	UIEditor.instance.changed_transform_mode.connect(_on_transform_mode_changed)
 	for handle:StaticBody3D in handles_static_bodies:
-		handle.mouse_entered.connect(_handle_mouse_entered.bind(handle))
-	for handle:StaticBody3D in handles_static_bodies:
-		handle.mouse_exited.connect(_handle_mouse_exited.bind(handle))
+		handle.visibility_changed.connect(_on_visibility_changed.bind(handle))
+
 		
 func disconnect_signals()->void:
+	#UIEditor.instance.changed_transform_mode.disconnect(_on_transform_mode_changed)
 	for handle:StaticBody3D in handles_static_bodies:
-		handle.mouse_entered.disconnect(_handle_mouse_entered.bind(handle))
-	for handle:StaticBody3D in handles_static_bodies:
-		handle.mouse_exited.disconnect(_handle_mouse_exited.bind(handle))
-		
+		handle.visibility_changed.disconnect(_on_visibility_changed.bind(handle))
+#endregion
+
 #region mode change
 func _on_transform_mode_changed(old_mode, new_mode):
 	reset()
@@ -199,12 +208,44 @@ func enter_scale_mode():
 	show_sliders()
 #endregion
 
+#region physics management
+func _on_visibility_changed(handle:StaticBody3D)->void:
+	# turn off physics for invisible items. Turn them on again when visible.
+	if handle.is_visible_in_tree():
+		handle.get_child(0).disabled = false
+	else:
+		handle.get_child(0).disabled = true
+#endregion 
+
 #region hover indictators
 func _handle_mouse_entered(handle:StaticBody3D):
 	set_handle_material_highlighted(handle.get_parent())
 
 func _handle_mouse_exited(handle:StaticBody3D):
 	set_handle_material_normal(handle.get_parent())
+
+func update_handle_indication()->void:
+	# CASE: Still hovering. Do nothing, return.
+	if targeted_handle == last_targeted_handle:
+		return
+	# CASE: No target. Will return.
+	if targeted_handle == null:
+		# CASE: There was a previous target. Disable. Return.
+		if last_targeted_handle != null:
+			reset_handles()
+			last_targeted_handle = null
+		return	
+	# CASE: New handle hovered. Highlight.
+	if targeted_handle != null && last_targeted_handle == null:	
+		set_handle_material_highlighted(targeted_handle.get_parent_node_3d())
+		last_targeted_handle = targeted_handle
+		return 
+	# CASE: We've switched handles immediately without space in between.
+	if targeted_handle != last_targeted_handle:
+		reset_handles()
+		set_handle_material_highlighted(targeted_handle.get_parent_node_3d())
+		
+	last_targeted_handle = targeted_handle
 
 func set_handle_material_highlighted(handle:MeshInstance3D)->void:
 	if handle.name.ends_with("_X"):
@@ -221,4 +262,7 @@ func set_handle_material_normal(handle:MeshInstance3D)->void:
 		handle.material_override = FLAT_GREEN
 	if handle.name.ends_with("_Z"):
 		handle.material_override = FLAT_BLUE
+func reset_handles():
+	for handle in handles:
+		set_handle_material_normal(handle)
 #endregion 

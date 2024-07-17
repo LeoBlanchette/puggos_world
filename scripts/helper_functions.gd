@@ -30,4 +30,10 @@ func remove_bb_code(text:String) -> String:
 	var regex = RegEx.new()
 	regex.compile("\\[.*?\\]")
 	return regex.sub(text, "", true)
-	
+
+## Takes an array of layer numbers and returns the mask https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html#codecell0
+func get_layer_mask(layers:Array[int])->int:
+	var mask:int = 0
+	for layer in layers:
+		mask+=pow(2, layer-1)
+	return mask
