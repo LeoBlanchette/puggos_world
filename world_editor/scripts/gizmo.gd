@@ -55,6 +55,8 @@ var handles_static_bodies:Array[StaticBody3D] = []
 
 var gizmo_distance_scale:float = 0.1
 
+var targeted_handle:StaticBody3D
+
 static var instance = null
 
 # Called when the node enters the scene tree for the first time.
@@ -89,7 +91,8 @@ func _process(delta: float) -> void:
 	var cam_distance:float = global_position.distance_to(get_viewport().get_camera_3d().global_position)
 	scale = Vector3(cam_distance, cam_distance, cam_distance)*gizmo_distance_scale
 	get_handle_target()
-	
+
+## sends a raycast to layer 8 looking for gizmo handles. Assigns targeted_handle if found.
 func get_handle_target():
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		return 
@@ -99,10 +102,15 @@ func get_handle_target():
 
 	var origin = cam.project_ray_origin(mousepos)
 	var end = origin + cam.project_ray_normal(mousepos) * RAY_LENGTH
-	var query = PhysicsRayQueryParameters3D.create(origin, end, 8)
-	query.collide_with_areas = true
+	var query = PhysicsRayQueryParameters3D.create(origin, end, 0b00000000_00000000_00000000_10000000)
+	query.collide_with_areas = false
+	query.collide_with_bodies = true
 	var target_result = space_state.intersect_ray(query) 
-	print(target_result)
+	if not target_result.is_empty():
+		targeted_handle = target_result["collider"]
+	else:
+		targeted_handle = null
+	print(targeted_handle)
 	
 func assign_arrays()->void:
 	handles= [
