@@ -15,6 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme = SubResource("Theme_1ukom")
 script = ExtResource("1_7fom1")
 button_main_menu = NodePath("VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonMainMenu")

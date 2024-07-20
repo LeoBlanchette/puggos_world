@@ -8,7 +8,7 @@ var prefab_editor_related_mod_groups: Array[String] = [
 	"items/junk/"
 ]
 
-static var instance = null
+static var instance:PrefabEditor = null
 
 var prefab_name = ""
 
@@ -18,6 +18,7 @@ func _ready():
 		PrefabEditor.instance = self
 	else:
 		PrefabEditor.instance.queue_free()
+		
 	ObjectIndex.object_index.spawned.connect(_on_object_spawned)
 	load_prefab_editor_related_mods()
 	Achievements.achievement.emit("prefab_editor")

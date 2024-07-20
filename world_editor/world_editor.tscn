@@ -1,10 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://wt05je8n5mq"]
+[gd_scene load_steps=8 format=3 uid="uid://wt05je8n5mq"]
 
 [ext_resource type="PackedScene" uid="uid://cvv7vr17nmnje" path="res://nodes/models/helpers/ground_plane.tscn" id="1_noxnp"]
 [ext_resource type="Script" path="res://world_editor/scripts/world_editor.gd" id="1_x41r0"]
 [ext_resource type="Texture2D" uid="uid://bxc23f0347sy3" path="res://images/textures/test-blue.png" id="2_1eip5"]
-[ext_resource type="PackedScene" uid="uid://c4r4owshak6pp" path="res://world_editor/gizmo.tscn" id="2_2gok1"]
-[ext_resource type="Script" path="res://world_editor/scripts/editor_interactor.gd" id="4_gg6m7"]
+[ext_resource type="PackedScene" uid="uid://cbgxlvk1mxddy" path="res://world_editor/editor.tscn" id="2_r1hcm"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_xbe4c"]
 
@@ -13,35 +12,16 @@ albedo_texture = ExtResource("2_1eip5")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bjwf"]
 
-[node name="World" type="Node3D"]
+[node name="WorldEditor" type="Node3D"]
 script = ExtResource("1_x41r0")
 
-[node name="EditorGizmo" parent="." instance=ExtResource("2_2gok1")]
-
-[node name="Rotate_X" parent="EditorGizmo/Gizmo" index="1"]
-surface_material_override/0 = null
-
-[node name="Scale_X" parent="EditorGizmo/Gizmo" index="4"]
-surface_material_override/0 = null
-
-[node name="Slide_X" parent="EditorGizmo/Gizmo" index="7"]
-surface_material_override/0 = null
-
-[node name="Translate_X" parent="EditorGizmo/Gizmo" index="10"]
-surface_material_override/0 = null
+[node name="Editor" parent="." instance=ExtResource("2_r1hcm")]
 
 [node name="GroundPlane" parent="." instance=ExtResource("1_noxnp")]
 collision_layer = 8388609
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
-
-[node name="EditorInteractor" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.902585, 0.430511, 0, -0.430511, 0.902585, 0, 3.505, 3.76)
-script = ExtResource("4_gg6m7")
-
-[node name="Camera3D" type="Camera3D" parent="EditorInteractor"]
-current = true
 
 [node name="Target_3" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.3261)
@@ -76,4 +56,4 @@ surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Target_2"]
 shape = SubResource("BoxShape3D_6bjwf")
 
-[editable path="EditorGizmo"]
+[editable path="Editor"]

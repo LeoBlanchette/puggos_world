@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://d35l3rwi3ovqu"]
+
+[ext_resource type="Script" path="res://world_editor/scripts/editor_interactor.gd" id="1_xs5kn"]
+
+[node name="EditorInteractor" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 0.902585, 0.430511, 0, -0.430511, 0.902585, 0, 3.505, 3.76)
+script = ExtResource("1_xs5kn")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+current = true

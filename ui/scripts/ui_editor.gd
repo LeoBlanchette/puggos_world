@@ -2,46 +2,47 @@ extends Control
 
 class_name UIEditor
 
-static var instance:UIEditor = null
 const SCENE_TYPE:GameManager.SCENES = GameManager.SCENES.WORLD_EDITOR
 
-signal changed_transform_mode(old_mode, new_mode)
-enum TranformMode{
-	TRANSLATE,
-	ROTATE,
-	SCALE,
-}
-var current_transform_mode:TranformMode = TranformMode.TRANSLATE
+@export var modes_panel:Control
+@export var controls_panel:Control
 
+@export var interaction_mode_button_group:ButtonGroup
+@export var transform_button_group:ButtonGroup
 var view_port_mode:bool = false
 
-@export var transform_button_group:ButtonGroup
-
 func _ready():	
-	if instance == null:
-		instance = self
-	else:
-		queue_free()
-	var first:bool = true
-	for button in transform_button_group.get_buttons():
-		button.connect("pressed", _on_transform_button_pressed)
+	connect_signals()
 
-	
 func _exit_tree():
+	disconnect_signals()
+
+func connect_signals():
+	#TRANSFORM BUTTON GROUP
+	for button in transform_button_group.get_buttons():
+		if not button.is_connected("pressed", _on_transform_button_pressed):
+			button.connect("pressed", _on_transform_button_pressed)
+	#INTERACTION MODE BUTTON GROUP
+	for button in interaction_mode_button_group.get_buttons():
+		if not button.is_connected("pressed", _on_interaction_mode_button_pressed):
+			button.connect("pressed", _on_interaction_mode_button_pressed)
+	
+	Editor.instance.changed_interaction_mode.connect(change_interaction_mode)
+
+func disconnect_signals():
+	#TRANSFORM BUTTON GROUP
 	for button in transform_button_group.get_buttons():
 		button.disconnect("pressed", _on_transform_button_pressed)
-	if instance == self:
-		instance = null
+	#INTERACTION MODE BUTTON GROUP
+	for button in interaction_mode_button_group.get_buttons():
+		if button.is_connected("pressed", _on_interaction_mode_button_pressed):
+			button.disconnect("pressed", _on_interaction_mode_button_pressed)
+	if Editor.instance != null && Editor.instance.changed_interaction_mode.is_connected(change_interaction_mode):
+		Editor.instance.changed_interaction_mode.disconnect(change_interaction_mode)
 	
-
 static func get_scene_type():
 	return UIMain.instance.SCENE_TYPE
 
-static func set_active(active:bool):
-	if active:
-		instance.show()
-	else:
-		instance.hide()
 
 func _on_mouse_entered() -> void:
 	view_port_mode = true
@@ -58,19 +59,31 @@ func _on_mouse_exited() -> void:
 func on_object_selected(ob:Node3D):
 	print(ob)
 
-func activate_default_transform_button()->void:
-	var default_button:Button = transform_button_group.get_buttons()[0]
-	default_button.emit_signal("pressed")
-	
+func _on_interaction_mode_button_pressed():
+	if Editor.instance != null:
+		Editor.instance.switch_interaction_mode()
+
 func _on_transform_button_pressed():
-	var pressed_button:Button = transform_button_group.get_pressed_button()
-	var previous_transform_mode = current_transform_mode
-	match pressed_button.name:
-		"ButtonTranslateMode":
-			current_transform_mode = TranformMode.TRANSLATE
-		"ButtonRotateMode":
-			current_transform_mode = TranformMode.ROTATE
-		"ButtonScaleMode":
-			current_transform_mode = TranformMode.SCALE
-			
-	changed_transform_mode.emit(previous_transform_mode, current_transform_mode)
+	if Editor.instance != null:
+		Editor.instance.switch_transform_mode()
+
+func change_interaction_mode(old_mode:Editor.InteractionMode, new_mode:Editor.InteractionMode):
+	match new_mode:
+		Editor.instance.InteractionMode.PLAY:
+			enter_play_mode()
+		Editor.instance.InteractionMode.EDITOR:
+			enter_editor_mode()
+		Editor.instance.InteractionMode.PLAYER:
+			enter_player_mode()
+
+## Enter play mode, as though game were running.
+func enter_play_mode()->void:
+	controls_panel.hide()
+
+## Enter basic editor mode.
+func enter_editor_mode()->void:
+	controls_panel.show()
+	
+## Enter player build mode.
+func enter_player_mode()->void:
+	controls_panel.hide()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://ded6lf4bg1igk"]
+[gd_scene load_steps=9 format=3 uid="uid://ded6lf4bg1igk"]
 
 [ext_resource type="Script" path="res://ui/scripts/ui.gd" id="1_7s61q"]
 [ext_resource type="PackedScene" uid="uid://b7675gqeab4ta" path="res://ui/ui_main.tscn" id="2_kywxm"]
@@ -6,7 +6,6 @@
 [ext_resource type="Script" path="res://ui/scripts/ui_world.gd" id="5_6tb30"]
 [ext_resource type="PackedScene" uid="uid://1066jn4an0tp" path="res://ui/ui_world_editor.tscn" id="6_wovep"]
 [ext_resource type="PackedScene" uid="uid://cinf6b7t7l44r" path="res://ui/ui_prefab_editor.tscn" id="8_1763x"]
-[ext_resource type="Script" path="res://ui/scripts/ui_prefab_editor.gd" id="9_ml7es"]
 [ext_resource type="PackedScene" uid="uid://cqpche65gohci" path="res://ui/ui_building_interface.tscn" id="10_qxd2f"]
 [ext_resource type="PackedScene" uid="uid://cy04nuesstfd0" path="res://ui/esc_menu.tscn" id="11_qkega"]
 
@@ -35,7 +34,6 @@ layout_mode = 1
 [node name="UIPrefabEditor" parent="." instance=ExtResource("8_1763x")]
 visible = false
 layout_mode = 1
-script = ExtResource("9_ml7es")
 
 [node name="UIBuildingInterface" parent="." instance=ExtResource("10_qxd2f")]
 visible = false
@@ -43,3 +41,6 @@ layout_mode = 1
 
 [node name="EscMenu" parent="." instance=ExtResource("11_qkega")]
 layout_mode = 1
+
+[editable path="UIWorldEditor"]
+[editable path="UIPrefabEditor"]

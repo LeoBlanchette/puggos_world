@@ -12,6 +12,7 @@ func _ready():
 	else:
 		queue_free()
 
+
 func _exit_tree():
 	if instance == self:
 		instance = null

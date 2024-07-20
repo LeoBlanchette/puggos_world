@@ -13,7 +13,7 @@ var time_interaction_minimum := 1
 var time_interacted:float = 2
 var is_interacting := false
 
-static var instance = null
+static var instance:InteractionNode = null
 
 # Called when the node enters the scene tree for the first time.
 func _input(event: InputEvent) -> void:

@@ -49,13 +49,9 @@ var selected_object:Node3D = null
 
 var viewport_interaction:bool = false
 
-static var instance = null
+static var instance:EditorInteractor = null
 
 func _ready() -> void:
-	await UIEditor.instance != null
-	await UIEditor.instance.is_node_ready()	
-	await EditorGizmo.instance != null
-	await EditorGizmo.instance.is_node_ready()	
 	if instance == null:
 		instance = self
 	else:
@@ -196,4 +192,10 @@ func _on_entered_viewport(in_viewport:bool):
 		set_process(false)
 
 func _on_object_selected(ob:Node3D)->void:
-	UIEditor.instance.on_object_selected(ob)
+	print(ob)
+
+## does a proper removal of this node
+func remove():
+
+	instance = null
+	queue_free()

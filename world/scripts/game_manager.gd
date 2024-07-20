@@ -3,6 +3,8 @@ extends Node
 
 class_name GameManager
 
+signal pre_level_change(current_level, next_level)
+signal post_level_change(previous, current)
 signal level_changed(old_level, new_level)
 
 # main level node
@@ -57,6 +59,7 @@ func _exit_tree() -> void:
 #region Level Management
 
 static func change_scene(scene: SCENES):
+	instance.pre_level_change.emit(instance.current_level, scene)
 	
 	if scene == SCENES.MENU:
 		GameManager.instance.change_to_menu_scene()
@@ -69,6 +72,8 @@ static func change_scene(scene: SCENES):
 
 	if scene == SCENES.PREFAB_EDITOR:
 		GameManager.instance.change_to_prefab_editor_scene() 
+		
+	instance.post_level_change.emit(instance.current_level, scene)
 
 func change_to_menu_scene():
 	clear_level()

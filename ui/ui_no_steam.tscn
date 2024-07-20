@@ -44,7 +44,7 @@ theme_override_constants/margin_bottom = 20
 [node name="Label" type="Label" parent="Panel/VBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-text = "Steam is not running. Activate Steam before playing Puggo's World."
+text = "Steam is not running or game is not owned. Have a nice day."
 autowrap_mode = 2
 
 [node name="ShutDownButton" type="Button" parent="Panel/VBoxContainer"]

@@ -67,8 +67,6 @@ func _ready() -> void:
 		instance = self
 	else:
 		queue_free()
-	await UIEditor.instance != null
-	await UIEditor.instance.is_node_ready()	
 	assign_arrays()
 	connect_signals()
 	reset()	
@@ -83,7 +81,7 @@ func _exit_tree() -> void:
 func _process(_delta: float) -> void:
 	if not GameManager.current_level == GameManager.SCENES.WORLD_EDITOR || not GameManager.current_level == GameManager.SCENES.WORLD_EDITOR:
 		return
-
+	
 	var cam_distance:float = global_position.distance_to(get_viewport().get_camera_3d().global_position)
 	scale = Vector3(cam_distance, cam_distance, cam_distance)*gizmo_distance_scale
 	
@@ -159,7 +157,7 @@ func assign_arrays()->void:
 	
 #region signals
 func connect_signals()->void:
-	UIEditor.instance.changed_transform_mode.connect(_on_transform_mode_changed)
+	Editor.instance.changed_transform_mode.connect(_on_transform_mode_changed)
 	for handle:StaticBody3D in handles_static_bodies:
 		handle.visibility_changed.connect(_on_visibility_changed.bind(handle))
 
@@ -174,11 +172,11 @@ func disconnect_signals()->void:
 func _on_transform_mode_changed(old_mode, new_mode):
 	reset()
 	match new_mode:
-		UIEditor.instance.TranformMode.TRANSLATE:
+		Editor.instance.TranformMode.TRANSLATE:
 			enter_translate_mode()
-		UIEditor.instance.TranformMode.ROTATE:
+		Editor.instance.TranformMode.ROTATE:
 			enter_rotate_mode()
-		UIEditor.instance.TranformMode.SCALE:
+		Editor.instance.TranformMode.SCALE:
 			enter_scale_mode()
 	
 func reset()->void:
@@ -266,3 +264,6 @@ func reset_handles():
 	for handle in handles:
 		set_handle_material_normal(handle)
 #endregion 
+
+func remove():
+	queue_free()
