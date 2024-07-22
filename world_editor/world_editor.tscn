@@ -24,7 +24,7 @@ collision_layer = 8388609
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
 
 [node name="Target_3" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.3261)
+transform = Transform3D(0.931755, 0.316793, 0.177413, -0.363089, 0.812952, 0.455275, 0, -0.488621, 0.872496, 0.0837513, 0.246494, -3.56329)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Target_3"]
 mesh = SubResource("BoxMesh_xbe4c")
@@ -35,7 +35,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 shape = SubResource("BoxShape3D_6bjwf")
 
 [node name="Target_4" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.36067, 0, -1.13503)
+transform = Transform3D(0.99964, -0.00607647, -0.026143, 0, 0.974035, -0.226396, 0.0268399, 0.226315, 0.973684, 2.36067, 0, -1.13503)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Target_4"]
 mesh = SubResource("BoxMesh_xbe4c")
@@ -46,9 +46,10 @@ surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 shape = SubResource("BoxShape3D_6bjwf")
 
 [node name="Target_2" type="Area3D" parent="."]
-transform = Transform3D(0.996907, 0, 0, 0, 0.996907, 0, 0, 0, 0.996907, 0, 0, 1.28287)
+transform = Transform3D(0.996907, 0, 0, 0, 0.996907, 0, 0, 0, 0.996907, 0.0250781, -0.0164509, 1.28425)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Target_2"]
+transform = Transform3D(1, 0, 0, 0, 0.999934, -0.0114666, 0, 0.0114666, 0.999934, 0, 0, 0)
 mesh = SubResource("BoxMesh_xbe4c")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")

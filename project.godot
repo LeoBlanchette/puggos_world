@@ -162,7 +162,9 @@ open_console={
 
 3d_physics/layer_1="general"
 3d_physics/layer_2="terrain"
-3d_physics/layer_8="gizmos"
+3d_physics/layer_9="gizmo"
+3d_physics/layer_10="gizmo_guides_1"
+3d_physics/layer_11="gizmo_guides_2"
 3d_physics/layer_29="modular_building_space_occupied"
 3d_physics/layer_30="modular_building_layer_1"
 3d_physics/layer_31="modular_building_layer_2"
