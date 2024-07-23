@@ -37,3 +37,5 @@ func get_layer_mask(layers:Array[int])->int:
 	for layer in layers:
 		mask+=pow(2, layer-1)
 	return mask
+
+	

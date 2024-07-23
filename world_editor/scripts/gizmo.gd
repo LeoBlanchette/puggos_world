@@ -4,6 +4,7 @@ class_name EditorGizmo
 
 const RAY_LENGTH:float = 1000
 
+
 enum CurrentTransformType{
 	NONE,
 	#translation
@@ -35,15 +36,6 @@ const FLAT_RED:StandardMaterial3D = preload("res://materials/ui/flat_red.tres")
 const FLAT_RED_HIGHLIGHTED:StandardMaterial3D = preload("res://materials/ui/flat_red_highlighted.tres")
 #endregion materials
 
-#region gizmo guides
-const GUIDE_XY = preload("res://world_editor/helpers/guide_xy.tscn")
-const GUIDE_XZ = preload("res://world_editor/helpers/guide_xz.tscn")
-const GUIDE_YZ = preload("res://world_editor/helpers/guide_yz.tscn")
-var gizmo_guide_xy:Area3D = null
-var gizmo_guide_xz:Area3D = null
-var gizmo_guide_yz:Area3D = null
-var gizmo_guides_active:bool = false
-#endregion 
 
 #region handle parents
 # rotation
@@ -88,15 +80,17 @@ var handles_static_bodies:Array[StaticBody3D] = []
 #region active transforming variables
 var is_attempting_drag:bool = false
 var is_transforming:bool = false
-var move_to_pos_1:Vector3 = Vector3.ZERO
-var move_to_pos_2:Vector3 = Vector3.ZERO
-var move_offset:Vector3 = Vector3.ZERO
-var starting_screen_coordinates = Vector2.ZERO
-var current_screen_coordinates = Vector2.ZERO
 var current_scale:Vector3 = Vector3.ONE
-var starting_rotation:Vector3 = Vector3.ZERO
+var initial_click_position:Vector3 = Vector3.ZERO
+var initial_mouse_click:Vector2 = Vector2.ZERO
 #endregion
 
+#region translate
+var initial_position:Vector3 = Vector3.ZERO
+var initial_basis:Basis = Basis.IDENTITY
+#endregion 
+
+## Keeps the gizmo sized consistently in viewport.
 var gizmo_distance_scale:float = 0.2
 
 var targeted_handle:StaticBody3D
@@ -118,7 +112,6 @@ func _ready() -> void:
 	connect_signals()
 	reset()	
 	enter_translate_mode()
-	
 
 func _exit_tree() -> void:
 	disconnect_signals()
@@ -128,7 +121,6 @@ func _exit_tree() -> void:
 func _process(_delta: float) -> void:
 	if not GameManager.current_level == GameManager.SCENES.WORLD_EDITOR || not GameManager.current_level == GameManager.SCENES.WORLD_EDITOR:
 		return
-	
 	var cam_distance:float = global_position.distance_to(get_viewport().get_camera_3d().global_position)
 	scale = Vector3(cam_distance, cam_distance, cam_distance)*gizmo_distance_scale
 	
@@ -146,6 +138,10 @@ func _input(event: InputEvent) -> void:
 
 #region targeting 
 func set_target(ob:Node3D):
+	if is_self_click(ob):
+		return
+	if is_transforming:
+		return
 	global_position = ob.global_position
 	global_rotation = ob.global_rotation
 	current_scale = ob.scale
@@ -211,6 +207,12 @@ func assign_arrays()->void:
 		slide_z_handle_static_body,
 	]
 	
+func is_self_click(ob:Node3D)->bool:
+	for handle in handles_static_bodies:
+		if handle.get_rid() == ob.get_rid():
+			return true
+	return false
+
 #region signals
 func connect_signals()->void:
 	Editor.instance.changed_transform_mode.connect(_on_transform_mode_changed)
@@ -325,8 +327,7 @@ func reset_handles():
 func remove():
 	queue_free()
 	
-func detect_transform_action(event:InputEvent)->void:
-	
+func detect_transform_action(event:InputEvent)->void:	
 	if event.is_action_released("left_mouse_button"):
 		is_attempting_drag = false
 		trigger_transform_operation(false)
@@ -341,15 +342,15 @@ func trigger_transform_operation(do_transform:bool):
 	is_transforming = do_transform
 	if !do_transform:
 		reset_transform_operation()
+		
 
 func reset_transform_operation()->void:
-		remove_gizmo_guide()
-		move_to_pos_1 = Vector3.ZERO
-		move_to_pos_2 = Vector3.ZERO
-		move_offset = Vector3.ZERO
-		starting_screen_coordinates = Vector2.ZERO
-		current_screen_coordinates = Vector2.ZERO
-		starting_rotation = Vector3.ZERO
+		initial_position = Vector3.ZERO
+		initial_basis = Basis.IDENTITY
+		initial_mouse_click = Vector2.ZERO
+		DrawEditorUI.instance.clear()
+		pass
+
 		
 func attempt_transform():	
 	if not is_transforming:
@@ -390,98 +391,15 @@ func attempt_transform():
 			
 	if current_transform_type == CurrentTransformType.NONE:
 		return
+	if initial_position == Vector3.ZERO:
+		initial_position = global_position
+	if initial_basis == Basis.IDENTITY:
+		initial_basis = basis
+	if initial_mouse_click == Vector2.ZERO:
+		initial_mouse_click = get_viewport().get_mouse_position()
 	do_transform()
 
-func set_gizmo_guide(gizmo_guides:Array)->void:
-	if gizmo_guides_active:
-		return
-	
-	if gizmo_guides.has("XY"):
-		gizmo_guide_xy = GUIDE_XY.instantiate()
-	if gizmo_guides.has("XZ"):
-		gizmo_guide_xz = GUIDE_XZ.instantiate()
-	if gizmo_guides.has("YZ"):
-		gizmo_guide_yz = GUIDE_YZ.instantiate()
-	
-	if gizmo_guide_xy != null:
-		get_parent().add_child(gizmo_guide_xy)
-		gizmo_guide_xy.global_position = global_position
-		
-	if gizmo_guide_xz != null:
-		get_parent().add_child(gizmo_guide_xz)
-		gizmo_guide_xz.global_position = global_position
-		
-	if gizmo_guide_yz != null:
-		get_parent().add_child(gizmo_guide_yz)
-		gizmo_guide_yz.global_position = global_position
-
-	gizmo_guides_active = true
-
-func remove_gizmo_guide()->void:
-	if gizmo_guide_xy != null:
-		gizmo_guide_xy.queue_free()
-		gizmo_guide_xy = null	
-	if gizmo_guide_xz != null:
-		gizmo_guide_xz.queue_free()
-		gizmo_guide_xz = null	
-	if gizmo_guide_yz != null:
-		gizmo_guide_yz.queue_free()
-		gizmo_guide_yz = null	
-	
-	gizmo_guides_active = false
-	
-func do_transform():	
-	
-	match current_transform_type:
-		#TRANSLATE 
-		CurrentTransformType.TRANSLATE_X:
-			set_gizmo_guide(["XY", "XZ"])
-		CurrentTransformType.TRANSLATE_Y:
-			set_gizmo_guide(["XY", "YZ"])
-		CurrentTransformType.TRANSLATE_Z:
-			set_gizmo_guide(["XZ", "YZ"])
-		#ROTATE 
-		CurrentTransformType.ROTATE_X:
-			set_gizmo_guide(["YZ"])
-		CurrentTransformType.ROTATE_Y:
-			set_gizmo_guide(["XZ"])
-		CurrentTransformType.ROTATE_Z:
-			set_gizmo_guide(["XY"])
-		#SCALE 
-		CurrentTransformType.SCALE_X:
-			set_gizmo_guide(["XY"])
-		CurrentTransformType.SCALE_Y:
-			set_gizmo_guide(["YZ"])
-		CurrentTransformType.SCALE_Z:
-			set_gizmo_guide(["XZ"])
-		#SLIDE 
-		CurrentTransformType.SLIDE_X:
-			set_gizmo_guide(["YZ"])
-		CurrentTransformType.SLIDE_Y:
-			set_gizmo_guide(["XZ"])
-		CurrentTransformType.SLIDE_Z:
-			set_gizmo_guide(["XY"])
-	# FIRST HIT TO ACCESS FIRST GIZMO GUIDE
-	var space_state = get_world_3d().direct_space_state
-	var cam:Camera3D = get_viewport().get_camera_3d()
-	var mousepos = get_viewport().get_mouse_position()
-	var origin = cam.project_ray_origin(mousepos)
-	var end = origin + cam.project_ray_normal(mousepos) * RAY_LENGTH
-	var query = PhysicsRayQueryParameters3D.create(origin, end, HelperFunctions.get_layer_mask([10]))
-	query.collide_with_areas = true
-	query.collide_with_bodies = false
-	var info:Dictionary = space_state.intersect_ray(query) 
-		
-	if not info.is_empty():
-		move_to_pos_1 = info["position"]
-	if move_offset == Vector3.ZERO: #this is set once and does not change for duration. Resets to Vector3.Zero after operation.
-		move_offset = global_position
-	if starting_screen_coordinates == Vector2.ZERO:
-		starting_screen_coordinates = get_viewport().get_mouse_position()
-	if starting_rotation == Vector3.ZERO:
-		starting_rotation = global_rotation_degrees
-	current_screen_coordinates = get_viewport().get_mouse_position()
-	
+func do_transform():		
 	match current_transform_type:
 		#TRANSLATE 
 		CurrentTransformType.TRANSLATE_X:
@@ -506,62 +424,57 @@ func do_transform():
 			scale_on_axis("Z")
 		#SLIDE 
 		CurrentTransformType.SLIDE_X:
-			position = move_to_pos_1
+			pass
 		CurrentTransformType.SLIDE_Y:
-			position = move_to_pos_1
+			pass
 		CurrentTransformType.SLIDE_Z:
-			position = move_to_pos_1
+			pass
 			
 
+func draw_stretch_line()->void:
+	DrawEditorUI.instance.stretch_line = [initial_mouse_click, get_viewport().get_mouse_position()]
+	
+
+func get_ray_intersection_point_for_axis(from:Vector3, dir:Vector3)->Vector3:
+	var cam:Camera3D = get_viewport().get_camera_3d()
+	var mouse_position:Vector2 = get_viewport().get_mouse_position()
+	var viewport_size:Vector2 = get_viewport().size
+	
+	var point:Vector3 = cam.project_position(mouse_position, cam.global_position.distance_to(global_position))
+	var plane:Plane = Plane(-dir, point)
+	
+	var intersection_point = plane.intersects_ray(from, dir)
+	if intersection_point == null:
+		return Vector3.ZERO
+	return intersection_point
+
 func translate_on_x_axis()->void:
-	var space_state = get_world_3d().direct_space_state
-	gizmo_guide_xz.collision_layer = HelperFunctions.get_layer_mask([11])
-	var second_query = PhysicsRayQueryParameters3D.create(move_to_pos_1+Vector3(0, 50000, 0), move_to_pos_1+Vector3(0, -100000, 0), HelperFunctions.get_layer_mask([11]))
-	second_query.collide_with_areas = true
-	second_query.collide_with_bodies = false
-	var second_info:Dictionary = space_state.intersect_ray(second_query) 
-	if not second_info.is_empty():
-		move_to_pos_1 = second_info["position"]
-	if move_to_pos_1 != Vector3.ZERO:
-		position = move_to_pos_1 - move_offset
-		
+	var intersection_point:Vector3 = get_ray_intersection_point_for_axis(-basis.x * 100000, basis.x)
+	global_position = intersection_point
+	draw_stretch_line()
+	
 func translate_on_y_axis()->void:
-	var space_state = get_world_3d().direct_space_state
-	gizmo_guide_yz.collision_layer = HelperFunctions.get_layer_mask([11])
-	var second_query = PhysicsRayQueryParameters3D.create(move_to_pos_1+Vector3(50000, 0, 0), move_to_pos_1+Vector3(-100000, 0, 0), HelperFunctions.get_layer_mask([11]))
-	second_query.collide_with_areas = true
-	second_query.collide_with_bodies = false
-	var second_info:Dictionary = space_state.intersect_ray(second_query) 
-	if not second_info.is_empty():
-		move_to_pos_1 = second_info["position"]
-	if move_to_pos_1 != Vector3.ZERO:
-		position = move_to_pos_1
-		
+	var intersection_point:Vector3 = get_ray_intersection_point_for_axis(-basis.y * 100000, basis.y)
+	global_position = intersection_point
+	draw_stretch_line()
+	
 func translate_on_z_axis()->void:
-	var space_state = get_world_3d().direct_space_state
-	gizmo_guide_yz.collision_layer = HelperFunctions.get_layer_mask([11])
-	var second_query = PhysicsRayQueryParameters3D.create(move_to_pos_1+Vector3(50000, 0, 0), move_to_pos_1+Vector3(-100000, 0, 0), HelperFunctions.get_layer_mask([11]))
-	second_query.collide_with_areas = true
-	second_query.collide_with_bodies = false
-	var second_info:Dictionary = space_state.intersect_ray(second_query) 
-	if not second_info.is_empty():
-		move_to_pos_1 = second_info["position"]
-	if move_to_pos_1 != Vector3.ZERO:
-		position = move_to_pos_1
-		
+	var intersection_point:Vector3 = get_ray_intersection_point_for_axis(-basis.z * 100000, basis.z)
+	global_position = intersection_point
+	draw_stretch_line()
+	
 func scale_on_axis(axis:String)->void:
-	var distance:float = move_to_pos_1.distance_to(position)
+	
 	match axis:
 		"X":
-			current_scale = Vector3(distance, current_scale.y, current_scale.z)
+			pass
 		"Y":
-			current_scale = Vector3(current_scale.x, distance, current_scale.z)
+			pass
 		"Z":
-			current_scale = Vector3(current_scale.x, current_scale.y, distance)
+			pass
 	
 	#get_child(0).set_scale(current_scale)
 func rotate_on_axis(axis:String)->void:
-	var distance:float = move_to_pos_1.distance_to(move_offset)
 	
 	match axis:
 		"X":			

@@ -1,4 +1,4 @@
-extends Node
+extends Node3D
 class_name Editor
 
 const GIZMO_TSCN = preload("res://world_editor/gizmo.tscn")
@@ -69,7 +69,7 @@ func initiate():
 			UIWorldEditor.instance.add_child(ui_editor)			
 			current_interaction_mode = InteractionMode.EDITOR
 			enter_editor_mode()
-			add_gizmo()
+			add_editor_gizmo()
 		CurrentEditorMode.PREFAB_EDITOR:
 			ui_editor = UI_EDITOR_TSCN.instantiate()
 			current_interaction_mode = InteractionMode.PLAYER
@@ -131,7 +131,7 @@ func enter_editor_mode()->void:
 	reset_interaction_objects()
 	GameManager.instance.free_mouse()
 	add_interaction_node()
-	add_gizmo()
+	add_editor_gizmo()
 	trigger_interaction_mode_change_signal()
 	
 ## Enter player build mode.
@@ -164,7 +164,7 @@ func remove_interaction_node():
 	if editor_interactor != null:
 		editor_interactor.remove()
 
-func add_gizmo():
+func add_editor_gizmo():
 	gizmo = GIZMO_TSCN.instantiate()
 	add_child(gizmo)
 

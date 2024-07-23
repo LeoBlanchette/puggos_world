@@ -1,6 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://cbgxlvk1mxddy"]
+[gd_scene load_steps=3 format=3 uid="uid://cbgxlvk1mxddy"]
 
 [ext_resource type="Script" path="res://world_editor/scripts/editor.gd" id="1_mcyiu"]
+[ext_resource type="Script" path="res://world_editor/scripts/draw_editor_ui.gd" id="2_v3qys"]
 
-[node name="Editor" type="Node"]
+[node name="Editor" type="Node3D"]
 script = ExtResource("1_mcyiu")
+
+[node name="DrawEditorUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_v3qys")
