@@ -4,6 +4,11 @@ class_name EditorGizmo
 
 const RAY_LENGTH:float = 1000
 
+enum Axis{
+	X,
+	Y,
+	Z,
+}
 
 enum CurrentTransformType{
 	NONE,
@@ -165,6 +170,8 @@ func get_handle_target():
 	
 	if not target_result.is_empty() && target_result["collider"].get_parent() != null:
 		targeted_handle = target_result["collider"]
+		initial_click_position = target_result["position"]
+		
 		last_target_handle_name = targeted_handle.get_parent().name
 	else:
 		targeted_handle = null
@@ -335,7 +342,6 @@ func detect_transform_action(event:InputEvent)->void:
 		is_attempting_drag = true
 	if event.is_action_pressed("left_mouse_button") && targeted_handle != null:
 		trigger_transform_operation(true)
-		
 
 
 func trigger_transform_operation(do_transform:bool):
@@ -345,6 +351,7 @@ func trigger_transform_operation(do_transform:bool):
 		
 
 func reset_transform_operation()->void:
+		initial_click_position = Vector3.ZERO
 		initial_position = Vector3.ZERO
 		initial_basis = Basis.IDENTITY
 		initial_mouse_click = Vector2.ZERO
@@ -431,37 +438,99 @@ func do_transform():
 			pass
 			
 
-func draw_stretch_line()->void:
-	DrawEditorUI.instance.stretch_line = [initial_mouse_click, get_viewport().get_mouse_position()]
-	
-
-func get_ray_intersection_point_for_axis(from:Vector3, dir:Vector3)->Vector3:
+func draw_guide_lines(origin:Vector3, destination:Vector3)->void:	
 	var cam:Camera3D = get_viewport().get_camera_3d()
-	var mouse_position:Vector2 = get_viewport().get_mouse_position()
+	
+	var mouse_position_mark:Vector2 = get_viewport().get_mouse_position() 
+	var destination_position_mark:Vector2 = cam.unproject_position(destination)
+	var origin_mark:Vector2 = cam.unproject_position(origin)
+	
+	DrawEditorUI.instance.guide_lines = [
+		mouse_position_mark,
+		destination_position_mark,
+		origin_mark
+	]
+
+func get_ray_intersection_point_for_axis(axis:Axis, from:Vector3, dir:Vector3)->Vector3:
+	var cam:Camera3D = get_viewport().get_camera_3d()
+	var mouse_position:Vector2 = get_viewport().get_mouse_position() 
 	var viewport_size:Vector2 = get_viewport().size
 	
-	var point:Vector3 = cam.project_position(mouse_position, cam.global_position.distance_to(global_position))
-	var plane:Plane = Plane(-dir, point)
+	# The mouse viewport position and normal in world coordinates
+	var mouse_ray_normal:Vector3 = cam.project_ray_normal(mouse_position)
+	var mouse_world_position:Vector3 = cam.project_position(mouse_position, 0.01)
 	
-	var intersection_point = plane.intersects_ray(from, dir)
-	if intersection_point == null:
-		return Vector3.ZERO
-	return intersection_point
+	# The plane that the mouse will intersect with
+	var plane_depth_guide_positive:Plane
+	var plane_depth_guide_negative:Plane
+	var plane_depth_guide_a:Vector3 # will be basis.x, y, or z
+	var plane_depth_guide_b:Vector3 # ...etc
+	var plane_depth_guide_c:Vector3
 
+	# The secondary plane that will catch the axis intersection
+	var plane_axis_guide_positive:Plane
+	var plane_axis_guide_negative:Plane
+	
+	var depth_point:Vector3 = Vector3.ZERO
+	var axis_point:Vector3 = Vector3.ZERO
+	match axis:
+		Axis.X:
+			plane_depth_guide_a = initial_basis.z
+			plane_depth_guide_b = initial_basis.y
+			plane_depth_guide_c = initial_basis.y
+		Axis.Y:
+			plane_depth_guide_a = initial_basis.x
+			plane_depth_guide_b = initial_basis.z
+			plane_depth_guide_c = initial_basis.z
+		Axis.Z:
+			plane_depth_guide_a = initial_basis.x
+			plane_depth_guide_b = initial_basis.y
+			plane_depth_guide_c = initial_basis.y
+			
+	plane_depth_guide_positive = Plane(plane_depth_guide_a, initial_position)
+	plane_depth_guide_negative = Plane(-plane_depth_guide_a, initial_position)
+
+	plane_axis_guide_positive = Plane(plane_depth_guide_b, initial_position)
+	plane_axis_guide_negative = Plane(-plane_depth_guide_b, initial_position)
+	
+	var depth_point_positive = plane_depth_guide_positive.intersects_ray(mouse_world_position, mouse_ray_normal)
+	var depth_point_negative = plane_depth_guide_negative.intersects_ray(mouse_world_position, mouse_ray_normal)
+
+	if depth_point_positive != null:
+		depth_point = depth_point_positive
+	if depth_point_negative != null:
+		depth_point = depth_point_negative
+	
+	var axis_point_positive = plane_axis_guide_positive.intersects_ray(depth_point, plane_depth_guide_c)
+	var axis_point_negative = plane_axis_guide_negative.intersects_ray(depth_point, -plane_depth_guide_c)
+
+	if axis_point_positive != null:
+		axis_point = axis_point_positive
+	if axis_point_negative != null:
+		axis_point = axis_point_negative
+
+	if axis_point == null:
+		return Vector3.ZERO
+	return axis_point
+
+func translate_to_destination(destination_point:Vector3)->void:
+	var offset:Vector3 = initial_position - initial_click_position
+	global_position = destination_point + offset
+	
 func translate_on_x_axis()->void:
-	var intersection_point:Vector3 = get_ray_intersection_point_for_axis(-basis.x * 100000, basis.x)
-	global_position = intersection_point
-	draw_stretch_line()
+	var destination_point:Vector3 = get_ray_intersection_point_for_axis(Axis.X, -basis.x * 100000, basis.x)
+	translate_to_destination(destination_point)
+	draw_guide_lines(initial_position, destination_point)
 	
 func translate_on_y_axis()->void:
-	var intersection_point:Vector3 = get_ray_intersection_point_for_axis(-basis.y * 100000, basis.y)
-	global_position = intersection_point
-	draw_stretch_line()
+	var destination_point:Vector3 = get_ray_intersection_point_for_axis(Axis.Y, -basis.y * 100000, basis.y)
+	translate_to_destination(destination_point)
+	draw_guide_lines(initial_position, destination_point)
 	
 func translate_on_z_axis()->void:
-	var intersection_point:Vector3 = get_ray_intersection_point_for_axis(-basis.z * 100000, basis.z)
-	global_position = intersection_point
-	draw_stretch_line()
+	var destination_point:Vector3 = get_ray_intersection_point_for_axis(Axis.Z, -basis.z * 100000, basis.z)
+	translate_to_destination(destination_point)
+	draw_guide_lines(initial_position, destination_point)
 	
 func scale_on_axis(axis:String)->void:
 	
