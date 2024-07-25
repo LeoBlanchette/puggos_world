@@ -170,7 +170,6 @@ func get_handle_target():
 	
 	if not target_result.is_empty() && target_result["collider"].get_parent() != null:
 		targeted_handle = target_result["collider"]
-		initial_click_position = target_result["position"]
 		
 		last_target_handle_name = targeted_handle.get_parent().name
 	else:
@@ -438,12 +437,14 @@ func do_transform():
 			pass
 			
 
-func draw_guide_lines(origin:Vector3, destination:Vector3)->void:	
+func draw_guide_lines(axis:Axis, origin:Vector3, destination:Vector3)->void:	
 	var cam:Camera3D = get_viewport().get_camera_3d()
 	
 	var mouse_position_mark:Vector2 = get_viewport().get_mouse_position() 
 	var destination_position_mark:Vector2 = cam.unproject_position(destination)
 	var origin_mark:Vector2 = cam.unproject_position(origin)
+	
+	DrawEditorUI.instance.current_axis = axis
 	
 	DrawEditorUI.instance.guide_lines = [
 		mouse_position_mark,
@@ -459,6 +460,7 @@ func get_ray_intersection_point_for_axis(axis:Axis, from:Vector3, dir:Vector3)->
 	# The mouse viewport position and normal in world coordinates
 	var mouse_ray_normal:Vector3 = cam.project_ray_normal(mouse_position)
 	var mouse_world_position:Vector3 = cam.project_position(mouse_position, 0.01)
+	
 	
 	# The plane that the mouse will intersect with
 	var plane_depth_guide_positive:Plane
@@ -508,29 +510,31 @@ func get_ray_intersection_point_for_axis(axis:Axis, from:Vector3, dir:Vector3)->
 		axis_point = axis_point_positive
 	if axis_point_negative != null:
 		axis_point = axis_point_negative
-
+	
 	if axis_point == null:
 		return Vector3.ZERO
 	return axis_point
 
 func translate_to_destination(destination_point:Vector3)->void:
+	if initial_click_position == Vector3.ZERO:
+		initial_click_position = destination_point
 	var offset:Vector3 = initial_position - initial_click_position
 	global_position = destination_point + offset
 	
 func translate_on_x_axis()->void:
 	var destination_point:Vector3 = get_ray_intersection_point_for_axis(Axis.X, -basis.x * 100000, basis.x)
 	translate_to_destination(destination_point)
-	draw_guide_lines(initial_position, destination_point)
+	draw_guide_lines(Axis.X, initial_position, destination_point)
 	
 func translate_on_y_axis()->void:
 	var destination_point:Vector3 = get_ray_intersection_point_for_axis(Axis.Y, -basis.y * 100000, basis.y)
 	translate_to_destination(destination_point)
-	draw_guide_lines(initial_position, destination_point)
+	draw_guide_lines(Axis.Y, initial_position, destination_point)
 	
 func translate_on_z_axis()->void:
 	var destination_point:Vector3 = get_ray_intersection_point_for_axis(Axis.Z, -basis.z * 100000, basis.z)
 	translate_to_destination(destination_point)
-	draw_guide_lines(initial_position, destination_point)
+	draw_guide_lines(Axis.Z, initial_position, destination_point)
 	
 func scale_on_axis(axis:String)->void:
 	

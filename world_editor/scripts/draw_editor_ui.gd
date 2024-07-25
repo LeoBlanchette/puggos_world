@@ -2,6 +2,8 @@ extends Control
 
 class_name DrawEditorUI
 
+var current_axis:EditorGizmo.Axis = EditorGizmo.Axis.X
+
 var guide_lines:Array[Vector2] = []:
 	set(value):
 		guide_lines = value
@@ -48,9 +50,25 @@ func do_arbitrary_line():
 func do_guide_lines():
 	if guide_lines.is_empty():
 		return
-	draw_line(guide_lines[0], guide_lines[1], Color.LIGHT_GREEN, 1.0)
-	draw_line(guide_lines[1], guide_lines[2], Color.SKY_BLUE, 1.0)
-	draw_line(guide_lines[2], guide_lines[0], Color.SKY_BLUE, 1.0)
+	
+	var color:Color
+	
+	match current_axis:
+		EditorGizmo.Axis.X:
+			color = Color.RED
+		EditorGizmo.Axis.Y:
+			color = Color.LIME_GREEN
+		EditorGizmo.Axis.Z:
+			color = Color.DODGER_BLUE
+
+	draw_line(guide_lines[0], guide_lines[1], Color.WHITE, 1.0) 
+	draw_line(guide_lines[1], guide_lines[2], color, 1.0) #in line with axis
+	draw_line(guide_lines[2], guide_lines[0], Color.GRAY, 1.0)
+	
+	draw_circle(guide_lines[0], 2, Color.WHITE)
+	draw_circle(guide_lines[1], 2, Color.WHITE)
+	draw_circle(guide_lines[2], 2, Color.WHITE)
+
 	
 func do_point_marker():
 	for point in point_marker:
