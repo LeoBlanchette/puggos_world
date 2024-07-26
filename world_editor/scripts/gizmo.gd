@@ -437,7 +437,7 @@ func do_transform():
 			pass
 			
 
-func draw_guide_lines(axis:Axis, origin:Vector3, destination:Vector3)->void:	
+func draw_guide_lines_translation(axis:Axis, origin:Vector3, destination:Vector3)->void:	
 	var cam:Camera3D = get_viewport().get_camera_3d()
 	
 	var mouse_position_mark:Vector2 = get_viewport().get_mouse_position() 
@@ -452,10 +452,25 @@ func draw_guide_lines(axis:Axis, origin:Vector3, destination:Vector3)->void:
 		origin_mark
 	]
 
-func get_ray_intersection_point_for_axis(axis:Axis, from:Vector3, dir:Vector3)->Vector3:
+func draw_guide_lines_rotation(axis:Axis, rotation_start:Vector3, rotation_end:Vector3)->void:
+	var cam:Camera3D = get_viewport().get_camera_3d()
+	
+	var rotation_start_mark:Vector2 = cam.unproject_position(rotation_start)
+	var rotation_end_mark:Vector2 = cam.unproject_position(rotation_end)
+	var origin_mark:Vector2 = cam.unproject_position(initial_position)
+	
+	DrawEditorUI.instance.current_axis = axis
+	DrawEditorUI.instance.guide_lines_rotation = [
+		rotation_start_mark,
+		rotation_end_mark,
+		origin_mark
+	]
+	
+	
+
+func get_translation_point(axis:Axis)->Vector3:
 	var cam:Camera3D = get_viewport().get_camera_3d()
 	var mouse_position:Vector2 = get_viewport().get_mouse_position() 
-	var viewport_size:Vector2 = get_viewport().size
 	
 	# The mouse viewport position and normal in world coordinates
 	var mouse_ray_normal:Vector3 = cam.project_ray_normal(mouse_position)
@@ -522,19 +537,19 @@ func translate_to_destination(destination_point:Vector3)->void:
 	global_position = destination_point + offset
 	
 func translate_on_x_axis()->void:
-	var destination_point:Vector3 = get_ray_intersection_point_for_axis(Axis.X, -basis.x * 100000, basis.x)
+	var destination_point:Vector3 = get_translation_point(Axis.X)
 	translate_to_destination(destination_point)
-	draw_guide_lines(Axis.X, initial_position, destination_point)
+	draw_guide_lines_translation(Axis.X, initial_position, destination_point)
 	
 func translate_on_y_axis()->void:
-	var destination_point:Vector3 = get_ray_intersection_point_for_axis(Axis.Y, -basis.y * 100000, basis.y)
+	var destination_point:Vector3 = get_translation_point(Axis.Y)
 	translate_to_destination(destination_point)
-	draw_guide_lines(Axis.Y, initial_position, destination_point)
+	draw_guide_lines_translation(Axis.Y, initial_position, destination_point)
 	
 func translate_on_z_axis()->void:
-	var destination_point:Vector3 = get_ray_intersection_point_for_axis(Axis.Z, -basis.z * 100000, basis.z)
+	var destination_point:Vector3 = get_translation_point(Axis.Z)
 	translate_to_destination(destination_point)
-	draw_guide_lines(Axis.Z, initial_position, destination_point)
+	draw_guide_lines_translation(Axis.Z, initial_position, destination_point)
 	
 func scale_on_axis(axis:String)->void:
 	
@@ -545,17 +560,68 @@ func scale_on_axis(axis:String)->void:
 			pass
 		"Z":
 			pass
+
+func get_rotation_target_point(axis:Axis)->Vector3:
+	var cam:Camera3D = get_viewport().get_camera_3d()
+	var mouse_position:Vector2 = get_viewport().get_mouse_position() 
 	
-	#get_child(0).set_scale(current_scale)
+	# The mouse viewport position and normal in world coordinates
+	var mouse_ray_normal:Vector3 = cam.project_ray_normal(mouse_position)
+	var mouse_world_position:Vector3 = cam.project_position(mouse_position, 0.01)
+	
+	var plane_depth_guide_positive:Plane
+	var plane_depth_guide_negative:Plane
+	var plane_depth_guide_normal:Vector3 = Vector3.ZERO
+	
+	match axis:
+		Axis.X:
+			plane_depth_guide_normal = basis.x
+		Axis.Y:
+			plane_depth_guide_normal = basis.y
+		Axis.Z:
+			plane_depth_guide_normal = basis.z
+	plane_depth_guide_positive = Plane(plane_depth_guide_normal, initial_position)
+	plane_depth_guide_negative = Plane(-plane_depth_guide_normal, initial_position)
+	
+	var axis_point_positive = plane_depth_guide_positive.intersects_ray(mouse_world_position, mouse_ray_normal)
+	var axis_point_negative = plane_depth_guide_negative.intersects_ray(mouse_world_position, mouse_ray_normal)
+	var axis_point:Vector3 
+	if axis_point_positive != null:
+		axis_point = axis_point_positive
+	if axis_point_positive != null:
+		axis_point = axis_point_negative
+
+	if initial_click_position == Vector3.ZERO:
+		initial_click_position = axis_point
+
+	return axis_point
+
+func get_final_rotation_degrees(axis:Axis, target_point:Vector3)->float:
+	var target_axis:Vector3
+	match axis:
+		Axis.X:
+			target_axis = basis.x
+		Axis.Y:
+			target_axis = basis.y
+		Axis.Z:
+			target_axis = basis.z
+	var angle:float = global_position.signed_angle_to(target_point, target_axis)
+	print(rad_to_deg(angle))
+	return 0.0
+
 func rotate_on_axis(axis:String)->void:
 	
 	match axis:
 		"X":			
-			pass
+			var target_point:Vector3 = get_rotation_target_point(Axis.X)
+			get_final_rotation_degrees(Axis.X, target_point)
+			draw_guide_lines_rotation(Axis.X, initial_click_position, target_point)
 		"Y":
-			pass
+			var target_point:Vector3 = get_rotation_target_point(Axis.X)
+			draw_guide_lines_rotation(Axis.Y, initial_click_position, target_point)
 		"Z":
-			pass
+			var target_point:Vector3 = get_rotation_target_point(Axis.X)
+			draw_guide_lines_rotation(Axis.Z, initial_click_position, target_point)
 			
 			
 
