@@ -17,6 +17,21 @@ script = ExtResource("1_x41r0")
 
 [node name="Editor" parent="." instance=ExtResource("2_r1hcm")]
 
+[node name="DrawEditorUI" parent="Editor" index="0" node_paths=PackedStringArray("rotation_tracker_1", "rotation_tracker_2")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation_tracker_1 = NodePath("RotationTracker_1")
+rotation_tracker_2 = NodePath("RotationTracker_2")
+
+[node name="RotationTracker_1" type="Marker2D" parent="Editor/DrawEditorUI" index="0"]
+
+[node name="RotationTracker_2" type="Marker2D" parent="Editor/DrawEditorUI" index="1"]
+
 [node name="GroundPlane" parent="." instance=ExtResource("1_noxnp")]
 collision_layer = 8388609
 
@@ -55,6 +70,7 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Target_2"]
+transform = Transform3D(0.999998, 0, 0, 0, 0.999998, 0, 0, 0, 0.999998, 0, 0, 0)
 shape = SubResource("BoxShape3D_6bjwf")
 
 [editable path="Editor"]

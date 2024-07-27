@@ -4,6 +4,9 @@ class_name DrawEditorUI
 
 var current_axis:EditorGizmo.Axis = EditorGizmo.Axis.X
 
+@export var rotation_tracker_1:Marker2D
+@export var rotation_tracker_2:Marker2D
+
 var guide_lines:Array[Vector2] = []:
 	set(value):
 		guide_lines = value
@@ -37,6 +40,7 @@ func _exit_tree() -> void:
 func clear():
 	guide_lines = []
 	guide_lines_rotation = []
+	reset_rotation_trackers()
 
 func _draw() -> void:
 	if not guide_lines.is_empty():
@@ -96,7 +100,20 @@ func do_guide_lines_rotation():
 	draw_circle(rotation_end_mark, 2, Color.WHITE)
 	draw_circle(origin_mark, 2, Color.WHITE)
 
-
 func do_point_marker():
 	for point in point_marker:
 		draw_circle(point, 3, Color.RED)
+
+func get_rotation_tracker_1_degrees(origin:Vector2, point_to:Vector2)->float:
+	rotation_tracker_1.position = origin
+	rotation_tracker_1.look_at(point_to)
+	return rotation_tracker_1.rotation_degrees
+	
+func get_rotation_tracker_2_degrees(origin:Vector2, point_to:Vector2)->float:
+	rotation_tracker_2.position = origin
+	rotation_tracker_2.look_at(point_to)
+	return rotation_tracker_2.rotation_degrees
+
+func reset_rotation_trackers():
+	rotation_tracker_1.rotation_degrees = 0
+	rotation_tracker_2.rotation_degrees = 0

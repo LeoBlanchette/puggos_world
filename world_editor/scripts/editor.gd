@@ -39,6 +39,11 @@ enum TranformMode{
 
 var current_transform_mode:TranformMode = TranformMode.TRANSLATE
 
+signal object_translated(previous_position, current_position)
+signal object_rotated(previous_rotation, current_rotation)
+signal object_scaled(previous_scale, current_scale)
+var edited_object:Node3D = null
+
 static var instance:Editor = null
 
 func _ready() -> void:
@@ -77,6 +82,10 @@ func initiate():
 			enter_player_mode()
 
 	# SIGNALS
+	EditorInteractor.instance.object_selected.connect(_on_object_selected)
+	object_translated.connect(_on_object_translated)
+	object_rotated.connect(_on_object_rotated)
+	object_scaled.connect(_on_object_scaled)
 	GameManager.instance.pre_level_change.connect(_on_changing_levels)
 	
 
@@ -172,3 +181,55 @@ func remove_gizmo():
 	if EditorGizmo.instance != null:
 		EditorGizmo.instance.remove()
 	gizmo = null
+
+#region object editing
+func _on_object_selected(ob:Node3D)->void:
+	if is_gizmo(ob):
+		return
+	if is_ground_plane(ob):
+		return
+	if is_gizmo_transforming(): #this prevents selection of overlapping objects when moving gizmo
+		return
+	edited_object = ob
+	print(edited_object)
+
+func is_ground_plane(ob:Node3D)->bool:
+	if ob == null:
+		return false
+	if ob.name == "GroundPlane":
+		return true
+	return false
+
+func is_gizmo_transforming()->bool:
+	if EditorGizmo.instance == null:
+		return false
+	if EditorGizmo.instance.is_transforming:
+		return true
+	return false
+
+func is_gizmo(ob:Node3D)->bool:
+	if ob == null:
+		return false
+	if EditorGizmo.instance == null:
+		return false
+	if EditorGizmo.instance.is_self_click(ob):
+		return true
+	return false
+	
+func _on_object_translated(old_position:Vector3, new_position:Vector3)->void:
+	if edited_object == null:
+		return
+	# NOTE: An UNDO can be placed here using old position. 
+	edited_object.global_position = new_position
+func _on_object_rotated(old_rotation:Vector3, new_rotation:Vector3,)->void:
+	if edited_object == null:
+		return	
+	# NOTE: An UNDO can be placed here using old rotation. 
+	edited_object.global_rotation_degrees = new_rotation
+	
+func _on_object_scaled(old_scale:Vector3, new_scale:Vector3,)->void:
+	if edited_object == null:
+		return	
+	# NOTE: An UNDO can be placed here using old rotation. 
+	pass	
+#endregion

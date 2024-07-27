@@ -179,7 +179,7 @@ func select_target():
 		return
 	selected_object = target_result["collider"]
 	object_selected.emit(selected_object)
-	EditorGizmo.instance.set_target(selected_object)
+
 	
 func _on_entered_viewport(in_viewport:bool):
 	if in_viewport:
@@ -192,7 +192,7 @@ func _on_entered_viewport(in_viewport:bool):
 		set_process(false)
 
 func _on_object_selected(ob:Node3D)->void:
-	print(ob)
+	pass
 
 ## does a proper removal of this node
 func remove():

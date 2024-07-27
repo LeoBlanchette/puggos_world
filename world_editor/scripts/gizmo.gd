@@ -95,6 +95,13 @@ var initial_position:Vector3 = Vector3.ZERO
 var initial_basis:Basis = Basis.IDENTITY
 #endregion 
 
+#region rotate
+var is_rotating:bool = false
+var initial_rotation:Vector3 = Vector3.ZERO
+var initial_transform:Transform3D = Transform3D.IDENTITY
+var is_positive_normal:bool = true
+#endregion
+
 ## Keeps the gizmo sized consistently in viewport.
 var gizmo_distance_scale:float = 0.2
 
@@ -105,7 +112,7 @@ var last_targeted_handle:StaticBody3D
 
 var target_object:Node3D = null
 
-static var instance = null
+static var instance:EditorGizmo = null
 
 #region built-ins 
 func _ready() -> void:
@@ -142,6 +149,9 @@ func _input(event: InputEvent) -> void:
 #endregion builtins
 
 #region targeting 
+func _on_object_selected(ob:Node3D)->void:
+	set_target(ob)
+	
 func set_target(ob:Node3D):
 	if is_self_click(ob):
 		return
@@ -222,6 +232,7 @@ func is_self_click(ob:Node3D)->bool:
 #region signals
 func connect_signals()->void:
 	Editor.instance.changed_transform_mode.connect(_on_transform_mode_changed)
+	EditorInteractor.instance.object_selected.connect(_on_object_selected)
 	for handle:StaticBody3D in handles_static_bodies:
 		handle.visibility_changed.connect(_on_visibility_changed.bind(handle))
 
@@ -352,10 +363,14 @@ func trigger_transform_operation(do_transform:bool):
 func reset_transform_operation()->void:
 		initial_click_position = Vector3.ZERO
 		initial_position = Vector3.ZERO
+		initial_rotation = Vector3.ZERO
 		initial_basis = Basis.IDENTITY
 		initial_mouse_click = Vector2.ZERO
 		DrawEditorUI.instance.clear()
-		pass
+		is_rotating = false
+		initial_transform = Transform3D.IDENTITY
+
+		
 
 		
 func attempt_transform():	
@@ -535,6 +550,7 @@ func translate_to_destination(destination_point:Vector3)->void:
 		initial_click_position = destination_point
 	var offset:Vector3 = initial_position - initial_click_position
 	global_position = destination_point + offset
+	Editor.instance.object_translated.emit(initial_position, global_position)
 	
 func translate_on_x_axis()->void:
 	var destination_point:Vector3 = get_translation_point(Axis.X)
@@ -596,34 +612,84 @@ func get_rotation_target_point(axis:Axis)->Vector3:
 
 	return axis_point
 
-func get_final_rotation_degrees(axis:Axis, target_point:Vector3)->float:
+func rotate_to_target_point(axis:Axis, rotation_start:Vector3, rotation_end:Vector3)->void:
+	if !is_rotating:
+		is_rotating = true
+		initial_rotation = rotation_degrees
+		initial_transform = global_transform
+	
+	var cam:Camera3D = get_viewport().get_camera_3d()
+	
+	var rotation_start_mark:Vector2 = cam.unproject_position(rotation_start)
+	var rotation_end_mark:Vector2 = cam.unproject_position(rotation_end)
+	var origin_mark:Vector2 = cam.unproject_position(initial_position)	
 	var target_axis:Vector3
+
+	var starting_rotation_degrees:float = DrawEditorUI.instance.get_rotation_tracker_1_degrees(origin_mark, rotation_start_mark)
+	var current_rotation_degrees:float = DrawEditorUI.instance.get_rotation_tracker_2_degrees(origin_mark, rotation_end_mark)
+	
+	var total_rotation_degrees:float = current_rotation_degrees-starting_rotation_degrees
+	var t:Transform3D
+
 	match axis:
 		Axis.X:
-			target_axis = basis.x
+			var rotation_x:float = initial_transform.basis.get_rotation_quaternion().x + total_rotation_degrees
+			if is_axis_facing_camera(Axis.X):
+				rotation_x = -rotation_x
+			t = initial_transform.rotated(initial_transform.basis.x.normalized(), deg_to_rad(rotation_x))
 		Axis.Y:
-			target_axis = basis.y
+			var rotation_y:float = initial_transform.basis.get_rotation_quaternion().y + total_rotation_degrees
+			if is_axis_facing_camera(Axis.Y):
+				rotation_y = -rotation_y
+			t = initial_transform.rotated(initial_transform.basis.y.normalized(), deg_to_rad(rotation_y))
 		Axis.Z:
-			target_axis = basis.z
-	var angle:float = global_position.signed_angle_to(target_point, target_axis)
-	print(rad_to_deg(angle))
-	return 0.0
+			var rotation_z:float = initial_transform.basis.get_rotation_quaternion().z + total_rotation_degrees
+			if is_axis_facing_camera(Axis.Z):
+				rotation_z = -rotation_z
+			t = initial_transform.rotated(initial_transform.basis.z.normalized(), deg_to_rad(rotation_z))
+	global_basis = t.basis
+	Editor.instance.object_rotated.emit(initial_rotation, rotation_degrees)
 
 func rotate_on_axis(axis:String)->void:
 	
 	match axis:
 		"X":			
 			var target_point:Vector3 = get_rotation_target_point(Axis.X)
-			get_final_rotation_degrees(Axis.X, target_point)
+			rotate_to_target_point(Axis.X, initial_click_position, target_point)
 			draw_guide_lines_rotation(Axis.X, initial_click_position, target_point)
 		"Y":
 			var target_point:Vector3 = get_rotation_target_point(Axis.X)
+			rotate_to_target_point(Axis.Y, initial_click_position, target_point)
 			draw_guide_lines_rotation(Axis.Y, initial_click_position, target_point)
 		"Z":
 			var target_point:Vector3 = get_rotation_target_point(Axis.X)
+			rotate_to_target_point(Axis.Z, initial_click_position, target_point)
 			draw_guide_lines_rotation(Axis.Z, initial_click_position, target_point)
 			
 			
+
+func is_axis_facing_camera(axis:Axis)->bool:
+	var cam:Camera3D = get_viewport().get_camera_3d()
+	var mouse_position:Vector2 = get_viewport().get_mouse_position() 
+	var mouse_world_position:Vector3 = cam.project_position(mouse_position, 0.01)
+	
+	var normal_extended_position:Vector3
+	match axis:
+		Axis.X:
+			normal_extended_position = global_position + global_basis.x*0.1
+			#DrawEditorUI.instance.arbitrary_line = [cam.unproject_position(global_position), cam.unproject_position(normal_extended_position)]
+		Axis.Y:
+			normal_extended_position = global_position + global_basis.y*0.1
+		Axis.Z:
+			normal_extended_position = global_position + global_basis.z*0.1
+	
+	var extended_distance:float = mouse_world_position.distance_to(normal_extended_position)
+	var object_distance:float = mouse_world_position.distance_to(global_position)
+	
+	if(extended_distance < object_distance):
+		return true
+	
+	return false
 
 
 #endregion 
