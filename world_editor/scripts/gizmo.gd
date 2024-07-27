@@ -580,37 +580,11 @@ func scale_on_axis(axis:String)->void:
 func get_rotation_target_point(axis:Axis)->Vector3:
 	var cam:Camera3D = get_viewport().get_camera_3d()
 	var mouse_position:Vector2 = get_viewport().get_mouse_position() 
-	
-	# The mouse viewport position and normal in world coordinates
-	var mouse_ray_normal:Vector3 = cam.project_ray_normal(mouse_position)
-	var mouse_world_position:Vector3 = cam.project_position(mouse_position, 0.01)
-	
-	var plane_depth_guide_positive:Plane
-	var plane_depth_guide_negative:Plane
-	var plane_depth_guide_normal:Vector3 = Vector3.ZERO
-	
-	match axis:
-		Axis.X:
-			plane_depth_guide_normal = basis.x
-		Axis.Y:
-			plane_depth_guide_normal = basis.y
-		Axis.Z:
-			plane_depth_guide_normal = basis.z
-	plane_depth_guide_positive = Plane(plane_depth_guide_normal, initial_position)
-	plane_depth_guide_negative = Plane(-plane_depth_guide_normal, initial_position)
-	
-	var axis_point_positive = plane_depth_guide_positive.intersects_ray(mouse_world_position, mouse_ray_normal)
-	var axis_point_negative = plane_depth_guide_negative.intersects_ray(mouse_world_position, mouse_ray_normal)
-	var axis_point:Vector3 
-	if axis_point_positive != null:
-		axis_point = axis_point_positive
-	if axis_point_positive != null:
-		axis_point = axis_point_negative
-
+	var projected_position:Vector3 = cam.project_position(mouse_position, cam.global_position.distance_to(global_position))
 	if initial_click_position == Vector3.ZERO:
-		initial_click_position = axis_point
+		initial_click_position = projected_position
 
-	return axis_point
+	return projected_position
 
 func rotate_to_target_point(axis:Axis, rotation_start:Vector3, rotation_end:Vector3)->void:
 	if !is_rotating:
@@ -623,30 +597,28 @@ func rotate_to_target_point(axis:Axis, rotation_start:Vector3, rotation_end:Vect
 	var rotation_start_mark:Vector2 = cam.unproject_position(rotation_start)
 	var rotation_end_mark:Vector2 = cam.unproject_position(rotation_end)
 	var origin_mark:Vector2 = cam.unproject_position(initial_position)	
-	var target_axis:Vector3
-
 	var starting_rotation_degrees:float = DrawEditorUI.instance.get_rotation_tracker_1_degrees(origin_mark, rotation_start_mark)
 	var current_rotation_degrees:float = DrawEditorUI.instance.get_rotation_tracker_2_degrees(origin_mark, rotation_end_mark)
 	
 	var total_rotation_degrees:float = current_rotation_degrees-starting_rotation_degrees
-	var t:Transform3D
+	var t:Transform3D = initial_transform
 
 	match axis:
 		Axis.X:
 			var rotation_x:float = initial_transform.basis.get_rotation_quaternion().x + total_rotation_degrees
 			if is_axis_facing_camera(Axis.X):
 				rotation_x = -rotation_x
-			t = initial_transform.rotated(initial_transform.basis.x.normalized(), deg_to_rad(rotation_x))
+			t.basis = t.basis.rotated(initial_transform.basis.x.normalized(), deg_to_rad(rotation_x))
 		Axis.Y:
 			var rotation_y:float = initial_transform.basis.get_rotation_quaternion().y + total_rotation_degrees
 			if is_axis_facing_camera(Axis.Y):
 				rotation_y = -rotation_y
-			t = initial_transform.rotated(initial_transform.basis.y.normalized(), deg_to_rad(rotation_y))
+			t.basis = t.basis.rotated(initial_transform.basis.y.normalized(), deg_to_rad(rotation_y))
 		Axis.Z:
 			var rotation_z:float = initial_transform.basis.get_rotation_quaternion().z + total_rotation_degrees
 			if is_axis_facing_camera(Axis.Z):
 				rotation_z = -rotation_z
-			t = initial_transform.rotated(initial_transform.basis.z.normalized(), deg_to_rad(rotation_z))
+			t.basis = t.basis.rotated(initial_transform.basis.z.normalized(), deg_to_rad(rotation_z))
 	global_basis = t.basis
 	Editor.instance.object_rotated.emit(initial_rotation, rotation_degrees)
 
