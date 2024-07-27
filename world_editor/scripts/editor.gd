@@ -233,3 +233,8 @@ func _on_object_scaled(old_scale:Vector3, new_scale:Vector3,)->void:
 	# NOTE: An UNDO can be placed here using old rotation. 
 	pass	
 #endregion
+
+#region ui text updates
+func set_action_text(text:String)->void:
+	ui_editor.action_update = text
+#endregion

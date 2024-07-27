@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dgs6wc466d1op"]
+[gd_scene load_steps=13 format=3 uid="uid://dgs6wc466d1op"]
 
 [ext_resource type="Theme" uid="uid://b8qsxvqsy2clq" path="res://ui/themes/editor_theme.tres" id="1_7qwvv"]
 [ext_resource type="Script" path="res://ui/scripts/ui_editor.gd" id="1_iaqgy"]
@@ -14,7 +14,13 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onsc0"]
 bg_color = Color(0.122252, 0.122252, 0.122252, 1)
 
-[node name="UIEDitor" type="Control" node_paths=PackedStringArray("modes_panel", "controls_panel")]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0ky6s"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+
+[node name="UIEDitor" type="Control" node_paths=PackedStringArray("modes_panel", "controls_panel", "action_updates_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,6 +33,7 @@ modes_panel = NodePath("ModePanel")
 controls_panel = NodePath("ControlsPanel")
 interaction_mode_button_group = ExtResource("3_hsql1")
 transform_button_group = ExtResource("2_iqhtm")
+action_updates_label = NodePath("ViewportOverlay/LabelActionUpdates")
 
 [node name="ModePanel" type="Panel" parent="."]
 custom_minimum_size = Vector2(0, 60)
@@ -180,6 +187,34 @@ anchor_bottom = 1.0
 offset_top = -120.0
 grow_horizontal = 2
 grow_vertical = 0
+
+[node name="ViewportOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 250.0
+offset_top = 120.0
+offset_right = -250.0
+offset_bottom = -120.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LabelActionUpdates" type="Label" parent="ViewportOverlay"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxEmpty_0ky6s")
+text = "..."
+vertical_alignment = 2
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

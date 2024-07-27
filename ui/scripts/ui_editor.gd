@@ -11,6 +11,13 @@ const SCENE_TYPE:GameManager.SCENES = GameManager.SCENES.WORLD_EDITOR
 @export var transform_button_group:ButtonGroup
 var view_port_mode:bool = false
 
+@export var action_updates_label:Label
+var action_update:String:
+	get:
+		return action_updates_label.text
+	set(value):
+		action_updates_label.text = value
+
 func _ready():	
 	connect_signals()
 

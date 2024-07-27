@@ -369,7 +369,7 @@ func reset_transform_operation()->void:
 		DrawEditorUI.instance.clear()
 		is_rotating = false
 		initial_transform = Transform3D.IDENTITY
-
+		Editor.instance.set_action_text("")
 		
 
 		
@@ -602,24 +602,28 @@ func rotate_to_target_point(axis:Axis, rotation_start:Vector3, rotation_end:Vect
 	
 	var total_rotation_degrees:float = current_rotation_degrees-starting_rotation_degrees
 	var t:Transform3D = initial_transform
-
+	var rotating_action_amount:String
 	match axis:
 		Axis.X:
 			var rotation_x:float = initial_transform.basis.get_rotation_quaternion().x + total_rotation_degrees
 			if is_axis_facing_camera(Axis.X):
 				rotation_x = -rotation_x
 			t.basis = t.basis.rotated(initial_transform.basis.x.normalized(), deg_to_rad(rotation_x))
+			rotating_action_amount = "Rotating, X axis local: %3.3f degrees."%rotation_x
 		Axis.Y:
 			var rotation_y:float = initial_transform.basis.get_rotation_quaternion().y + total_rotation_degrees
 			if is_axis_facing_camera(Axis.Y):
 				rotation_y = -rotation_y
 			t.basis = t.basis.rotated(initial_transform.basis.y.normalized(), deg_to_rad(rotation_y))
+			rotating_action_amount = "Rotating Y axis local: %3.3f degrees."%rotation_y
 		Axis.Z:
 			var rotation_z:float = initial_transform.basis.get_rotation_quaternion().z + total_rotation_degrees
 			if is_axis_facing_camera(Axis.Z):
 				rotation_z = -rotation_z
 			t.basis = t.basis.rotated(initial_transform.basis.z.normalized(), deg_to_rad(rotation_z))
+			rotating_action_amount = "Rotating Z axis local: %3.3f degrees."%rotation_z
 	global_basis = t.basis
+	Editor.instance.set_action_text(rotating_action_amount)
 	Editor.instance.object_rotated.emit(initial_rotation, rotation_degrees)
 
 func rotate_on_axis(axis:String)->void:
