@@ -15,6 +15,10 @@ var guide_lines_rotation:Array[Vector2] = []:
 	set(value):
 		guide_lines_rotation = value
 		queue_redraw()
+var guide_lines_axis_only:Array[Vector2] = []:
+	set(value):
+		guide_lines_axis_only = value
+		queue_redraw()
 var arbitrary_line:Array[Vector2] = []:
 	set(value):
 		arbitrary_line = value
@@ -40,6 +44,7 @@ func _exit_tree() -> void:
 func clear():
 	guide_lines = []
 	guide_lines_rotation = []
+	guide_lines_axis_only = []
 	reset_rotation_trackers()
 
 func _draw() -> void:
@@ -47,6 +52,8 @@ func _draw() -> void:
 		do_guide_lines()		
 	if not guide_lines_rotation.is_empty():
 		do_guide_lines_rotation()
+	if not guide_lines_axis_only.is_empty():
+		do_guide_lines_axis_only()
 	if not arbitrary_line.is_empty():
 		do_arbitrary_line()
 	if not point_marker.is_empty():
@@ -97,6 +104,24 @@ func do_guide_lines_rotation():
 	draw_line(origin_mark, rotation_end_mark, color, 1.0) #in line with axis
 
 	draw_circle(rotation_start_mark, 2, Color.WHITE)
+	draw_circle(rotation_end_mark, 2, Color.WHITE)
+	draw_circle(origin_mark, 2, Color.WHITE)
+
+func do_guide_lines_axis_only():
+	if guide_lines_axis_only.is_empty():
+		return
+	var color:Color
+	match current_axis:
+		EditorGizmo.Axis.X:
+			color = Color.RED
+		EditorGizmo.Axis.Y:
+			color = Color.LIME_GREEN
+		EditorGizmo.Axis.Z:
+			color = Color.DODGER_BLUE
+	var rotation_end_mark:Vector2 = guide_lines_axis_only[0]
+	var origin_mark:Vector2 = guide_lines_axis_only[1]
+
+	draw_line(origin_mark, rotation_end_mark, color, 1.0) #in line with axis
 	draw_circle(rotation_end_mark, 2, Color.WHITE)
 	draw_circle(origin_mark, 2, Color.WHITE)
 
