@@ -231,7 +231,8 @@ func _on_object_scaled(old_scale:Vector3, new_scale:Vector3,)->void:
 	if edited_object == null:
 		return	
 	# NOTE: An UNDO can be placed here using old rotation. 
-	pass	
+	edited_object.scale = new_scale
+
 #endregion
 
 #region ui text updates

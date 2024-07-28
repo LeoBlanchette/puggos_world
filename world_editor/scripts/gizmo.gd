@@ -102,6 +102,12 @@ var initial_transform:Transform3D = Transform3D.IDENTITY
 var is_positive_normal:bool = true
 #endregion
 
+#region scale
+var initial_scale:Vector3 = Vector3.ONE
+var scale_line_initial_length:float = 0
+var initial_edited_object_basis:Basis =Basis.IDENTITY
+#endregion scale
+
 ## Keeps the gizmo sized consistently in viewport.
 var gizmo_distance_scale:float = 0.2
 
@@ -364,14 +370,15 @@ func reset_transform_operation()->void:
 		initial_click_position = Vector3.ZERO
 		initial_position = Vector3.ZERO
 		initial_rotation = Vector3.ZERO
+		initial_scale = Vector3.ZERO
 		initial_basis = Basis.IDENTITY
 		initial_mouse_click = Vector2.ZERO
 		DrawEditorUI.instance.clear()
 		is_rotating = false
 		initial_transform = Transform3D.IDENTITY
 		Editor.instance.set_action_text("")
-		
-
+		scale_line_initial_length = 0
+		initial_edited_object_basis = Basis.IDENTITY
 		
 func attempt_transform():	
 	if not is_transforming:
@@ -438,11 +445,11 @@ func do_transform():
 			rotate_on_axis("Z")
 		#SCALE 
 		CurrentTransformType.SCALE_X:
-			scale_on_axis("X")
+			scale_on_axis(Axis.X)
 		CurrentTransformType.SCALE_Y:
-			scale_on_axis("Y")
+			scale_on_axis(Axis.Y)
 		CurrentTransformType.SCALE_Z:
-			scale_on_axis("Z")
+			scale_on_axis(Axis.Z)
 		#SLIDE 
 		CurrentTransformType.SLIDE_X:
 			slide_on_axis(Axis.X)
@@ -466,6 +473,7 @@ func draw_guide_lines_translation(axis:Axis, origin:Vector3, destination:Vector3
 		destination_position_mark,
 		origin_mark
 	]
+
 func draw_guide_lines_sliding(axis:Axis, origin:Vector3)->void:	
 	var cam:Camera3D = get_viewport().get_camera_3d()
 	
@@ -478,7 +486,8 @@ func draw_guide_lines_sliding(axis:Axis, origin:Vector3)->void:
 		mouse_position_mark,
 		origin_mark
 	]
-	
+
+
 func draw_guide_lines_rotation(axis:Axis, rotation_start:Vector3, rotation_end:Vector3)->void:
 	var cam:Camera3D = get_viewport().get_camera_3d()
 	
@@ -492,7 +501,6 @@ func draw_guide_lines_rotation(axis:Axis, rotation_start:Vector3, rotation_end:V
 		rotation_end_mark,
 		origin_mark
 	]
-	
 	
 
 func get_translation_point(axis:Axis)->Vector3:
@@ -587,15 +595,6 @@ func translate_on_z_axis()->void:
 	draw_guide_lines_translation(Axis.Z, initial_position, destination_point)
 
 
-func scale_on_axis(axis:String)->void:
-	
-	match axis:
-		"X":
-			pass
-		"Y":
-			pass
-		"Z":
-			pass
 
 func get_rotation_target_point(axis:Axis)->Vector3:
 	var cam:Camera3D = get_viewport().get_camera_3d()
@@ -707,7 +706,77 @@ func slide_on_axis(axis:Axis)->void:
 	var slide_distance:float = initial_position.distance_to(global_position)
 	var sliding_action_text = "Sliding (%3.3f, %3.3f, %3.3f). Distance: %3.3f"
 	Editor.instance.set_action_text(sliding_action_text%[global_position.x,global_position.y,global_position.z,slide_distance])
+
+
+func scale_on_axis(axis:Axis)->void:
+	if Editor.instance.edited_object == null:
+		return
+	if initial_edited_object_basis == Basis.IDENTITY:
+		initial_edited_object_basis = Editor.instance.edited_object.basis
+	var cam:Camera3D = get_viewport().get_camera_3d()
+	var mouse_position:Vector2 = get_viewport().get_mouse_position() 
 	
+	# The mouse viewport position and normal in world coordinates
+	var mouse_ray_normal:Vector3 = cam.project_ray_normal(mouse_position)
+	var mouse_world_position:Vector3 = cam.project_position(mouse_position, 0.01)
+	
+	var plane_depth_guide_positive:Plane
+	var plane_depth_guide_negative:Plane
+	
+	var plane_depth_guide:Vector3
+	var current_axis:Axis
+	var scaling_text:String = ""
+	match axis:
+		Axis.X:
+			plane_depth_guide = global_basis.z
+			current_axis=Axis.X
+			scaling_text = "Scaling X axis local (%3.3f, %3.3f, %3.3f) by %3.3f percent"
+		Axis.Y:
+			plane_depth_guide = global_basis.y
+			current_axis=Axis.Y
+			scaling_text = "Scaling Y axis local (%3.3f, %3.3f, %3.3f) by %3.3f percent"
+		Axis.Z:
+			plane_depth_guide = global_basis.x
+			current_axis=Axis.Z
+			scaling_text = "Scaling Z axis local (%3.3f, %3.3f, %3.3f) by %3.3f percent"
+	
+	plane_depth_guide_positive = Plane(plane_depth_guide, global_position)
+	plane_depth_guide_negative = Plane(-plane_depth_guide, global_position)
+	
+	var depth_point_positive = plane_depth_guide_positive.intersects_ray(mouse_world_position, mouse_ray_normal)
+	var depth_point_negative = plane_depth_guide_negative.intersects_ray(mouse_world_position, mouse_ray_normal)
+	
+	var depth_point:Vector3 = Vector3.ZERO
+	
+	if depth_point_positive != null:
+		depth_point = depth_point_positive
+	if depth_point_negative != null:
+		depth_point = depth_point_negative
+	
+	if initial_position == Vector3.ZERO:
+		initial_position = depth_point
+
+	if scale_line_initial_length == 0:
+		scale_line_initial_length = global_position.distance_to(depth_point)
+
+	var scale_line_current_length:float = global_position.distance_to(depth_point)
+	var scale_factor:float = 1.0/scale_line_initial_length
+	var scale_amount:float = scale_factor * scale_line_current_length
+	var new_basis:Basis = initial_edited_object_basis
+	match axis:
+		Axis.X:
+			new_basis.x = initial_edited_object_basis.x * scale_amount
+		Axis.Y:
+			new_basis.y = initial_edited_object_basis.y * scale_amount
+		Axis.Z:
+			new_basis.z = initial_edited_object_basis.z * scale_amount
+
+	draw_guide_lines_sliding(current_axis,initial_position)
+	var scale_distance:float = initial_position.distance_to(global_position)
+	scaling_text = scaling_text%[new_basis.get_scale().x, new_basis.get_scale().y, new_basis.get_scale().z, scale_amount]
+	Editor.instance.set_action_text(scaling_text)
+	Editor.instance.object_scaled.emit(initial_scale, new_basis.get_scale())
+
 func is_axis_facing_camera(axis:Axis)->bool:
 	var cam:Camera3D = get_viewport().get_camera_3d()
 	var mouse_position:Vector2 = get_viewport().get_mouse_position() 
@@ -731,6 +800,4 @@ func is_axis_facing_camera(axis:Axis)->bool:
 		return true
 	
 	return false
-
-
 #endregion 
