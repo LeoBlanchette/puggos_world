@@ -10,6 +10,7 @@ const SCENE_TYPE:GameManager.SCENES = GameManager.SCENES.WORLD_EDITOR
 @export var interaction_mode_button_group:ButtonGroup
 @export var transform_button_group:ButtonGroup
 var view_port_mode:bool = false
+@export var button_local_space: Button 
 
 @export var action_updates_label:Label
 var action_update:String:
@@ -20,6 +21,7 @@ var action_update:String:
 
 func _ready():	
 	connect_signals()
+	set_button_local_space_mode()
 
 func _exit_tree():
 	disconnect_signals()
@@ -94,3 +96,18 @@ func enter_editor_mode()->void:
 ## Enter player build mode.
 func enter_player_mode()->void:
 	controls_panel.hide()
+	
+
+func set_button_local_space_mode():
+	if Editor.instance.current_transform_space_mode == Editor.CurrentTransformSpaceMode.LOCAL:
+		button_local_space.button_pressed = true
+	else:
+		button_local_space.button_pressed = false
+		
+func _on_button_local_space_toggled(toggled_on: bool) -> void:
+	if Editor.instance == null:
+		return
+	if toggled_on:
+		Editor.instance.current_transform_space_mode = Editor.CurrentTransformSpaceMode.LOCAL
+	else:
+		Editor.instance.current_transform_space_mode = Editor.CurrentTransformSpaceMode.GLOBAL

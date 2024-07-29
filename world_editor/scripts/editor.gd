@@ -8,12 +8,24 @@ const UI_EDITOR_TSCN = preload("res://ui/ui_editor.tscn")
 
 signal changed_transform_mode(old_mode, new_mode)
 signal changed_interaction_mode(old_mode, new_mode)
+signal changed_transform_space_mode
 
 var player:FPSController3D = null
 var editor_interactor:EditorInteractor = null
 var gizmo:EditorGizmo = null
 
 var ui_editor:UIEditor = null
+
+enum CurrentTransformSpaceMode{
+	LOCAL,
+	GLOBAL
+}
+
+var current_transform_space_mode:CurrentTransformSpaceMode = CurrentTransformSpaceMode.GLOBAL:
+	set(value):
+		current_transform_space_mode = value
+		changed_transform_space_mode.emit()
+
 
 enum CurrentEditorMode{
 	NONE,

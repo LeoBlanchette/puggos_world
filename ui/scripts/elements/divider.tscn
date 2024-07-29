@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7ojyw6bptbkg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lve1a"]
+bg_color = Color(1, 1, 1, 0.298039)
+
+[node name="Divider" type="Panel"]
+custom_minimum_size = Vector2(2, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_lve1a")

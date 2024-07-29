@@ -157,14 +157,22 @@ func _input(event: InputEvent) -> void:
 #region targeting 
 func _on_object_selected(ob:Node3D)->void:
 	set_target(ob)
-	
+
+func update_transform_space_mode():
+	if Editor.instance.edited_object == null:
+		return
+	set_target(Editor.instance.edited_object)
+
 func set_target(ob:Node3D):
 	if is_self_click(ob):
 		return
 	if is_transforming:
 		return
 	global_position = ob.global_position
-	global_rotation = ob.global_rotation
+	if use_local_space():
+		global_rotation = ob.global_rotation
+	else:
+		global_rotation = Vector3.ZERO
 	current_scale = ob.scale
 
 ## sends a raycast to layer 8 looking for gizmo handles. Assigns targeted_handle if found.
@@ -241,12 +249,14 @@ func connect_signals()->void:
 	EditorInteractor.instance.object_selected.connect(_on_object_selected)
 	for handle:StaticBody3D in handles_static_bodies:
 		handle.visibility_changed.connect(_on_visibility_changed.bind(handle))
+	Editor.instance.changed_transform_space_mode.connect(update_transform_space_mode)
 
 		
 func disconnect_signals()->void:
 	#UIEditor.instance.changed_transform_mode.disconnect(_on_transform_mode_changed)
 	for handle:StaticBody3D in handles_static_bodies:
 		handle.visibility_changed.disconnect(_on_visibility_changed.bind(handle))
+	Editor.instance.changed_transform_space_mode.disconnect(update_transform_space_mode)
 #endregion
 
 #region mode change
@@ -528,21 +538,39 @@ func get_translation_point(axis:Axis)->Vector3:
 	var sliding_action_text = ""
 	match axis:
 		Axis.X:
-			plane_depth_guide_a = initial_basis.z
-			plane_depth_guide_b = initial_basis.y
-			plane_depth_guide_c = initial_basis.y
-			sliding_action_text = "Translating X axis local: (%3.3f, %3.3f, %3.3f). Distance: %3.3f"
+			if use_local_space():
+				plane_depth_guide_a = initial_basis.z
+				plane_depth_guide_b = initial_basis.y
+				plane_depth_guide_c = initial_basis.y
+				sliding_action_text = "Translating X axis local: (%3.3f, %3.3f, %3.3f). Distance: %3.3f"
+			else:
+				plane_depth_guide_a = Vector3.FORWARD
+				plane_depth_guide_b = Vector3.UP
+				plane_depth_guide_c = Vector3.UP
+				sliding_action_text = "Translating X axis global: (%3.3f, %3.3f, %3.3f). Distance: %3.3f"
 		Axis.Y:
-			plane_depth_guide_a = initial_basis.x
-			plane_depth_guide_b = initial_basis.z
-			plane_depth_guide_c = initial_basis.z
-			sliding_action_text = "Translating Y axis local: (%3.3f, %3.3f, %3.3f). Distance: %3.3f"
+			if use_local_space():
+				plane_depth_guide_a = initial_basis.x
+				plane_depth_guide_b = initial_basis.z
+				plane_depth_guide_c = initial_basis.z
+				sliding_action_text = "Translating Y axis local: (%3.3f, %3.3f, %3.3f). Distance: %3.3f"
+			else:
+				plane_depth_guide_a = Vector3.LEFT
+				plane_depth_guide_b = Vector3.FORWARD
+				plane_depth_guide_c = Vector3.FORWARD
+				sliding_action_text = "Translating Y axis global: (%3.3f, %3.3f, %3.3f). Distance: %3.3f"
 		Axis.Z:
-			plane_depth_guide_a = initial_basis.x
-			plane_depth_guide_b = initial_basis.y
-			plane_depth_guide_c = initial_basis.y
-			sliding_action_text = "Translating Z axis local: (%3.3f, %3.3f, %3.3f). Distance: %3.3f"
-			
+			if use_local_space():
+				plane_depth_guide_a = initial_basis.x
+				plane_depth_guide_b = initial_basis.y
+				plane_depth_guide_c = initial_basis.y
+				sliding_action_text = "Translating Z axis local: (%3.3f, %3.3f, %3.3f). Distance: %3.3f"
+			else:
+				plane_depth_guide_a = Vector3.LEFT
+				plane_depth_guide_b = Vector3.UP
+				plane_depth_guide_c = Vector3.UP
+				sliding_action_text = "Translating Z axis global: (%3.3f, %3.3f, %3.3f). Distance: %3.3f"
+				
 	plane_depth_guide_positive = Plane(plane_depth_guide_a, initial_position)
 	plane_depth_guide_negative = Plane(-plane_depth_guide_a, initial_position)
 
@@ -676,13 +704,22 @@ func slide_on_axis(axis:Axis)->void:
 	var current_axis:Axis
 	match axis:
 		Axis.X:
-			plane_depth_guide = global_basis.x
+			if use_local_space():
+				plane_depth_guide = global_basis.x
+			else: 
+				plane_depth_guide = Vector3.LEFT
 			current_axis=Axis.X
 		Axis.Y:
-			plane_depth_guide = global_basis.y
+			if use_local_space():
+				plane_depth_guide = global_basis.y
+			else:
+				plane_depth_guide = Vector3.UP
 			current_axis=Axis.Y
 		Axis.Z:
-			plane_depth_guide = global_basis.z
+			if use_local_space():
+				plane_depth_guide = global_basis.z
+			else:
+				plane_depth_guide = Vector3.FORWARD
 			current_axis=Axis.Z
 	
 	plane_depth_guide_positive = Plane(plane_depth_guide, global_position)
@@ -726,19 +763,33 @@ func scale_on_axis(axis:Axis)->void:
 	var plane_depth_guide:Vector3
 	var current_axis:Axis
 	var scaling_text:String = ""
+	var space_text:String
+	if use_local_space():
+		space_text = "local"
+	else:
+		space_text = "global"
 	match axis:
 		Axis.X:
-			plane_depth_guide = global_basis.z
+			if use_local_space():
+				plane_depth_guide = global_basis.z
+			else:
+				plane_depth_guide = Vector3.FORWARD
 			current_axis=Axis.X
-			scaling_text = "Scaling X axis local (%3.3f, %3.3f, %3.3f) by %3.3f percent"
+			scaling_text = "Scaling X axis %s (%3.3f, %3.3f, %3.3f) by %3.3f percent"
 		Axis.Y:
-			plane_depth_guide = global_basis.y
+			if use_local_space():				
+				plane_depth_guide = global_basis.y
+			else:
+				plane_depth_guide = Vector3.UP
 			current_axis=Axis.Y
-			scaling_text = "Scaling Y axis local (%3.3f, %3.3f, %3.3f) by %3.3f percent"
+			scaling_text = "Scaling Y axis %s (%3.3f, %3.3f, %3.3f) by %3.3f percent"
 		Axis.Z:
-			plane_depth_guide = global_basis.x
+			if use_local_space():				
+				plane_depth_guide = global_basis.x
+			else:
+				plane_depth_guide = Vector3.LEFT
 			current_axis=Axis.Z
-			scaling_text = "Scaling Z axis local (%3.3f, %3.3f, %3.3f) by %3.3f percent"
+			scaling_text = "Scaling Z axis %s (%3.3f, %3.3f, %3.3f) by %3.3f percent"
 	
 	plane_depth_guide_positive = Plane(plane_depth_guide, global_position)
 	plane_depth_guide_negative = Plane(-plane_depth_guide, global_position)
@@ -765,15 +816,24 @@ func scale_on_axis(axis:Axis)->void:
 	var new_basis:Basis = initial_edited_object_basis
 	match axis:
 		Axis.X:
-			new_basis.x = initial_edited_object_basis.x * scale_amount
+			if use_local_space():
+				new_basis.x = initial_edited_object_basis.x * scale_amount
+			else:
+				new_basis.x = Vector3.LEFT * scale_amount
 		Axis.Y:
-			new_basis.y = initial_edited_object_basis.y * scale_amount
+			if use_local_space():
+				new_basis.y = initial_edited_object_basis.y * scale_amount
+			else:
+				new_basis.y = Vector3.UP * scale_amount
 		Axis.Z:
-			new_basis.z = initial_edited_object_basis.z * scale_amount
+			if use_local_space():
+				new_basis.z = initial_edited_object_basis.z * scale_amount
+			else:
+				new_basis.z = Vector3.FORWARD * scale_amount
 
 	draw_guide_lines_sliding(current_axis,initial_position)
 	var scale_distance:float = initial_position.distance_to(global_position)
-	scaling_text = scaling_text%[new_basis.get_scale().x, new_basis.get_scale().y, new_basis.get_scale().z, scale_amount]
+	scaling_text = scaling_text%[space_text, new_basis.get_scale().x, new_basis.get_scale().y, new_basis.get_scale().z, scale_amount]
 	Editor.instance.set_action_text(scaling_text)
 	Editor.instance.object_scaled.emit(initial_scale, new_basis.get_scale())
 
@@ -799,5 +859,10 @@ func is_axis_facing_camera(axis:Axis)->bool:
 	if(extended_distance < object_distance):
 		return true
 	
+	return false
+	
+func use_local_space()->bool:
+	if Editor.instance.current_transform_space_mode == Editor.CurrentTransformSpaceMode.LOCAL:
+		return true
 	return false
 #endregion 

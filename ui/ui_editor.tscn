@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dgs6wc466d1op"]
+[gd_scene load_steps=15 format=3 uid="uid://dgs6wc466d1op"]
 
 [ext_resource type="Theme" uid="uid://b8qsxvqsy2clq" path="res://ui/themes/editor_theme.tres" id="1_7qwvv"]
 [ext_resource type="Script" path="res://ui/scripts/ui_editor.gd" id="1_iaqgy"]
@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://crosvu1qvbywp" path="res://images/icons/editor/Play.svg" id="7_7oiso"]
 [ext_resource type="Texture2D" uid="uid://b6m8ovj3ewehw" path="res://images/icons/editor/ImageTexture3D.svg" id="8_rvhb3"]
 [ext_resource type="Texture2D" uid="uid://cg3bctpewr2wu" path="res://images/icons/editor/ViewportSpeed.svg" id="9_7rqip"]
+[ext_resource type="Texture2D" uid="uid://k8epanx3nrqi" path="res://addons/godot_aerodynamic_physics/icons/object.svg" id="11_n4rsj"]
+[ext_resource type="PackedScene" uid="uid://b7ojyw6bptbkg" path="res://ui/scripts/elements/divider.tscn" id="11_xl0nv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onsc0"]
 bg_color = Color(0.122252, 0.122252, 0.122252, 1)
@@ -20,7 +22,7 @@ content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
 
-[node name="UIEDitor" type="Control" node_paths=PackedStringArray("modes_panel", "controls_panel", "action_updates_label")]
+[node name="UIEDitor" type="Control" node_paths=PackedStringArray("modes_panel", "controls_panel", "button_local_space", "action_updates_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,6 +35,7 @@ modes_panel = NodePath("ModePanel")
 controls_panel = NodePath("ControlsPanel")
 interaction_mode_button_group = ExtResource("3_hsql1")
 transform_button_group = ExtResource("2_iqhtm")
+button_local_space = NodePath("ControlsPanel/ControlTop/ObjectOps/HBoxContainer/ButtonLocalSpace")
 action_updates_label = NodePath("ViewportOverlay/LabelActionUpdates")
 
 [node name="ModePanel" type="Panel" parent="."]
@@ -130,6 +133,7 @@ size_flags_horizontal = 0
 [node name="ButtonTranslateMode" type="Button" parent="ControlsPanel/ControlTop/ObjectOps/HBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
+tooltip_text = "Move Mode"
 focus_mode = 0
 toggle_mode = true
 button_group = ExtResource("2_iqhtm")
@@ -139,6 +143,7 @@ icon_alignment = 1
 [node name="ButtonRotateMode" type="Button" parent="ControlsPanel/ControlTop/ObjectOps/HBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
+tooltip_text = "Rotate Mode"
 focus_mode = 0
 toggle_mode = true
 button_group = ExtResource("2_iqhtm")
@@ -148,10 +153,23 @@ icon_alignment = 1
 [node name="ButtonScaleMode" type="Button" parent="ControlsPanel/ControlTop/ObjectOps/HBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
+tooltip_text = "Scale Mode"
 focus_mode = 0
 toggle_mode = true
 button_group = ExtResource("2_iqhtm")
 icon = ExtResource("5_4sxu3")
+icon_alignment = 1
+
+[node name="Divider" parent="ControlsPanel/ControlTop/ObjectOps/HBoxContainer" instance=ExtResource("11_xl0nv")]
+layout_mode = 2
+
+[node name="ButtonLocalSpace" type="Button" parent="ControlsPanel/ControlTop/ObjectOps/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+tooltip_text = "Use Local Space"
+focus_mode = 0
+toggle_mode = true
+icon = ExtResource("11_n4rsj")
 icon_alignment = 1
 
 [node name="ControlLeft" type="Panel" parent="ControlsPanel"]
@@ -218,3 +236,4 @@ vertical_alignment = 2
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="toggled" from="ControlsPanel/ControlTop/ObjectOps/HBoxContainer/ButtonLocalSpace" to="." method="_on_button_local_space_toggled"]
