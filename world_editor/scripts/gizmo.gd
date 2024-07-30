@@ -844,7 +844,7 @@ func scale_on_axis(axis:Axis)->void:
 			if use_local_space():				
 				plane_depth_guide = global_basis.x
 			else:
-				plane_depth_guide = Vector3.LEFT
+				plane_depth_guide = Vector3.RIGHT
 			current_axis=Axis.Z
 			scaling_text = "Scaling Z axis %s (%3.3f, %3.3f, %3.3f) by %3.3f percent"
 	
@@ -876,7 +876,7 @@ func scale_on_axis(axis:Axis)->void:
 			if use_local_space():
 				new_basis.x = initial_edited_object_basis.x * scale_amount
 			else:
-				new_basis.x = Vector3.LEFT * scale_amount
+				new_basis.x = Vector3.LEFT * -scale_amount
 		Axis.Y:
 			if use_local_space():
 				new_basis.y = initial_edited_object_basis.y * scale_amount
@@ -886,11 +886,12 @@ func scale_on_axis(axis:Axis)->void:
 			if use_local_space():
 				new_basis.z = initial_edited_object_basis.z * scale_amount
 			else:
-				new_basis.z = Vector3.FORWARD * scale_amount
+				new_basis.z = Vector3.FORWARD * -scale_amount
 
 	draw_guide_lines_sliding(current_axis,initial_position)
 	var scale_distance:float = initial_position.distance_to(global_position)
 	scaling_text = scaling_text%[space_text, new_basis.get_scale().x, new_basis.get_scale().y, new_basis.get_scale().z, scale_amount]
+	
 	Editor.instance.set_action_text(scaling_text)
 	Editor.instance.object_scaled.emit(initial_scale, new_basis.get_scale())
 
