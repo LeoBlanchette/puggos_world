@@ -101,6 +101,9 @@ func initiate():
 	GameManager.instance.pre_level_change.connect(_on_changing_levels)
 	
 
+func get_active_object() ->Node3D:
+	return edited_object
+
 func switch_interaction_mode():
 	var pressed_button:Button = ui_editor.interaction_mode_button_group.get_pressed_button()
 	match pressed_button.name:

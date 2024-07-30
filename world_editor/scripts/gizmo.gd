@@ -100,6 +100,7 @@ var is_rotating:bool = false
 var initial_rotation:Vector3 = Vector3.ZERO
 var initial_transform:Transform3D = Transform3D.IDENTITY
 var is_positive_normal:bool = true
+var tmp_anchor:Node3D = null
 #endregion
 
 #region scale
@@ -174,6 +175,14 @@ func set_target(ob:Node3D):
 	else:
 		global_rotation = Vector3.ZERO
 	current_scale = ob.scale
+
+func create_tmp_anchor()->Node3D:
+	tmp_anchor = Node3D.new()
+	tmp_anchor.name = "tmp_anchor"
+	add_child(tmp_anchor)
+	tmp_anchor.global_basis = Editor.instance.get_active_object().global_basis
+	return tmp_anchor
+	
 
 ## sends a raycast to layer 8 looking for gizmo handles. Assigns targeted_handle if found.
 func get_handle_target():
@@ -389,6 +398,10 @@ func reset_transform_operation()->void:
 		Editor.instance.set_action_text("")
 		scale_line_initial_length = 0
 		initial_edited_object_basis = Basis.IDENTITY
+		if not use_local_space():
+			global_rotation = Vector3.ZERO
+		if tmp_anchor != null:
+			tmp_anchor.queue_free()
 		
 func attempt_transform():	
 	if not is_transforming:
@@ -622,8 +635,6 @@ func translate_on_z_axis()->void:
 	translate_to_destination(destination_point)
 	draw_guide_lines_translation(Axis.Z, initial_position, destination_point)
 
-
-
 func get_rotation_target_point(axis:Axis)->Vector3:
 	var cam:Camera3D = get_viewport().get_camera_3d()
 	var mouse_position:Vector2 = get_viewport().get_mouse_position() 
@@ -633,7 +644,44 @@ func get_rotation_target_point(axis:Axis)->Vector3:
 
 	return projected_position
 
-func rotate_to_target_point(axis:Axis, rotation_start:Vector3, rotation_end:Vector3)->void:
+func rotate_to_target_point_global(axis:Axis, rotation_start:Vector3, rotation_end:Vector3)->void:
+	if !is_rotating:
+		is_rotating = true
+		initial_rotation = rotation_degrees
+		initial_transform = transform
+		create_tmp_anchor()
+	var cam:Camera3D = get_viewport().get_camera_3d()
+
+	var rotation_start_mark:Vector2 = cam.unproject_position(rotation_start)
+	var rotation_end_mark:Vector2 = cam.unproject_position(rotation_end)
+	var origin_mark:Vector2 = cam.unproject_position(initial_position)	
+	var starting_rotation_degrees:float = DrawEditorUI.instance.get_rotation_tracker_1_degrees(origin_mark, rotation_start_mark)
+	var current_rotation_degrees:float = DrawEditorUI.instance.get_rotation_tracker_2_degrees(origin_mark, rotation_end_mark)
+	
+	var total_rotation_degrees:float = current_rotation_degrees-starting_rotation_degrees
+	var t:Transform3D = initial_transform
+	var rotating_action_amount:String
+	match axis:
+		Axis.X:
+			if is_axis_facing_camera(Axis.X):
+				total_rotation_degrees = -total_rotation_degrees
+			t.basis = t.basis.rotated(Vector3.RIGHT, deg_to_rad(total_rotation_degrees))
+			rotating_action_amount = "Rotating, X axis global: %3.3f degrees."%total_rotation_degrees
+		Axis.Y:
+			if is_axis_facing_camera(Axis.Y):
+				total_rotation_degrees = -total_rotation_degrees
+			t.basis = t.basis.rotated(Vector3.UP, deg_to_rad(total_rotation_degrees))
+			rotating_action_amount = "Rotating Y axis global: %3.3f degrees."%total_rotation_degrees
+		Axis.Z:
+			if is_axis_facing_camera(Axis.Z):
+				total_rotation_degrees = total_rotation_degrees
+			t.basis = t.basis.rotated(Vector3.FORWARD, deg_to_rad(total_rotation_degrees))
+			rotating_action_amount = "Rotating Z axis global: %3.3f degrees."%total_rotation_degrees
+	global_basis = t.basis
+	Editor.instance.set_action_text(rotating_action_amount)
+	Editor.instance.object_rotated.emit(initial_rotation, tmp_anchor.global_rotation_degrees)
+	
+func rotate_to_target_point_local(axis:Axis, rotation_start:Vector3, rotation_end:Vector3)->void:
 	if !is_rotating:
 		is_rotating = true
 		initial_rotation = rotation_degrees
@@ -678,15 +726,24 @@ func rotate_on_axis(axis:String)->void:
 	match axis:
 		"X":			
 			var target_point:Vector3 = get_rotation_target_point(Axis.X)
-			rotate_to_target_point(Axis.X, initial_click_position, target_point)
+			if use_local_space():
+				rotate_to_target_point_local(Axis.X, initial_click_position, target_point)
+			else:
+				rotate_to_target_point_global(Axis.X, initial_click_position, target_point)
 			draw_guide_lines_rotation(Axis.X, initial_click_position, target_point)
 		"Y":
 			var target_point:Vector3 = get_rotation_target_point(Axis.X)
-			rotate_to_target_point(Axis.Y, initial_click_position, target_point)
+			if use_local_space():
+				rotate_to_target_point_local(Axis.Y, initial_click_position, target_point)
+			else:
+				rotate_to_target_point_global(Axis.Y, initial_click_position, target_point)
 			draw_guide_lines_rotation(Axis.Y, initial_click_position, target_point)
 		"Z":
 			var target_point:Vector3 = get_rotation_target_point(Axis.X)
-			rotate_to_target_point(Axis.Z, initial_click_position, target_point)
+			if use_local_space():
+				rotate_to_target_point_local(Axis.Z, initial_click_position, target_point)
+			else:
+				rotate_to_target_point_global(Axis.Z, initial_click_position, target_point)
 			draw_guide_lines_rotation(Axis.Z, initial_click_position, target_point)
 			
 func slide_on_axis(axis:Axis)->void:
