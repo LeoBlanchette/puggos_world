@@ -176,6 +176,9 @@ func get_current_target():
 
 func select_target():
 	if target_result.is_empty():
+		Editor.instance.clear_active_object()
+		if EditorGizmo.instance != null:
+			EditorGizmo.instance.set_gizmo_to_clicked_space()
 		return
 	selected_object = target_result["collider"]
 	object_selected.emit(selected_object)

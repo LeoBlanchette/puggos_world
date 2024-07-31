@@ -101,6 +101,9 @@ func initiate():
 	GameManager.instance.pre_level_change.connect(_on_changing_levels)
 	
 
+func clear_active_object()->void:
+	edited_object = null
+
 func get_active_object() ->Node3D:
 	return edited_object
 
@@ -202,6 +205,9 @@ func _on_object_selected(ob:Node3D)->void:
 	if is_gizmo(ob):
 		return
 	if is_ground_plane(ob):
+		Editor.instance.clear_active_object()
+		if EditorGizmo.instance != null:
+			EditorGizmo.instance.set_gizmo_to_clicked_space()
 		return
 	if is_gizmo_transforming(): #this prevents selection of overlapping objects when moving gizmo
 		return

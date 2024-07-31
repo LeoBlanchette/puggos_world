@@ -113,6 +113,7 @@ var initial_edited_object_basis:Basis =Basis.IDENTITY
 var gizmo_distance_scale:float = 0.2
 
 var targeted_handle:StaticBody3D
+var targeted_position:Vector3
 var last_target_handle_name:String = ""
 
 var last_targeted_handle:StaticBody3D
@@ -160,7 +161,7 @@ func _on_object_selected(ob:Node3D)->void:
 	set_target(ob)
 
 func update_transform_space_mode():
-	if Editor.instance.edited_object == null:
+	if Editor.instance.get_active_object() == null:
 		return
 	set_target(Editor.instance.edited_object)
 
@@ -183,7 +184,6 @@ func create_tmp_anchor()->Node3D:
 	tmp_anchor.global_basis = Editor.instance.get_active_object().global_basis
 	return tmp_anchor
 	
-
 ## sends a raycast to layer 8 looking for gizmo handles. Assigns targeted_handle if found.
 func get_handle_target():
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -203,7 +203,6 @@ func get_handle_target():
 	
 	if not target_result.is_empty() && target_result["collider"].get_parent() != null:
 		targeted_handle = target_result["collider"]
-		
 		last_target_handle_name = targeted_handle.get_parent().name
 	else:
 		targeted_handle = null
@@ -344,6 +343,25 @@ func update_handle_indication()->void:
 		set_handle_material_highlighted(targeted_handle.get_parent_node_3d())
 		
 	last_targeted_handle = targeted_handle
+
+func set_gizmo_to_clicked_space():
+	var pos:Vector3
+	var space_state = get_world_3d().direct_space_state
+	var cam:Camera3D = get_viewport().get_camera_3d()
+	var mousepos = get_viewport().get_mouse_position()
+
+	var origin = cam.project_ray_origin(mousepos)
+	var end = origin + cam.project_ray_normal(mousepos) * RAY_LENGTH
+	var query = PhysicsRayQueryParameters3D.create(origin, end)
+	query.collide_with_areas = false
+	query.collide_with_bodies = true
+	var target_result:Dictionary = space_state.intersect_ray(query) 
+	
+	if not target_result.is_empty():
+		pos = target_result["position"]
+	else:
+		pos = cam.project_position(mousepos, 1)
+	global_position = pos
 
 func set_handle_material_highlighted(handle:MeshInstance3D)->void:
 	if handle.name.ends_with("_X"):
@@ -923,4 +941,6 @@ func use_local_space()->bool:
 	if Editor.instance.current_transform_space_mode == Editor.CurrentTransformSpaceMode.LOCAL:
 		return true
 	return false
+
+
 #endregion 
