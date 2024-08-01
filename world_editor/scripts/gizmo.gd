@@ -165,6 +165,14 @@ func update_transform_space_mode():
 		return
 	set_target(Editor.instance.edited_object)
 
+func snap_to_active_object():
+	if Editor.instance == null:
+		return
+	if Editor.instance.get_active_object() == null:
+		return
+	set_target(Editor.instance.get_active_object())
+
+
 func set_target(ob:Node3D):
 	if is_self_click(ob):
 		return
@@ -258,7 +266,7 @@ func connect_signals()->void:
 	for handle:StaticBody3D in handles_static_bodies:
 		handle.visibility_changed.connect(_on_visibility_changed.bind(handle))
 	Editor.instance.changed_transform_space_mode.connect(update_transform_space_mode)
-
+	Editor.instance.object_transform_changed_ui.connect(snap_to_active_object)
 		
 func disconnect_signals()->void:
 	#UIEditor.instance.changed_transform_mode.disconnect(_on_transform_mode_changed)

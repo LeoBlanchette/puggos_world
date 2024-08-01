@@ -6,9 +6,17 @@ const EDITOR_INTERACTOR_TSCN = preload("res://world_editor/editor_interactor.tsc
 const PLAYER_TSCN = preload("res://nodes/characters/player.tscn")
 const UI_EDITOR_TSCN = preload("res://ui/ui_editor.tscn")
 
+signal object_selected
+## The XYZ values of Position, Rotation, or Scale
+signal object_transform_changed
+## The XYZ values of Position, Rotation, or Scale, via UI
+signal object_transform_changed_ui
+## Changed from translate, rotation, scale
 signal changed_transform_mode(old_mode, new_mode)
 signal changed_interaction_mode(old_mode, new_mode)
+## Global or Local
 signal changed_transform_space_mode
+
 
 var player:FPSController3D = null
 var editor_interactor:EditorInteractor = null
@@ -54,6 +62,10 @@ var current_transform_mode:TranformMode = TranformMode.TRANSLATE
 signal object_translated(previous_position, current_position)
 signal object_rotated(previous_rotation, current_rotation)
 signal object_scaled(previous_scale, current_scale)
+signal object_translated_ui(previous_position, current_position)
+signal object_rotated_ui(previous_rotation, current_rotation)
+signal object_scaled_ui(previous_scale, current_scale)
+
 var edited_object:Node3D = null
 
 static var instance:Editor = null
@@ -98,6 +110,9 @@ func initiate():
 	object_translated.connect(_on_object_translated)
 	object_rotated.connect(_on_object_rotated)
 	object_scaled.connect(_on_object_scaled)
+	object_translated_ui.connect(_on_object_translated_ui)
+	object_rotated_ui.connect(_on_object_rotated_ui)
+	object_scaled_ui.connect(_on_object_scaled_ui)
 	GameManager.instance.pre_level_change.connect(_on_changing_levels)
 	
 
@@ -213,6 +228,7 @@ func _on_object_selected(ob:Node3D)->void:
 		return
 	edited_object = ob
 	print(edited_object)
+	object_selected.emit()
 
 func is_ground_plane(ob:Node3D)->bool:
 	if ob == null:
@@ -242,18 +258,42 @@ func _on_object_translated(old_position:Vector3, new_position:Vector3)->void:
 		return
 	# NOTE: An UNDO can be placed here using old position. 
 	edited_object.global_position = new_position
+	object_transform_changed.emit()
+	
 func _on_object_rotated(old_rotation:Vector3, new_rotation:Vector3,)->void:
 	if edited_object == null:
 		return	
 	# NOTE: An UNDO can be placed here using old rotation. 
 	edited_object.global_rotation_degrees = new_rotation
+	object_transform_changed.emit()
 	
 func _on_object_scaled(old_scale:Vector3, new_scale:Vector3,)->void:
 	if edited_object == null:
 		return	
 	# NOTE: An UNDO can be placed here using old rotation. 
 	edited_object.scale = new_scale
-
+	object_transform_changed.emit()
+	
+func _on_object_translated_ui(old_position:Vector3, new_position:Vector3)->void:
+	if edited_object == null:
+		return
+	# NOTE: An UNDO can be placed here using old position. 
+	edited_object.global_position = new_position
+	object_transform_changed_ui.emit()
+	
+func _on_object_rotated_ui(old_rotation:Vector3, new_rotation:Vector3,)->void:
+	if edited_object == null:
+		return	
+	# NOTE: An UNDO can be placed here using old rotation. 
+	edited_object.global_rotation_degrees = new_rotation
+	object_transform_changed_ui.emit()
+	
+func _on_object_scaled_ui(old_scale:Vector3, new_scale:Vector3,)->void:
+	if edited_object == null:
+		return	
+	# NOTE: An UNDO can be placed here using old rotation. 
+	edited_object.scale = new_scale
+	object_transform_changed_ui.emit()
 #endregion
 
 #region ui text updates

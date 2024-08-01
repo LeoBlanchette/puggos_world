@@ -13,6 +13,9 @@ class_name UI
 @onready var ui_building_interface: UIBuildingInterface = $UIBuildingInterface
 @onready var esc_menu: EscapeMenu = $EscMenu
 
+## when true, other UI nodesv (such as chat/commands) will not accept Enter
+static var block_enter:bool = false
+
 static var instance:UI = null
 
 var is_first_entry:bool = true

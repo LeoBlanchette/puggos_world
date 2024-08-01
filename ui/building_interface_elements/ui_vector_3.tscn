@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=3 uid="uid://dejcjjnolat0l"]
+
+[ext_resource type="Script" path="res://ui/building_interface_elements/scripts/ui_vector_3.gd" id="1_7v3xf"]
+
+[sub_resource type="Theme" id="Theme_abvut"]
+
+[node name="UIVector3" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+focus_mode = 2
+script = ExtResource("1_7v3xf")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Vector3"
+
+[node name="Values" type="HBoxContainer" parent="."]
+layout_mode = 2
+focus_mode = 2
+
+[node name="SpinBox_X" type="SpinBox" parent="Values"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../SpinBox_Z")
+focus_neighbor_right = NodePath("../SpinBox_Y")
+focus_next = NodePath("../SpinBox_Y")
+focus_previous = NodePath("../SpinBox_Z")
+focus_mode = 2
+theme = SubResource("Theme_abvut")
+min_value = -9.22337e+18
+max_value = 9.22337e+18
+step = 0.0
+prefix = "x"
+suffix = "m"
+select_all_on_focus = true
+
+[node name="SpinBox_Y" type="SpinBox" parent="Values"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../SpinBox_X")
+focus_neighbor_right = NodePath("../SpinBox_Z")
+focus_next = NodePath("../SpinBox_Z")
+focus_previous = NodePath("../SpinBox_X")
+focus_mode = 2
+min_value = -9.22337e+18
+max_value = 9.22337e+18
+step = 0.0
+prefix = "y"
+suffix = "m"
+
+[node name="SpinBox_Z" type="SpinBox" parent="Values"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../SpinBox_Y")
+focus_neighbor_right = NodePath("../SpinBox_X")
+focus_next = NodePath("../SpinBox_X")
+focus_previous = NodePath("../SpinBox_Y")
+focus_mode = 2
+min_value = -9.22337e+18
+max_value = 9.22337e+18
+step = 0.0
+prefix = "z"
+suffix = "m"

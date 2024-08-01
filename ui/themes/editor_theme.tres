@@ -1,4 +1,6 @@
-[gd_resource type="Theme" load_steps=5 format=3 uid="uid://b8qsxvqsy2clq"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://b8qsxvqsy2clq"]
+
+[ext_resource type="FontFile" uid="uid://dpato43ee336o" path="res://ui/fonts/Ubuntu/Ubuntu-Light.ttf" id="1_qq0yg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_84uu2"]
 bg_color = Color(0.111197, 0.111197, 0.111197, 1)
@@ -27,6 +29,7 @@ Button/colors/font_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
 Button/colors/icon_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
 Button/colors/icon_hover_pressed_color = Color(0.278431, 0.54902, 0.74902, 1)
 Button/colors/icon_pressed_color = Color(0.567, 0.7557, 0.9, 1)
+Button/fonts/font = ExtResource("1_qq0yg")
 Button/styles/focus = SubResource("StyleBoxFlat_84uu2")
 Button/styles/hover = SubResource("StyleBoxFlat_f5dmu")
 Button/styles/pressed = SubResource("StyleBoxFlat_3nw4h")

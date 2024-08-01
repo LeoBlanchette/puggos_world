@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dgs6wc466d1op"]
+[gd_scene load_steps=16 format=3 uid="uid://dgs6wc466d1op"]
 
 [ext_resource type="Theme" uid="uid://b8qsxvqsy2clq" path="res://ui/themes/editor_theme.tres" id="1_7qwvv"]
 [ext_resource type="Script" path="res://ui/scripts/ui_editor.gd" id="1_iaqgy"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://cg3bctpewr2wu" path="res://images/icons/editor/ViewportSpeed.svg" id="9_7rqip"]
 [ext_resource type="Texture2D" uid="uid://k8epanx3nrqi" path="res://addons/godot_aerodynamic_physics/icons/object.svg" id="11_n4rsj"]
 [ext_resource type="PackedScene" uid="uid://b7ojyw6bptbkg" path="res://ui/scripts/elements/divider.tscn" id="11_xl0nv"]
+[ext_resource type="PackedScene" uid="uid://qj2rmi63n4ga" path="res://ui/building_interface_elements/transform_adjuster.tscn" id="13_qiin7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onsc0"]
 bg_color = Color(0.122252, 0.122252, 0.122252, 1)
@@ -194,6 +195,20 @@ offset_top = 60.0
 offset_bottom = -120.0
 grow_horizontal = 0
 grow_vertical = 2
+
+[node name="ObjectOpsRight" type="MarginContainer" parent="ControlsPanel/ControlRight"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TransformAdjuster" parent="ControlsPanel/ControlRight/ObjectOpsRight" instance=ExtResource("13_qiin7")]
+layout_mode = 2
 
 [node name="ControlBottom" type="Panel" parent="ControlsPanel"]
 custom_minimum_size = Vector2(0, 120)
