@@ -12,6 +12,10 @@ func _ready() -> void:
 	ui_vector_3_position.changed.connect(set_active_object_new_position)
 	ui_vector_3_rotation.changed.connect(set_active_object_new_rotation)
 	ui_vector_3_scale.changed.connect(set_active_object_new_scale)
+	ui_vector_3_position.label.text = "Position"
+	ui_vector_3_rotation.label.text = "Rotation"
+	ui_vector_3_scale.label.text = "Scale"
+	
 
 func set_active_object_new_position():
 	if not valid_operation():

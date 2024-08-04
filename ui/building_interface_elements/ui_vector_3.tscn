@@ -1,60 +1,91 @@
-[gd_scene load_steps=3 format=3 uid="uid://dejcjjnolat0l"]
+[gd_scene load_steps=5 format=3 uid="uid://dejcjjnolat0l"]
 
 [ext_resource type="Script" path="res://ui/building_interface_elements/scripts/ui_vector_3.gd" id="1_7v3xf"]
+[ext_resource type="Script" path="res://ui/scripts/line_edit_float.gd" id="2_fhjkj"]
+[ext_resource type="Theme" uid="uid://d067jyj2rbe4m" path="res://ui/themes/vector3/vector3_control.tres" id="2_y0qpf"]
+[ext_resource type="StyleBox" uid="uid://dxa803t471quo" path="res://ui/themes/vector3/vector_3_style_box_heading_label_flat.tres" id="3_681rd"]
 
-[sub_resource type="Theme" id="Theme_abvut"]
-
-[node name="UIVector3" type="VBoxContainer"]
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="UIVector3" type="VBoxContainer" node_paths=PackedStringArray("label", "spin_box_x", "spin_box_y", "spin_box_z")]
+custom_minimum_size = Vector2(200, 0)
+layout_direction = 2
+offset_right = 253.0
+offset_bottom = 42.0
 focus_mode = 2
+theme = ExtResource("2_y0qpf")
 script = ExtResource("1_7v3xf")
+label = NodePath("Label")
+spin_box_x = NodePath("HBoxContainer/X_Val/LineEdit_X")
+spin_box_y = NodePath("HBoxContainer/Y_Val/LineEdit_Y")
+spin_box_z = NodePath("HBoxContainer/Z_Val/LineEdit_Z")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
+theme_override_styles/normal = ExtResource("3_681rd")
 text = "Vector3"
 
-[node name="Values" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
-focus_mode = 2
 
-[node name="SpinBox_X" type="SpinBox" parent="Values"]
+[node name="X_Val" type="HBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
-focus_neighbor_left = NodePath("../SpinBox_Z")
-focus_neighbor_right = NodePath("../SpinBox_Y")
-focus_next = NodePath("../SpinBox_Y")
-focus_previous = NodePath("../SpinBox_Z")
-focus_mode = 2
-theme = SubResource("Theme_abvut")
-min_value = -9.22337e+18
-max_value = 9.22337e+18
-step = 0.0
-prefix = "x"
-suffix = "m"
-select_all_on_focus = true
+size_flags_horizontal = 0
 
-[node name="SpinBox_Y" type="SpinBox" parent="Values"]
+[node name="Label_X" type="Label" parent="HBoxContainer/X_Val"]
+custom_minimum_size = Vector2(15, 0)
 layout_mode = 2
-focus_neighbor_left = NodePath("../SpinBox_X")
-focus_neighbor_right = NodePath("../SpinBox_Z")
-focus_next = NodePath("../SpinBox_Z")
-focus_previous = NodePath("../SpinBox_X")
-focus_mode = 2
-min_value = -9.22337e+18
-max_value = 9.22337e+18
-step = 0.0
-prefix = "y"
-suffix = "m"
+theme_override_colors/font_color = Color(0.888782, 0, 0.118767, 1)
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="SpinBox_Z" type="SpinBox" parent="Values"]
+[node name="LineEdit_X" type="LineEdit" parent="HBoxContainer/X_Val"]
 layout_mode = 2
-focus_neighbor_left = NodePath("../SpinBox_Y")
-focus_neighbor_right = NodePath("../SpinBox_X")
-focus_next = NodePath("../SpinBox_X")
-focus_previous = NodePath("../SpinBox_Y")
-focus_mode = 2
-min_value = -9.22337e+18
-max_value = 9.22337e+18
-step = 0.0
-prefix = "z"
-suffix = "m"
+size_flags_horizontal = 0
+focus_neighbor_left = NodePath("../../Z_Val/LineEdit_Z")
+focus_neighbor_bottom = NodePath("../../Y_Val/LineEdit_Y")
+focus_next = NodePath("../../Y_Val/LineEdit_Y")
+focus_previous = NodePath("../../Z_Val/LineEdit_Z")
+text = "0"
+script = ExtResource("2_fhjkj")
+
+[node name="Y_Val" type="HBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label_Y" type="Label" parent="HBoxContainer/Y_Val"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.57422, 0.210418, 1)
+text = "Y"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LineEdit_Y" type="LineEdit" parent="HBoxContainer/Y_Val"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../X_Val/LineEdit_X")
+focus_neighbor_right = NodePath("../../Z_Val/LineEdit_Z")
+focus_next = NodePath("../../Z_Val/LineEdit_Z")
+focus_previous = NodePath("../../X_Val/LineEdit_X")
+text = "0"
+script = ExtResource("2_fhjkj")
+
+[node name="Z_Val" type="HBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label_Z" type="Label" parent="HBoxContainer/Z_Val"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1.15514e-06, 0.521328, 0.683115, 1)
+text = "Z"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LineEdit_Z" type="LineEdit" parent="HBoxContainer/Z_Val"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../Y_Val/LineEdit_Y")
+focus_neighbor_right = NodePath("../../X_Val/LineEdit_X")
+focus_next = NodePath("../../X_Val/LineEdit_X")
+focus_previous = NodePath("../../Y_Val/LineEdit_Y")
+text = "0"
+script = ExtResource("2_fhjkj")

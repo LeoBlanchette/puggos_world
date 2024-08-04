@@ -50,7 +50,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 shape = SubResource("BoxShape3D_6bjwf")
 
 [node name="Target_4" type="Area3D" parent="."]
-transform = Transform3D(0.99964, -0.00607647, -0.026143, 0, 0.974035, -0.226396, 0.0268399, 0.226315, 0.973684, 2.36067, 0, -1.13503)
+transform = Transform3D(0.99964, -0.00607646, -0.026143, 0, 0.974035, -0.226397, 0.0268399, 0.226315, 0.973684, 2.36067, 0, -1.13503)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Target_4"]
 mesh = SubResource("BoxMesh_xbe4c")

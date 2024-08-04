@@ -278,6 +278,7 @@ func _on_object_translated_ui(old_position:Vector3, new_position:Vector3)->void:
 	if edited_object == null:
 		return
 	# NOTE: An UNDO can be placed here using old position. 
+	print(new_position)
 	edited_object.global_position = new_position
 	object_transform_changed_ui.emit()
 	

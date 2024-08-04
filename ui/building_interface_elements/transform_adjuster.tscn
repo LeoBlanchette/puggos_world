@@ -14,9 +14,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_nnpng")
-ui_vector_3_position = NodePath("VBoxContainer/UIVector3Position")
-ui_vector_3_rotation = NodePath("VBoxContainer/UIVector3Rotation")
-ui_vector_3_scale = NodePath("VBoxContainer/UIVector3Scale")
+ui_vector_3_position = NodePath("VBoxContainer/UIVector_Position")
+ui_vector_3_rotation = NodePath("VBoxContainer/UIVector_Rotation")
+ui_vector_3_scale = NodePath("VBoxContainer/UIVector5_Scale")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -27,33 +27,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_ojp7c")
 
-[node name="UIVector3Position" parent="VBoxContainer" instance=ExtResource("1_6sife")]
+[node name="UIVector_Position" parent="VBoxContainer" instance=ExtResource("1_6sife")]
 layout_mode = 2
 
-[node name="Label" parent="VBoxContainer/UIVector3Position" index="0"]
-text = "Position"
-
-[node name="UIVector3Rotation" parent="VBoxContainer" instance=ExtResource("1_6sife")]
+[node name="UIVector_Rotation" parent="VBoxContainer" instance=ExtResource("1_6sife")]
 layout_mode = 2
 
-[node name="Label" parent="VBoxContainer/UIVector3Rotation" index="0"]
-text = "Rotation"
-
-[node name="SpinBox_X" parent="VBoxContainer/UIVector3Rotation/Values" index="0"]
-suffix = "d"
-
-[node name="SpinBox_Y" parent="VBoxContainer/UIVector3Rotation/Values" index="1"]
-suffix = "d"
-
-[node name="SpinBox_Z" parent="VBoxContainer/UIVector3Rotation/Values" index="2"]
-suffix = "d"
-
-[node name="UIVector3Scale" parent="VBoxContainer" instance=ExtResource("1_6sife")]
+[node name="UIVector5_Scale" parent="VBoxContainer" instance=ExtResource("1_6sife")]
 layout_mode = 2
-
-[node name="Label" parent="VBoxContainer/UIVector3Scale" index="0"]
-text = "Scale"
-
-[editable path="VBoxContainer/UIVector3Position"]
-[editable path="VBoxContainer/UIVector3Rotation"]
-[editable path="VBoxContainer/UIVector3Scale"]

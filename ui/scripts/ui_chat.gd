@@ -21,6 +21,8 @@ func _exit_tree():
 
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_released("enter"):		
+		if UI.instance.block_enter:
+			return
 		var open: bool = toggle_command_input()
 		if not open:
 			submit_command()
