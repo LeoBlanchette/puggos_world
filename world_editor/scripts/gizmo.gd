@@ -158,6 +158,8 @@ func _input(event: InputEvent) -> void:
 
 #region targeting 
 func _on_object_selected(ob:Node3D)->void:
+	if not Editor.instance.is_valid_selectable_object(ob):
+		return
 	set_target(ob)
 
 func update_transform_space_mode():

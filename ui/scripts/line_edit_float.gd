@@ -5,11 +5,11 @@ var value : float = 0.0 # export as needed
 var previous_valid_value:float 
 
 func _ready() -> void:
-	text_submitted.connect(_on_LineEdit_text_changed)
+	text_submitted.connect(_on_line_edit_text_changed)
 	focus_entered.connect(block_enter)
 	gui_input.connect(release_enter)
 
-func _on_LineEdit_text_changed(new_text: String) -> void: # "text_changed" signal handler
+func _on_line_edit_text_changed(new_text: String) -> void: # "text_changed" signal handler
 	if new_text.is_empty():
 		self.text = str(previous_valid_value)
 		return

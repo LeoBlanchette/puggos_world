@@ -62,7 +62,10 @@ func _draw() -> void:
 func do_arbitrary_line():
 	if arbitrary_line.is_empty():
 		return
-	draw_line(arbitrary_line[0], arbitrary_line[1], Color.RED, 1.0)
+	draw_line(arbitrary_line[0], arbitrary_line[1], Color.DARK_GRAY, 1.0)
+	draw_circle(arbitrary_line[0], 2, Color.WHITE)
+	draw_circle(arbitrary_line[1], 2, Color.WHITE)
+
 	
 func do_guide_lines():
 	if guide_lines.is_empty():

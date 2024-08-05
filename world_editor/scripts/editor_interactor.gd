@@ -59,11 +59,11 @@ func _ready() -> void:
 		
 	entered_viewport.connect(_on_entered_viewport)
 	object_selected.connect(_on_object_selected)
+	Editor.instance.connect_editor_interactor()
 
 func _exit_tree() -> void:
 	if instance == self:
 		instance = null
-		
 	#entered_viewport.disconnect(_on_entered_viewport)
 	#object_selected.disconnect(UIWorldEditor.instance._on_object_selected)
 

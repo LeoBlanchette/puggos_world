@@ -78,7 +78,6 @@ func _ready() -> void:
 		
 	initiate()
 
-
 func _exit_tree() -> void:
 	if instance == self:
 		instance = null
@@ -106,7 +105,6 @@ func initiate():
 			enter_player_mode()
 
 	# SIGNALS
-	EditorInteractor.instance.object_selected.connect(_on_object_selected)
 	object_translated.connect(_on_object_translated)
 	object_rotated.connect(_on_object_rotated)
 	object_scaled.connect(_on_object_scaled)
@@ -115,6 +113,14 @@ func initiate():
 	object_scaled_ui.connect(_on_object_scaled_ui)
 	GameManager.instance.pre_level_change.connect(_on_changing_levels)
 	
+
+func connect_editor_interactor():
+	EditorInteractor.instance.object_selected.connect(_on_object_selected)
+
+func disconnect_editor_interactor():
+	if EditorInteractor.instance == null:
+		return
+	EditorInteractor.instance.object_selected.disconnect(_on_object_selected)
 
 func clear_active_object()->void:
 	edited_object = null
@@ -163,6 +169,7 @@ func reset_interaction_objects():
 	
 ## Enter play mode, as though game were running.
 func enter_play_mode()->void:
+	disconnect_editor_interactor()
 	reset_interaction_objects()
 	add_player_character()
 	GameManager.instance.lock_mouse()
@@ -178,6 +185,7 @@ func enter_editor_mode()->void:
 	
 ## Enter player build mode.
 func enter_player_mode()->void:
+	disconnect_editor_interactor()
 	reset_interaction_objects()
 	add_player_character()
 	GameManager.instance.lock_mouse()
@@ -226,6 +234,7 @@ func _on_object_selected(ob:Node3D)->void:
 		return
 	if is_gizmo_transforming(): #this prevents selection of overlapping objects when moving gizmo
 		return
+
 	edited_object = ob
 	print(edited_object)
 	object_selected.emit()
@@ -253,6 +262,13 @@ func is_gizmo(ob:Node3D)->bool:
 		return true
 	return false
 	
+func is_valid_selectable_object(ob:Node3D)->bool:
+	if is_gizmo(ob):
+		return false
+	if is_ground_plane(ob):
+		return false
+	return true
+
 func _on_object_translated(old_position:Vector3, new_position:Vector3)->void:
 	if edited_object == null:
 		return
@@ -278,7 +294,6 @@ func _on_object_translated_ui(old_position:Vector3, new_position:Vector3)->void:
 	if edited_object == null:
 		return
 	# NOTE: An UNDO can be placed here using old position. 
-	print(new_position)
 	edited_object.global_position = new_position
 	object_transform_changed_ui.emit()
 	

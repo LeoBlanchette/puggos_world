@@ -17,6 +17,7 @@ label = NodePath("Label")
 spin_box_x = NodePath("HBoxContainer/X_Val/LineEdit_X")
 spin_box_y = NodePath("HBoxContainer/Y_Val/LineEdit_Y")
 spin_box_z = NodePath("HBoxContainer/Z_Val/LineEdit_Z")
+drag_force = 0.05
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
@@ -31,10 +32,13 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="Label_X" type="Label" parent="HBoxContainer/X_Val"]
-custom_minimum_size = Vector2(15, 0)
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+size_flags_vertical = 1
+mouse_filter = 1
+mouse_default_cursor_shape = 10
 theme_override_colors/font_color = Color(0.888782, 0, 0.118767, 1)
-text = "X"
+text = "x"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -53,10 +57,13 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="Label_Y" type="Label" parent="HBoxContainer/Y_Val"]
-custom_minimum_size = Vector2(15, 0)
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+size_flags_vertical = 1
+mouse_filter = 1
+mouse_default_cursor_shape = 10
 theme_override_colors/font_color = Color(0, 0.57422, 0.210418, 1)
-text = "Y"
+text = "y"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -74,10 +81,13 @@ layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="Label_Z" type="Label" parent="HBoxContainer/Z_Val"]
-custom_minimum_size = Vector2(15, 0)
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
+size_flags_vertical = 1
+mouse_filter = 1
+mouse_default_cursor_shape = 10
 theme_override_colors/font_color = Color(1.15514e-06, 0.521328, 0.683115, 1)
-text = "Z"
+text = "z"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -89,3 +99,10 @@ focus_next = NodePath("../../X_Val/LineEdit_X")
 focus_previous = NodePath("../../Y_Val/LineEdit_Y")
 text = "0"
 script = ExtResource("2_fhjkj")
+
+[connection signal="mouse_entered" from="HBoxContainer/X_Val/Label_X" to="." method="_on_label_x_mouse_entered"]
+[connection signal="mouse_exited" from="HBoxContainer/X_Val/Label_X" to="." method="_on_label_x_mouse_exited"]
+[connection signal="mouse_entered" from="HBoxContainer/Y_Val/Label_Y" to="." method="_on_label_y_mouse_entered"]
+[connection signal="mouse_exited" from="HBoxContainer/Y_Val/Label_Y" to="." method="_on_label_y_mouse_exited"]
+[connection signal="mouse_entered" from="HBoxContainer/Z_Val/Label_Z" to="." method="_on_label_z_mouse_entered"]
+[connection signal="mouse_exited" from="HBoxContainer/Z_Val/Label_Z" to="." method="_on_label_z_mouse_exited"]
