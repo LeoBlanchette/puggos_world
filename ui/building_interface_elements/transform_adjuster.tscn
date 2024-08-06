@@ -29,9 +29,12 @@ theme = SubResource("Theme_ojp7c")
 
 [node name="UIVector_Position" parent="VBoxContainer" instance=ExtResource("1_6sife")]
 layout_mode = 2
+drag_force = 0.02
 
 [node name="UIVector_Rotation" parent="VBoxContainer" instance=ExtResource("1_6sife")]
 layout_mode = 2
+drag_force = 0.2
 
 [node name="UIVector5_Scale" parent="VBoxContainer" instance=ExtResource("1_6sife")]
 layout_mode = 2
+drag_force = 0.01

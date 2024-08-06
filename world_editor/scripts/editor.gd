@@ -113,6 +113,14 @@ func initiate():
 	object_scaled_ui.connect(_on_object_scaled_ui)
 	GameManager.instance.pre_level_change.connect(_on_changing_levels)
 	
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("tab"):
+		if Editor.instance.current_interaction_mode == Editor.InteractionMode.EDITOR:
+			return
+		if GameManager.instance.is_mouse_locked():
+			GameManager.instance.free_mouse()
+		else:
+			GameManager.instance.lock_mouse()
 
 func connect_editor_interactor():
 	EditorInteractor.instance.object_selected.connect(_on_object_selected)

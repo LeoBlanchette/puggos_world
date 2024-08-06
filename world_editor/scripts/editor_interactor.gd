@@ -68,6 +68,8 @@ func _exit_tree() -> void:
 	#object_selected.disconnect(UIWorldEditor.instance._on_object_selected)
 
 func _input(event):
+	if UI.instance.is_ui_blocking():
+		return
 	# Receives mouse motion
 	if event is InputEventMouseMotion:
 		_mouse_position = event.relative
@@ -106,10 +108,14 @@ func _input(event):
 				_alt = event.pressed
 
 func _physics_process(delta: float) -> void:
+	if UI.instance.is_ui_blocking():
+		return
 	get_current_target()
 
 # Updates mouselook and movement every frame
 func _process(delta):
+	if UI.instance.is_ui_blocking():
+		return
 	_update_mouselook()
 	_update_movement(delta)
 
