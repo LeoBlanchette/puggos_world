@@ -18,6 +18,12 @@ signal can_place_status_changed(old_value:bool, new_value:bool)
 
 var target_position:Vector3 = Vector3.ZERO
 
+#region placement positions
+var placement_position_snapped:Vector3 = Vector3.ZERO
+var placement_rotation_snapped:Vector3 = Vector3.ZERO
+var place_snapped_transform:bool = false
+#endregion 
+
 @export var anchor:Node3D = null
 var anchored_object:Node3D = null
 
@@ -70,8 +76,14 @@ func snap_to_target():
 			return
 		hit_marker.global_position = collider.global_position
 		hit_marker.global_rotation = collider.global_rotation
+		placement_position_snapped = collider.global_position
+		placement_rotation_snapped = collider.global_rotation_degrees
+		place_snapped_transform = true
 	else:
 		hit_marker.hide()	
+		placement_position_snapped = Vector3.ZERO
+		placement_rotation_snapped = Vector3.ZERO
+		place_snapped_transform = false
 
 func slide_to_target():	
 	is_snap_mode_active = false
@@ -118,8 +130,18 @@ func anchor_placement_object(ob:Node3D):
 func place_item()->void:
 	if not can_place():
 		return	
-	var pos = ArgParser.string_argument_from_vector("--p", anchored_object.global_position)
-	var rot = ArgParser.string_argument_from_vector("--r", anchored_object.global_rotation_degrees)
+		
+	var placement_pos:Vector3 
+	var placement_rot:Vector3
+	if place_snapped_transform:
+		placement_pos = placement_position_snapped
+		placement_rot = placement_rotation_snapped
+	else:
+		placement_pos = anchored_object.global_position
+		placement_rot = anchored_object.global_rotation_degrees
+	
+	var pos = ArgParser.string_argument_from_vector("--p", placement_pos)
+	var rot = ArgParser.string_argument_from_vector("--r", placement_rot)
 	
 	Cmd.cmd("/spawn {cat} {id} {p} {r}".format({"cat":current_object_category, "id":current_object_id, "p":pos, "r":rot}))
 	
