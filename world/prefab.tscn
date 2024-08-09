@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cbtvfrj6uf24w"]
+
+[ext_resource type="Script" path="res://world/scripts/prefab.gd" id="1_870fj"]
+
+[node name="Prefab" type="Node3D"]
+script = ExtResource("1_870fj")

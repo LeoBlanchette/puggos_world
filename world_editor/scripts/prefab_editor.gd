@@ -18,8 +18,8 @@ func _ready():
 		PrefabEditor.instance = self
 	else:
 		PrefabEditor.instance.queue_free()
-		
-	ObjectIndex.object_index.spawned.connect(_on_object_spawned)
+	super._ready()
+
 	load_prefab_editor_related_mods()
 	Achievements.achievement.emit("prefab_editor")
 
@@ -38,6 +38,3 @@ func load_prefab(meta:={}, commands:=[])->void:
 		prefab_name = meta["name"]
 	for command in commands:
 		Cmd.cmd(command)
-
-func _on_object_spawned(ob:Node):
-	ObjectGrouper.apply_default_groups(ob)

@@ -6,7 +6,7 @@ static var current_world := ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	ObjectIndex.object_index.spawned.connect(_on_object_spawned)
 
 @rpc("any_peer", "call_local", "reliable")
 func spawn_object(category:String, id:int, pos:Vector3, rot:Vector3):
@@ -17,3 +17,10 @@ func spawn_object(category:String, id:int, pos:Vector3, rot:Vector3):
 	ob.rotation_degrees = rot
 	ob.name = ob.get_meta("name", "spawned_object")
 	self.add_child(ob, true)
+
+func add_prefab(prefab:Prefab, pos:Vector3, rot:Vector3)->void:
+	add_child(prefab)
+
+
+func _on_object_spawned(ob:Node):
+	ObjectGrouper.apply_default_groups(ob)

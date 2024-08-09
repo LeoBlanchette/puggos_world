@@ -24,6 +24,8 @@ func cmd(command_string:String):
 			do_save(command)
 		"/load":
 			do_load(command)
+		"/load_prefab":
+			load_prefab(command)
 		"/clear":
 			do_clear(command)
 		"/give":
@@ -68,6 +70,17 @@ func do_save(command:ArgParser):
 			Save.save_world_editor()
 		GameManager.SCENES.WORLD:
 			Save.save_world()
+
+func load_prefab(command:ArgParser):
+	if GameManager.current_level == GameManager.SCENES.PREFAB_EDITOR:
+		print_to_console("When using the Prefab Editor, use \"load\" instead. \"load_prefab\" is for World and World Editor use.")
+		return
+	var file_name = command.get_argument("1", null)
+	if file_name==null:
+		print_to_console("Please load by a file name...")
+		print_to_console("Example: /load some_prefab_name")
+		return
+	Save.load_prefab(file_name)
 
 func do_load(command:ArgParser):
 	var file_name = command.get_argument("1", null)
@@ -135,11 +148,13 @@ func interact(command:ArgParser):
 	if instance_id_string == null:
 		return
 	var instance_id = int(instance_id_string)
-	var ob:Node3D = instance_from_id(instance_id)
+	
+	var ob = instance_from_id(instance_id)
+	if ob is not Node3D:
+		return
 	if World.instance == null:
 		return
 	World.instance.do_player_interaction.rpc_id(1, ob.get_path())
-	pass
 
 ## gives player a thing
 func give(_command: ArgParser):

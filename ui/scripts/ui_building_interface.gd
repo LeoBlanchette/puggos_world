@@ -23,8 +23,9 @@ func _exit_tree():
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if Input.is_action_just_pressed("toggle_crafting_menu"):
-			if Editor.instance.current_interaction_mode == Editor.instance.InteractionMode.EDITOR:
-				return
+			if Editor.instance != null:
+				if Editor.instance.current_interaction_mode == Editor.instance.InteractionMode.EDITOR:
+					return
 			toggle_building_interface()
 
 static func set_active(active:bool):

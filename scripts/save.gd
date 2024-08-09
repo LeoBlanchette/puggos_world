@@ -6,6 +6,9 @@ const SERVER_PATH = "user://data/server/"
 const PREFABS_PATH = "user://data/prefabs/"
 const WORLDS_PATH = "user://data/worlds/"
 
+## The prefab used in World Editor and World. NOT used in Prefab Editor
+const PREFAB = preload("res://world/prefab.tscn")
+
 func _ready() -> void:
 	create_directory_paths()	
 	
@@ -87,6 +90,35 @@ func save_world_editor():
 func save_world():
 	pass
 
+
+func load_prefab(prefab_name:="", pos:=Vector3.ZERO,rot:=Vector3.ZERO)->Prefab:
+	var dir = DirAccess.open(get_prefabs_path())	
+
+	var prefab_data_path:String = get_prefab_data_path(prefab_name)
+	var meta_data_path := prefab_data_path+"data.json"
+	var commands_path := prefab_data_path+"commands.txt"
+	print(meta_data_path)
+	print(prefab_data_path)
+	if not FileAccess.file_exists(meta_data_path):
+		return null
+	if not FileAccess.file_exists(commands_path):
+		return null
+	var meta_data:Dictionary = get_saved_json(meta_data_path)
+	var commands:Array = get_saved_commands(commands_path)
+	
+	var prefab_instantiated:Prefab = PREFAB.instantiate()
+	prefab_instantiated.global_position = pos
+	prefab_instantiated.global_rotation = rot
+	prefab_instantiated.build(meta_data, commands)
+	match GameManager.instance.current_level:
+		GameManager.SCENES.WORLD:
+			World.instance.add_prefab(prefab_instantiated, pos, rot)
+		GameManager.SCENES.WORLD_EDITOR:
+			WorldEditor.instance.add_prefab(prefab_instantiated, pos, rot)
+
+	
+	return prefab_instantiated
+	
 func load_prefab_editor(prefab_name:=""):
 	var dir = DirAccess.open(get_prefabs_path())
 	
