@@ -160,7 +160,7 @@ func _input(event: InputEvent) -> void:
 func _on_object_selected(ob:Node3D)->void:
 	if not Editor.instance.is_valid_selectable_object(ob):
 		return
-	set_target(ob)
+	set_target(Editor.instance.get_active_object())
 
 func update_transform_space_mode():
 	if Editor.instance.get_active_object() == null:
@@ -265,6 +265,8 @@ func is_self_click(ob:Node3D)->bool:
 	if Prefab.is_prefab(ob):
 		return false
 	for handle in handles_static_bodies:
+		if not ob.has_meta("get_rid"):
+			continue
 		if handle.get_rid() == ob.get_rid():
 			return true
 	return false

@@ -271,7 +271,7 @@ func assign_object_root(ob):
 
 func get_object_root(ob):
 	if ob == null:
-		return ob
+		return null
 	if not has_meta("object_root"):
 		return ob
 	var id:int = ob.get_meta("object_root", 0)
