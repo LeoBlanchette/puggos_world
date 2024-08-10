@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dgs6wc466d1op"]
+[gd_scene load_steps=17 format=3 uid="uid://dgs6wc466d1op"]
 
 [ext_resource type="Theme" uid="uid://b8qsxvqsy2clq" path="res://ui/themes/editor_theme.tres" id="1_7qwvv"]
 [ext_resource type="Script" path="res://ui/scripts/ui_editor.gd" id="1_iaqgy"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://k8epanx3nrqi" path="res://addons/godot_aerodynamic_physics/icons/object.svg" id="11_n4rsj"]
 [ext_resource type="PackedScene" uid="uid://b7ojyw6bptbkg" path="res://ui/scripts/elements/divider.tscn" id="11_xl0nv"]
 [ext_resource type="PackedScene" uid="uid://qj2rmi63n4ga" path="res://ui/building_interface_elements/transform_adjuster.tscn" id="13_qiin7"]
+[ext_resource type="Texture2D" uid="uid://bi387joh01con" path="res://images/icons/editor/NodeWarning.svg" id="14_f3xxl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onsc0"]
 bg_color = Color(0.122252, 0.122252, 0.122252, 1)
@@ -23,7 +24,7 @@ content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
 
-[node name="UIEDitor" type="Control" node_paths=PackedStringArray("modes_panel", "controls_panel", "button_local_space", "action_updates_label")]
+[node name="UIEDitor" type="Control" node_paths=PackedStringArray("modes_panel", "controls_panel", "button_local_space", "action_updates_label", "selected_object_label", "unpack_prefab_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,9 +36,11 @@ script = ExtResource("1_iaqgy")
 modes_panel = NodePath("ModePanel")
 controls_panel = NodePath("ControlsPanel")
 interaction_mode_button_group = ExtResource("3_hsql1")
-transform_button_group = ExtResource("2_iqhtm")
 button_local_space = NodePath("ControlsPanel/ControlTop/ObjectOps/HBoxContainer/ButtonLocalSpace")
 action_updates_label = NodePath("ViewportOverlay/LabelActionUpdates")
+selected_object_label = NodePath("ControlsPanel/ControlRight/ObjectOpsRight/VBoxContainer/SelectedObjectLabel")
+transform_button_group = ExtResource("2_iqhtm")
+unpack_prefab_button = NodePath("ControlsPanel/ControlRight/ObjectOpsRight/VBoxContainer/UnpackPrefabButton")
 
 [node name="ModePanel" type="Panel" parent="."]
 custom_minimum_size = Vector2(0, 60)
@@ -207,8 +210,28 @@ theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="TransformAdjuster" parent="ControlsPanel/ControlRight/ObjectOpsRight" instance=ExtResource("13_qiin7")]
+[node name="VBoxContainer" type="VBoxContainer" parent="ControlsPanel/ControlRight/ObjectOpsRight"]
 layout_mode = 2
+
+[node name="SelectedObjectLabel" type="Label" parent="ControlsPanel/ControlRight/ObjectOpsRight/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme = ExtResource("1_7qwvv")
+theme_override_colors/font_color = Color(1, 1, 1, 0.392157)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+text = "Selected Object"
+
+[node name="TransformAdjuster" parent="ControlsPanel/ControlRight/ObjectOpsRight/VBoxContainer" instance=ExtResource("13_qiin7")]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+
+[node name="UnpackPrefabButton" type="Button" parent="ControlsPanel/ControlRight/ObjectOpsRight/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_7qwvv")
+theme_override_colors/font_color = Color(1, 0.866667, 0.396078, 1)
+text = "Unpack Prefab"
+icon = ExtResource("14_f3xxl")
 
 [node name="ControlBottom" type="Panel" parent="ControlsPanel"]
 custom_minimum_size = Vector2(0, 120)
@@ -252,3 +275,4 @@ vertical_alignment = 2
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
 [connection signal="toggled" from="ControlsPanel/ControlTop/ObjectOps/HBoxContainer/ButtonLocalSpace" to="." method="_on_button_local_space_toggled"]
+[connection signal="pressed" from="ControlsPanel/ControlRight/ObjectOpsRight/VBoxContainer/UnpackPrefabButton" to="." method="_on_unpack_prefab_button_pressed"]

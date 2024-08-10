@@ -7,13 +7,14 @@ const CHAT_MESSAGE = preload("res://ui/chat_interface_elements/chat_message.tscn
 @export var command_input: LineEdit = null 
 var text_lines: Array[HBoxContainer] = []
 
-static var instance = null
+static var instance:UIChat = null
 
 func _ready() -> void:
 	if instance == null:
 		instance = self
 	else: 
 		queue_free()
+	instance.command_input_close()
 
 func _exit_tree():
 	if UI.instance == self:

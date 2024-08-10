@@ -51,4 +51,10 @@ func round_to_dec(num, decimals):
 	var round_num = sgn*(int(num) + num_dec)
 	return round_num
 
-	
+## Do not use except in special limited cases. Created for the "Prefab" object in World building.
+## This should mainly be used for objects where size is known and traversal will not be heavy.
+func get_all_children(in_node,arr:=[]):
+	arr.push_back(in_node)
+	for child in in_node.get_children():
+		arr = get_all_children(child,arr)
+	return arr

@@ -7,6 +7,7 @@ const PLAYER_TSCN = preload("res://nodes/characters/player.tscn")
 const UI_EDITOR_TSCN = preload("res://ui/ui_editor.tscn")
 
 signal object_selected
+signal object_selected_changed(previous:Node3D, current:Node3D)
 ## The XYZ values of Position, Rotation, or Scale
 signal object_transform_changed
 ## The XYZ values of Position, Rotation, or Scale, via UI
@@ -66,7 +67,12 @@ signal object_translated_ui(previous_position, current_position)
 signal object_rotated_ui(previous_rotation, current_rotation)
 signal object_scaled_ui(previous_scale, current_scale)
 
-var edited_object:Node3D = null
+var previous_edited_object:Node3D = null
+var edited_object:Node3D = null:
+	set(value):
+		previous_edited_object = edited_object
+		edited_object = value
+		object_selected_changed.emit(previous_edited_object, edited_object)
 
 static var instance:Editor = null
 
@@ -231,6 +237,13 @@ func remove_gizmo():
 		EditorGizmo.instance.remove()
 	gizmo = null
 
+func unpack_prefab():
+	if not Prefab.is_prefab(get_active_object()):
+		return
+	var prefab:Prefab = Prefab.get_prefab_root(get_active_object())
+	prefab.unpack()
+	clear_active_object()
+	
 #region object editing
 func _on_object_selected(ob:Node3D)->void:
 	if is_gizmo(ob):
@@ -243,9 +256,31 @@ func _on_object_selected(ob:Node3D)->void:
 	if is_gizmo_transforming(): #this prevents selection of overlapping objects when moving gizmo
 		return
 
-	edited_object = ob
-	print(edited_object)
-	object_selected.emit()
+	if Prefab.is_prefab(ob):
+		ob = Prefab.get_prefab_root(ob)
+	
+	edited_object = get_object_root(ob)
+
+## A temporary meta assignment to give all sub objects a reference to the object root
+## specified by "ob" node. Should be run after unpacking a prefab or loading mods in 
+## for the first time.
+func assign_object_root(ob):
+	set_meta("object_root", ob.get_instance_id())
+	for child:Node in HelperFunctions.get_all_children(ob):
+		child.set_meta("object_root", ob.get_instance_id())
+
+func get_object_root(ob):
+	if ob == null:
+		return ob
+	if not has_meta("object_root"):
+		return ob
+	var id:int = ob.get_meta("object_root", 0)
+	if id == 0:
+		return ob
+	var root = instance_from_id(id)
+	if root != null:
+		return root
+	return ob
 
 func is_ground_plane(ob:Node3D)->bool:
 	if ob == null:
@@ -294,6 +329,9 @@ func _on_object_rotated(old_rotation:Vector3, new_rotation:Vector3,)->void:
 func _on_object_scaled(old_scale:Vector3, new_scale:Vector3,)->void:
 	if edited_object == null:
 		return	
+	if Prefab.is_prefab(get_active_object()):
+		Editor.instance.set_action_text("NOTE: Cannot scale a prefab.")
+		return
 	# NOTE: An UNDO can be placed here using old rotation. 
 	edited_object.scale = new_scale
 	object_transform_changed.emit()
@@ -315,6 +353,9 @@ func _on_object_rotated_ui(old_rotation:Vector3, new_rotation:Vector3,)->void:
 func _on_object_scaled_ui(old_scale:Vector3, new_scale:Vector3,)->void:
 	if edited_object == null:
 		return	
+	if Prefab.is_prefab(get_active_object()):
+		Editor.instance.set_action_text("NOTE: Cannot scale a prefab.")
+		return
 	# NOTE: An UNDO can be placed here using old rotation. 
 	edited_object.scale = new_scale
 	object_transform_changed_ui.emit()

@@ -92,6 +92,8 @@ func is_ui_blocking()->bool:
 			continue
 		if ui_node.is_visible():
 			return true
+	if UIChat.instance.is_chat_open():
+		return true
 	return false
 
 static func turn_off_ui_element_after_seconds(seconds:float, ui_element:Node)->void:

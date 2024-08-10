@@ -139,6 +139,8 @@ func spawn(command: ArgParser):
 	match GameManager.current_level:
 		GameManager.SCENES.WORLD:
 			World.instance.spawn_object.rpc_id(1, object_category, object_id, pos, rot)
+		GameManager.SCENES.WORLD_EDITOR:
+			WorldEditor.instance.spawn_object(object_category, object_id, pos, rot)
 		GameManager.SCENES.PREFAB_EDITOR:
 			PrefabEditor.instance.spawn_object(object_category, object_id, pos, rot)
 

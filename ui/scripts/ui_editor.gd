@@ -8,11 +8,18 @@ const SCENE_TYPE:GameManager.SCENES = GameManager.SCENES.WORLD_EDITOR
 @export var controls_panel:Control
 
 @export var interaction_mode_button_group:ButtonGroup
-@export var transform_button_group:ButtonGroup
+
 var view_port_mode:bool = false
 @export var button_local_space: Button 
 
 @export var action_updates_label:Label
+
+#region object ops
+@export var selected_object_label: Label 
+@export var transform_button_group:ButtonGroup
+@export var unpack_prefab_button:Button
+#endregion 
+
 var action_update:String:
 	get:
 		return action_updates_label.text
@@ -37,6 +44,7 @@ func connect_signals():
 			button.connect("pressed", _on_interaction_mode_button_pressed)
 	
 	Editor.instance.changed_interaction_mode.connect(change_interaction_mode)
+	Editor.instance.object_selected_changed.connect(_on_object_selected_changed)
 
 func disconnect_signals():
 	#TRANSFORM BUTTON GROUP
@@ -48,7 +56,7 @@ func disconnect_signals():
 			button.disconnect("pressed", _on_interaction_mode_button_pressed)
 	if Editor.instance != null && Editor.instance.changed_interaction_mode.is_connected(change_interaction_mode):
 		Editor.instance.changed_interaction_mode.disconnect(change_interaction_mode)
-	
+		Editor.instance.object_selected_changed.disconnect(_on_object_selected_changed)
 static func get_scene_type():
 	return UIMain.instance.SCENE_TYPE
 
@@ -111,3 +119,18 @@ func _on_button_local_space_toggled(toggled_on: bool) -> void:
 		Editor.instance.current_transform_space_mode = Editor.CurrentTransformSpaceMode.LOCAL
 	else:
 		Editor.instance.current_transform_space_mode = Editor.CurrentTransformSpaceMode.GLOBAL
+
+## Unpacks a prefab if active object is a prefab
+func _on_unpack_prefab_button_pressed() -> void:
+	Editor.instance.unpack_prefab()
+	unpack_prefab_button.hide()
+	
+func _on_object_selected_changed(old_object:Node3D, new_object:Node3D)->void:
+	if new_object == null:
+		return
+	selected_object_label.text = new_object.name
+	
+	if Prefab.is_prefab(new_object):
+		unpack_prefab_button.show()
+	else:
+		unpack_prefab_button.hide()

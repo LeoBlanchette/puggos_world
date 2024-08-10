@@ -1,36 +1,59 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://b8qsxvqsy2clq"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://b8qsxvqsy2clq"]
 
 [ext_resource type="FontFile" uid="uid://dpato43ee336o" path="res://ui/fonts/Ubuntu/Ubuntu-Light.ttf" id="1_qq0yg"]
+[ext_resource type="FontFile" uid="uid://dgvf6ypcf4vmv" path="res://ui/fonts/Ubuntu/Ubuntu-Regular.ttf" id="2_u8xv8"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_84uu2"]
-bg_color = Color(0.111197, 0.111197, 0.111197, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.278431, 0.54902, 0.74902, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q548k"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f5dmu"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
 bg_color = Color(0.278431, 0.54902, 0.74902, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3nw4h"]
-bg_color = Color(0.111197, 0.111197, 0.111197, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.278431, 0.54902, 0.74902, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t1sux"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_08fuk"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.278431, 0.54902, 0.74902, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6gmpt"]
 bg_color = Color(0.169245, 0.169245, 0.169245, 1)
 
 [resource]
+default_font = ExtResource("2_u8xv8")
+default_font_size = 16
 Button/colors/font_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
 Button/colors/icon_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
 Button/colors/icon_hover_pressed_color = Color(0.278431, 0.54902, 0.74902, 1)
 Button/colors/icon_pressed_color = Color(0.567, 0.7557, 0.9, 1)
 Button/fonts/font = ExtResource("1_qq0yg")
-Button/styles/focus = SubResource("StyleBoxFlat_84uu2")
+Button/styles/focus = SubResource("StyleBoxFlat_q548k")
 Button/styles/hover = SubResource("StyleBoxFlat_f5dmu")
-Button/styles/pressed = SubResource("StyleBoxFlat_3nw4h")
+Button/styles/normal = SubResource("StyleBoxFlat_t1sux")
+Button/styles/pressed = SubResource("StyleBoxFlat_08fuk")
 Panel/styles/panel = SubResource("StyleBoxFlat_6gmpt")

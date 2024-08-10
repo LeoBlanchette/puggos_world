@@ -20,6 +20,7 @@ func spawn_object(category:String, id:int, pos:Vector3, rot:Vector3):
 
 func add_prefab(prefab:Prefab, pos:Vector3, rot:Vector3)->void:
 	add_child(prefab)
+	prefab.set_to_gizmo() #this will only work if Gizmo instance != null.
 
 
 func _on_object_spawned(ob:Node):

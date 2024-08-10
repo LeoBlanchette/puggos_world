@@ -130,7 +130,7 @@ func anchor_placement_object(ob:Node3D):
 func place_item()->void:
 	if not can_place():
 		return	
-		
+
 	var placement_pos:Vector3 
 	var placement_rot:Vector3
 	if place_snapped_transform:
@@ -142,8 +142,9 @@ func place_item()->void:
 	
 	var pos = ArgParser.string_argument_from_vector("--p", placement_pos)
 	var rot = ArgParser.string_argument_from_vector("--r", placement_rot)
-	
-	Cmd.cmd("/spawn {cat} {id} {p} {r}".format({"cat":current_object_category, "id":current_object_id, "p":pos, "r":rot}))
+	var command:String = "/spawn {cat} {id} {p} {r}".format({"cat":current_object_category, "id":current_object_id, "p":pos, "r":rot})
+	print(command)
+	Cmd.cmd(command)
 	
 	convert_active_object_to_holographic(false)
 	cancel_place_item()

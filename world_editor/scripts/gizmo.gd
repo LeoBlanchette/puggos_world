@@ -176,10 +176,14 @@ func snap_to_active_object():
 
 
 func set_target(ob:Node3D):
+	if ob == null:
+		return
 	if is_self_click(ob):
 		return
 	if is_transforming:
 		return
+	if Prefab.is_prefab(ob):
+		ob = Prefab.get_prefab_root(ob)
 	global_position = ob.global_position
 	if use_local_space():
 		global_rotation = ob.global_rotation
@@ -188,6 +192,8 @@ func set_target(ob:Node3D):
 	current_scale = ob.scale
 
 func create_tmp_anchor()->Node3D:
+	if Editor.instance.get_active_object() == null:
+		return
 	tmp_anchor = Node3D.new()
 	tmp_anchor.name = "tmp_anchor"
 	add_child(tmp_anchor)
@@ -256,6 +262,8 @@ func assign_arrays()->void:
 	]
 	
 func is_self_click(ob:Node3D)->bool:
+	if Prefab.is_prefab(ob):
+		return false
 	for handle in handles_static_bodies:
 		if handle.get_rid() == ob.get_rid():
 			return true
