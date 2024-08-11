@@ -5,8 +5,8 @@ extends PanelContainer
 # Which means the entire item can have variable size, not just because of DPI.
 # In such cases, the hierarchy must be made of containers that grow based on their children.
 
-const HT_ColorMaterial = preload("display_color_material.tres")
-const HT_ColorSliceShader = preload("display_color_slice.gdshader")
+const HT_ColorMaterial = preload("./display_color_material.tres")
+const HT_ColorSliceShader = preload("./display_color_slice.gdshader")
 # TODO Can't preload because it causes the plugin to fail loading if assets aren't imported
 #const HT_DummyTexture = preload("../icons/empty.png")
 const DUMMY_TEXTURE_PATH = "res://addons/zylann.hterrain/tools/icons/empty.png"

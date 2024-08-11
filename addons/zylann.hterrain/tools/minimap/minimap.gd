@@ -4,9 +4,9 @@ extends Control
 const HT_Util = preload("../../util/util.gd")
 const HTerrain = preload("../../hterrain.gd")
 const HTerrainData = preload("../../hterrain_data.gd")
-const HT_MinimapOverlay = preload("minimap_overlay.gd")
+const HT_MinimapOverlay = preload("./minimap_overlay.gd")
 
-const HT_MinimapShader = preload("minimap_normal.gdshader")
+const HT_MinimapShader = preload("./minimap_normal.gdshader")
 # TODO Can't preload because it causes the plugin to fail loading if assets aren't imported
 #const HT_WhiteTexture = preload("../icons/white.png")
 const WHITE_TEXTURE_PATH = "res://addons/zylann.hterrain/tools/icons/white.png"

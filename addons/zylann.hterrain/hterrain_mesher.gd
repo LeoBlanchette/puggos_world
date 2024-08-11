@@ -1,7 +1,7 @@
 @tool
 
-#const HT_Logger = preload("util/logger.gd")
-const HTerrainData = preload("hterrain_data.gd")
+#const HT_Logger = preload("./util/logger.gd")
+const HTerrainData = preload("./hterrain_data.gd")
 
 const SEAM_LEFT = 1
 const SEAM_RIGHT = 2
@@ -110,6 +110,12 @@ static func make_indices(chunk_size_x: int, chunk_size_y: int, seams: int) -> Pa
 			var i01 := ii + chunk_size_x + 1
 			var i11 := i01 + 1
 
+			# 01---11
+			#  |  /|
+			#  | / |
+			#  |/  |
+			# 00---10
+
 			# This flips the pattern to make the geometry orientation-free.
 			# Not sure if it helps in any way though
 			var flip = ((x + reg_origin_x) + (y + reg_origin_y) % 2) % 2 != 0
@@ -137,6 +143,17 @@ static func make_indices(chunk_size_x: int, chunk_size_y: int, seams: int) -> Pa
 
 	# Left seam
 	if seams & SEAM_LEFT:
+
+		#     4 . 5
+		#     |\  .
+		#     | \ .
+		#     |  \.
+		#  (2)|   3
+		#     |  /.
+		#     | / .
+		#     |/  .
+		#     0 . 1
+
 		var i := 0
 		var n := chunk_size_y / 2
 
@@ -164,6 +181,17 @@ static func make_indices(chunk_size_x: int, chunk_size_y: int, seams: int) -> Pa
 			i = i4
 
 	if seams & SEAM_RIGHT:
+
+		#     4 . 5
+		#     .  /|
+		#     . / |
+		#     ./  |
+		#     2   |(3)
+		#     .\  |
+		#     . \ |
+		#     .  \|
+		#     0 . 1
+
 		var i := chunk_size_x - 1
 		var n := chunk_size_y / 2
 
@@ -193,6 +221,13 @@ static func make_indices(chunk_size_x: int, chunk_size_y: int, seams: int) -> Pa
 
 	if seams & SEAM_BOTTOM:
 
+		#  3 . 4 . 5
+		#  .  / \  .
+		#  . /   \ .
+		#  ./     \.
+		#  0-------2
+		#     (1)
+
 		var i := 0;
 		var n := chunk_size_x / 2;
 		
@@ -221,6 +256,13 @@ static func make_indices(chunk_size_x: int, chunk_size_y: int, seams: int) -> Pa
 			i = i2
 
 	if seams & SEAM_TOP:
+
+		#     (4)
+		#  3-------5
+		#  .\     /.
+		#  . \   / .
+		#  .  \ /  .
+		#  0 . 1 . 2
 
 		var i := (chunk_size_y - 1) * (chunk_size_x + 1)
 		var n := chunk_size_x / 2

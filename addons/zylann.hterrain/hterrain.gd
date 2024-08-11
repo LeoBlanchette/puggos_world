@@ -1,16 +1,16 @@
 @tool
 extends Node3D
 
-const HT_NativeFactory = preload("native/factory.gd")
-const HT_Mesher = preload("hterrain_mesher.gd")
-const HT_Grid = preload("util/grid.gd")
-const HTerrainData = preload("hterrain_data.gd")
-const HTerrainChunk = preload("hterrain_chunk.gd")
-const HTerrainChunkDebug = preload("hterrain_chunk_debug.gd")
-const HT_Util = preload("util/util.gd")
-const HTerrainCollider = preload("hterrain_collider.gd")
-const HTerrainTextureSet = preload("hterrain_texture_set.gd")
-const HT_Logger = preload("util/logger.gd")
+const HT_NativeFactory = preload("./native/factory.gd")
+const HT_Mesher = preload("./hterrain_mesher.gd")
+const HT_Grid = preload("./util/grid.gd")
+const HTerrainData = preload("./hterrain_data.gd")
+const HTerrainChunk = preload("./hterrain_chunk.gd")
+const HTerrainChunkDebug = preload("./hterrain_chunk_debug.gd")
+const HT_Util = preload("./util/util.gd")
+const HTerrainCollider = preload("./hterrain_collider.gd")
+const HTerrainTextureSet = preload("./hterrain_texture_set.gd")
+const HT_Logger = preload("./util/logger.gd")
 
 const SHADER_CLASSIC4 = "Classic4"
 const SHADER_CLASSIC4_LITE = "Classic4Lite"
@@ -154,7 +154,7 @@ signal transform_changed(global_transform)
 
 @export_range(2, 5) var lod_scale := 2.0:
 	get:
-		return lod_scale
+		return _lodder.get_split_scale()
 	set(value):
 		_lodder.set_split_scale(value)
 
@@ -367,14 +367,39 @@ func _get_property_list():
 	]
 
 	if _material.shader != null:
-		var shader_params := RenderingServer.get_shader_parameter_list(_material.shader.get_rid())
+		var shader_params := _material.shader.get_shader_uniform_list(true)
 		for p in shader_params:
 			if _api_shader_params.has(p.name):
 				continue
 			var cp := {}
 			for k in p:
 				cp[k] = p[k]
-			cp.name = str("shader_params/", p.name)
+			# Godot has two ways of grouping properties in the inspector:
+			# - Prefixed properties using "/", which is part of the API property names
+			# - Group items in property lists, which are only a hint for the inspector display.
+			#
+			# In this plugin, just like ShaderMaterial, we need to nest shader parameters under
+			# a prefix to prevent conflicts with non-shader properties, which Godot interprets as
+			# a folder in the inspector.
+			#
+			# Godot 4.0 introduced `group_uniforms` in shaders, which also adds group items to 
+			# shader property lists. When such groups are present, it creates repeating subgroups,
+			# which isn't desired.
+			# One way to workaround it is to set the `hint_string` of group items, to tell Godot to
+			# somewhat "ignore" the prefix when displaying them in the inspector, which will get
+			# rid of the unnecessary folders.
+			# We also have to prefix the parent group if any.
+			# 
+			# Caveats: inspector will not display those uniforms under the `shader_params` folder.
+			# Not sure if we can get around that. ShaderMaterial has the same problem, and actually 
+			# seems to do WAY more stuff to handle group_uniforms, so not sure if this simple code 
+			# here is missing something.
+			# See https://github.com/Zylann/godot_heightmap_plugin/issues/394
+			if p.usage == PROPERTY_USAGE_GROUP:
+				cp.name = "Rendering/" + cp.name
+				cp.hint_string = "shader_params/"
+			else:
+				cp.name = str("shader_params/", p.name)
 			props.append(cp)
 
 	return props
@@ -515,7 +540,7 @@ func _on_texture_set_changed():
 
 
 func get_shader_param(param_name: String):
-	return _material.get_shader_parameter(param_name)
+	return HT_Util.get_shader_material_parameter(_material, param_name)
 
 
 func set_shader_param(param_name: String, v):
@@ -551,12 +576,25 @@ func _set_data_directory(dirpath: String):
 			if FileAccess.file_exists(fpath):
 				# Load existing
 				var d = load(fpath)
+				if d == null:
+					# Logging this explicitely because otherwise all the log would say is
+					# that terrain data failed to load. Adding this info gives more context.
+					_logger.error("Could not load existing data: {}".format([fpath]))
 				set_data(d)
 			else:
 				# Create new
 				var d := HTerrainData.new()
 				d.resource_path = fpath
 				set_data(d)
+				# TODO This is an attempt to workaround an issue that has plagued the plugin for years.
+				# See https://github.com/Zylann/godot_heightmap_plugin/issues/232
+				# For some reason, randomly, Godot decies to NOT save the resource and leave
+				# the data directory empty (no .hterrain file) when the user creates a new
+				# terrain, assigns a data directory and saves the scene.
+				# Ideally data should only be saved if the user saves the scene... but given
+				# this random issue (which to this day is still not figured out!) then we
+				# force saving to be done when assigning a new path.
+				d.save_data(fpath.get_base_dir())
 	else:
 		_logger.warn("Setting twice the same terrain directory??")
 
@@ -653,7 +691,8 @@ func get_internal_transform_unscaled():
 	var gt := global_transform
 	if centered and _data != null:
 		var half_size := 0.5 * (_data.get_resolution() - 1.0)
-		gt.origin += gt.basis * (-Vector3(half_size, 0, half_size))
+		# Map scale still has an effect on origin when the map is centered
+		gt.origin += gt.basis * (-Vector3(half_size, 0, half_size) * map_scale)
 	return gt
 
 
@@ -823,6 +862,7 @@ func set_data(new_data: HTerrainData):
 func update_collider():
 	assert(_collision_enabled)
 	assert(_collider != null)
+	_data.check_images()
 	_collider.create_from_terrain_data(_data)
 
 
@@ -960,6 +1000,7 @@ func set_custom_shader(shader: Shader):
 
 func _on_custom_shader_changed():
 	_material_params_need_update = true
+	notify_property_list_changed()
 
 
 func _update_material_params():
@@ -1252,7 +1293,7 @@ func _process(delta: float):
 		var u: HT_PendingChunkUpdate = _pending_chunk_updates[i]
 		var chunk := _get_chunk_at(u.pos_x, u.pos_y, u.lod)
 		assert(chunk != null)
-		_update_chunk(chunk, u.lod, lvisible)
+		_update_chunk(chunk, u.lod, lvisible and chunk.is_active())
 		_updated_chunks += 1
 
 	_pending_chunk_updates.clear()
@@ -1550,6 +1591,16 @@ func _get_configuration_warnings() -> PackedStringArray:
 	if _data == null:
 		warnings.append("The terrain is missing data.\n" \
 			+ "Select the `Data Directory` property in the inspector to assign it.")
+	
+	else:
+		var heightmap := _data.get_image(HTerrainData.CHANNEL_HEIGHT)
+		if heightmap.get_format() == Image.FORMAT_RH:
+			# This is in case the user has a heightmap using the old format and didn't convert
+			# for some reason
+			warnings.append(
+				"The heightmap uses a legacy format (RH), which might cause suboptimal authoring.\n"
+				+ "You may convert it to RF by exporting it to 32-bit EXR, then import it back.\n"
+				+ "You can also use a script to convert \"height.res\" (Image resource)")
 
 	if _texture_set == null:
 		warnings.append("The terrain does not have a HTerrainTextureSet assigned\n" \

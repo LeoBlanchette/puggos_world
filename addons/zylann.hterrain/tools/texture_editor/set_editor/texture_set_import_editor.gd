@@ -5,7 +5,7 @@ const HTerrainTextureSet = preload("../../../hterrain_texture_set.gd")
 const HT_Logger = preload("../../../util/logger.gd")
 const HT_EditorUtil = preload("../../util/editor_util.gd")
 const HT_Errors = preload("../../../util/errors.gd")
-const HT_TextureSetEditor = preload("texture_set_editor.gd")
+const HT_TextureSetEditor = preload("./texture_set_editor.gd")
 const HT_Result = preload("../../util/result.gd")
 const HT_Util = preload("../../../util/util.gd")
 const HT_PackedTextureUtil = preload("../../packed_textures/packed_texture_util.gd")
@@ -25,9 +25,9 @@ const _compress_names = ["Raw", "Lossless", "Lossy", "VRAM"]
 
 # Indexed by HTerrainTextureSet.SRC_TYPE_* constants
 const _smart_pick_file_keywords = [
-	["albedo", "color", "col", "diffuse"],
+	["albedo", "color", "col", "diffuse", "diff"],
 	["bump", "height", "depth", "displacement", "disp"],
-	["normal", "norm", "nrm"],
+	["normal", "norm", "nrm", "normalgl", "nor_gl"],
 	["roughness", "rough", "rgh"]
 ]
 
@@ -212,20 +212,26 @@ func set_texture_set(texture_set: HTerrainTextureSet):
 				if texture == null or texture.resource_path == "":
 					continue
 				
-				if not texture.resource_path.ends_with(".packed_tex"):
-					continue
+				# In Godot 3 we used a custom format to store and composite source images
+				# with a custom importer. It was removed during the port to Godot 4 because it
+				# was too hard to maintain a custom texture importer (too much logic to replicate
+				# from Godot's builtin importer, which wasn't exposed).
+				# For now the import tool won't remember source images between editor sessions.
 				
-				var import_data := _parse_json_file(texture.resource_path)
-				if import_data.is_empty() or not import_data.has("src"):
-					continue
-				
-				var src_types = HTerrainTextureSet.get_src_types_from_type(type)
-				
-				var src_data = import_data["src"]
-				if src_data.has("rgb"):
-					slot.texture_paths[src_types[0]] = src_data["rgb"]
-				if src_data.has("a"):
-					slot.texture_paths[src_types[1]] = src_data["a"]
+#				if not texture.resource_path.ends_with(".packed_tex"):
+#					continue
+#
+#				var import_data := _parse_json_file(texture.resource_path)
+#				if import_data.is_empty() or not import_data.has("src"):
+#					continue
+#
+#				var src_types = HTerrainTextureSet.get_src_types_from_type(type)
+#
+#				var src_data = import_data["src"]
+#				if src_data.has("rgb"):
+#					slot.texture_paths[src_types[0]] = src_data["rgb"]
+#				if src_data.has("a"):
+#					slot.texture_paths[src_types[1]] = src_data["a"]
 			
 			_slots_data.append(slot)
 	
@@ -238,30 +244,36 @@ func set_texture_set(texture_set: HTerrainTextureSet):
 			if texture_array == null or texture_array.resource_path == "":
 				continue
 			
-			if not texture_array.resource_path.ends_with(".packed_texarr"):
-				continue
+			# In Godot 3 we used a custom format to store and composite source images
+			# with a custom importer. It was removed during the port to Godot 4 because it
+			# was too hard to maintain a custom texture importer (too much logic to replicate
+			# from Godot's builtin importer, which wasn't exposed).
+			# For now the import tool won't remember source images between editor sessions.
 			
-			var import_data := _parse_json_file(texture_array.resource_path)
-			if import_data.is_empty() or not import_data.has("layers"):
-				continue
-			
-			var layers_data = import_data["layers"]
-			
-			for slot_index in len(layers_data):
-				var src_data = layers_data[slot_index]
-				
-				var src_types = HTerrainTextureSet.get_src_types_from_type(type)
-				
-				while slot_index >= len(_slots_data):
-					var slot = HT_TextureSetImportEditorSlot.new()
-					_slots_data.append(slot)
-				
-				var slot : HT_TextureSetImportEditorSlot = _slots_data[slot_index]
-				
-				if src_data.has("rgb"):
-					slot.texture_paths[src_types[0]] = src_data["rgb"]
-				if src_data.has("a"):
-					slot.texture_paths[src_types[1]] = src_data["a"]
+#			if not texture_array.resource_path.ends_with(".packed_texarr"):
+#				continue
+#
+#			var import_data := _parse_json_file(texture_array.resource_path)
+#			if import_data.is_empty() or not import_data.has("layers"):
+#				continue
+#
+#			var layers_data = import_data["layers"]
+#
+#			for slot_index in len(layers_data):
+#				var src_data = layers_data[slot_index]
+#
+#				var src_types = HTerrainTextureSet.get_src_types_from_type(type)
+#
+#				while slot_index >= len(_slots_data):
+#					var slot = HT_TextureSetImportEditorSlot.new()
+#					_slots_data.append(slot)
+#
+#				var slot : HT_TextureSetImportEditorSlot = _slots_data[slot_index]
+#
+#				if src_data.has("rgb"):
+#					slot.texture_paths[src_types[0]] = src_data["rgb"]
+#				if src_data.has("a"):
+#					slot.texture_paths[src_types[1]] = src_data["a"]
 
 	# TODO If the set doesn't have a file, use terrain path by default?
 	if texture_set.resource_path != "":
@@ -367,7 +379,7 @@ func _set_ui_slot_texture_from_path(im_path: String, type: int):
 	else:
 		# Regular path
 		im = Image.new()
-		var err := im.load(im_path)
+		var err := im.load(ProjectSettings.globalize_path(im_path))
 		if err != OK:
 			_logger.error(str("Unable to load image from ", im_path))
 			# TODO Different icon for images that can't load?

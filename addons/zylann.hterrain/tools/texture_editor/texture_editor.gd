@@ -3,7 +3,7 @@ extends Control
 
 const HTerrain = preload("../../hterrain.gd")
 const HTerrainTextureSet = preload("../../hterrain_texture_set.gd")
-const HT_TextureList = preload("texture_list.gd")
+const HT_TextureList = preload("./texture_list.gd")
 const HT_Logger = preload("../../util/logger.gd")
 # TODO Can't preload because it causes the plugin to fail loading if assets aren't imported
 const EMPTY_ICON_TEXTURE_PATH = "res://addons/zylann.hterrain/tools/icons/empty.png"

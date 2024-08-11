@@ -3,7 +3,7 @@ class_name HTerrainDataSaver
 extends ResourceFormatSaver
 
 
-const HTerrainData = preload("hterrain_data.gd")
+const HTerrainData = preload("./hterrain_data.gd")
 
 
 func _get_recognized_extensions(res: Resource) -> PackedStringArray:

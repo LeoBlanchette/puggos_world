@@ -1,7 +1,7 @@
 @tool
 extends Control
 
-const HT_PreviewPainter = preload("preview_painter.gd")
+const HT_PreviewPainter = preload("./preview_painter.gd")
 # TODO Can't preload because it causes the plugin to fail loading if assets aren't imported
 #const HT_DefaultBrushTexture = preload("../shapes/round2.exr")
 const HT_Brush = preload("../brush.gd")
