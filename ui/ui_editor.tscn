@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://crosvu1qvbywp" path="res://images/icons/editor/Play.svg" id="7_7oiso"]
 [ext_resource type="Texture2D" uid="uid://b6m8ovj3ewehw" path="res://images/icons/editor/ImageTexture3D.svg" id="8_rvhb3"]
 [ext_resource type="Texture2D" uid="uid://cg3bctpewr2wu" path="res://images/icons/editor/ViewportSpeed.svg" id="9_7rqip"]
-[ext_resource type="Texture2D" uid="uid://k8epanx3nrqi" path="res://addons/godot_aerodynamic_physics/icons/object.svg" id="11_n4rsj"]
+[ext_resource type="Texture2D" uid="uid://3rfgdwxqklsv" path="res://addons/godot_aerodynamic_physics/icons/object.svg" id="11_n4rsj"]
 [ext_resource type="PackedScene" uid="uid://b7ojyw6bptbkg" path="res://ui/scripts/elements/divider.tscn" id="11_xl0nv"]
 [ext_resource type="PackedScene" uid="uid://qj2rmi63n4ga" path="res://ui/building_interface_elements/transform_adjuster.tscn" id="13_qiin7"]
 [ext_resource type="Texture2D" uid="uid://bi387joh01con" path="res://images/icons/editor/NodeWarning.svg" id="14_f3xxl"]
@@ -24,7 +24,7 @@ content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
 
-[node name="UIEDitor" type="Control" node_paths=PackedStringArray("modes_panel", "controls_panel", "button_local_space", "action_updates_label", "selected_object_label", "unpack_prefab_button")]
+[node name="UIEDitor" type="Control" node_paths=PackedStringArray("modes_panel", "controls_panel", "button_local_space", "action_updates_label", "selected_object_label", "unpack_prefab_button", "object_ops", "object_ops_right")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,6 +41,8 @@ action_updates_label = NodePath("ViewportOverlay/LabelActionUpdates")
 selected_object_label = NodePath("ControlsPanel/ControlRight/ObjectOpsRight/VBoxContainer/SelectedObjectLabel")
 transform_button_group = ExtResource("2_iqhtm")
 unpack_prefab_button = NodePath("ControlsPanel/ControlRight/ObjectOpsRight/VBoxContainer/UnpackPrefabButton")
+object_ops = NodePath("ControlsPanel/ControlTop/ObjectOps")
+object_ops_right = NodePath("ControlsPanel/ControlRight/ObjectOpsRight")
 
 [node name="ModePanel" type="Panel" parent="."]
 custom_minimum_size = Vector2(0, 60)
@@ -63,9 +65,22 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Label" type="Label" parent="ModePanel/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ModePanel/MarginContainer"]
 layout_mode = 2
-text = "MODE: Object Ops"
+
+[node name="Label" type="Label" parent="ModePanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Edit Mode:"
+
+[node name="ContextOptionButton" type="OptionButton" parent="ModePanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+selected = 0
+item_count = 2
+popup/item_0/text = "Object"
+popup/item_1/text = "Terrain "
+popup/item_1/id = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="ModePanel/MarginContainer"]
 custom_minimum_size = Vector2(40, 40)
@@ -274,5 +289,6 @@ vertical_alignment = 2
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="item_selected" from="ModePanel/MarginContainer/HBoxContainer/ContextOptionButton" to="." method="_on_option_button_item_selected"]
 [connection signal="toggled" from="ControlsPanel/ControlTop/ObjectOps/HBoxContainer/ButtonLocalSpace" to="." method="_on_button_local_space_toggled"]
 [connection signal="pressed" from="ControlsPanel/ControlRight/ObjectOpsRight/VBoxContainer/UnpackPrefabButton" to="." method="_on_unpack_prefab_button_pressed"]

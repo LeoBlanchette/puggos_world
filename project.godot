@@ -35,7 +35,7 @@ file_logging/enable_file_logging=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/character-controller/plugin.cfg", "res://addons/godot_aerodynamic_physics/plugin.cfg", "res://addons/zylann.hterrain/plugin.cfg")
+enabled=PackedStringArray("res://addons/character-controller/plugin.cfg", "res://addons/godot_aerodynamic_physics/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
 
 [file_customization]
 
@@ -178,7 +178,3 @@ tab={
 [physics]
 
 common/physics_interpolation=true
-
-[rendering]
-
-renderer/rendering_method="gl_compatibility"

@@ -20,6 +20,12 @@ var view_port_mode:bool = false
 @export var unpack_prefab_button:Button
 #endregion 
 
+#region mode containers
+@export var object_ops: MarginContainer
+@export var object_ops_right: MarginContainer 
+
+#endregion 
+
 var action_update:String:
 	get:
 		return action_updates_label.text
@@ -45,6 +51,7 @@ func connect_signals():
 	
 	Editor.instance.changed_interaction_mode.connect(change_interaction_mode)
 	Editor.instance.object_selected_changed.connect(_on_object_selected_changed)
+	Editor.instance.changed_editor_context.connect(_on_editor_context_changed)
 
 func disconnect_signals():
 	#TRANSFORM BUTTON GROUP
@@ -57,6 +64,7 @@ func disconnect_signals():
 	if Editor.instance != null && Editor.instance.changed_interaction_mode.is_connected(change_interaction_mode):
 		Editor.instance.changed_interaction_mode.disconnect(change_interaction_mode)
 		Editor.instance.object_selected_changed.disconnect(_on_object_selected_changed)
+		Editor.instance.changed_editor_context.disconnect(_on_editor_context_changed)
 static func get_scene_type():
 	return UIMain.instance.SCENE_TYPE
 
@@ -134,3 +142,23 @@ func _on_object_selected_changed(old_object:Node3D, new_object:Node3D)->void:
 		unpack_prefab_button.show()
 	else:
 		unpack_prefab_button.hide()
+
+func _on_option_button_item_selected(index: int) -> void:
+	match index:
+		0:
+			Editor.instance.change_editor_context(Editor.CurrentEditorContext.OBJECT_EDIT)
+		1:
+			Editor.instance.change_editor_context(Editor.CurrentEditorContext.TERRAIN_EDIT)
+		_:
+			pass
+	
+func _on_editor_context_changed(old_context:Editor.CurrentEditorContext, new_context:Editor.CurrentEditorContext)->void:
+	object_ops.hide()
+	object_ops_right.hide()
+	match new_context:
+		Editor.CurrentEditorContext.OBJECT_EDIT:
+			object_ops.show()
+			object_ops_right.show()
+		Editor.CurrentEditorContext.TERRAIN_EDIT:
+			print("terrain_edit")
+			pass

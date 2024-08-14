@@ -15,9 +15,9 @@ signal object_transform_changed_ui
 ## Changed from translate, rotation, scale
 signal changed_transform_mode(old_mode, new_mode)
 signal changed_interaction_mode(old_mode, new_mode)
+signal changed_editor_context(old_context, new_context)
 ## Global or Local
 signal changed_transform_space_mode
-
 
 var player:FPSController3D = null
 var editor_interactor:EditorInteractor = null
@@ -35,6 +35,13 @@ var current_transform_space_mode:CurrentTransformSpaceMode = CurrentTransformSpa
 		current_transform_space_mode = value
 		changed_transform_space_mode.emit()
 
+## Will also contain daycycle edit, spawn edit, world parameters, etc.
+enum CurrentEditorContext{
+	OBJECT_EDIT,
+	TERRAIN_EDIT,
+}
+
+var current_editor_context: CurrentEditorContext = CurrentEditorContext.OBJECT_EDIT
 
 enum CurrentEditorMode{
 	NONE,
@@ -109,6 +116,7 @@ func initiate():
 			current_interaction_mode = InteractionMode.PLAYER
 			UIPrefabEditor.instance.add_child(ui_editor)
 			enter_player_mode()
+		
 
 	# SIGNALS
 	object_translated.connect(_on_object_translated)
@@ -158,6 +166,12 @@ func switch_interaction_mode():
 func trigger_interaction_mode_change_signal():
 	var previous_interaction_mode = current_interaction_mode
 	changed_interaction_mode.emit(previous_interaction_mode, current_interaction_mode)
+
+func change_editor_context(new_context:CurrentEditorContext)->void:
+	var old_context:CurrentEditorContext = current_editor_context
+	current_editor_context = new_context
+	changed_editor_context.emit(old_context, new_context)
+	print(new_context)
 
 func switch_transform_mode():
 	var pressed_button:Button = ui_editor.transform_button_group.get_pressed_button()
