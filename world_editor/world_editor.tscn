@@ -1,10 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://wt05je8n5mq"]
+[gd_scene load_steps=8 format=3 uid="uid://wt05je8n5mq"]
 
 [ext_resource type="PackedScene" uid="uid://cvv7vr17nmnje" path="res://nodes/models/helpers/ground_plane.tscn" id="1_noxnp"]
 [ext_resource type="Script" path="res://world_editor/scripts/world_editor.gd" id="1_x41r0"]
 [ext_resource type="Texture2D" uid="uid://bxc23f0347sy3" path="res://images/textures/test-blue.png" id="2_1eip5"]
 [ext_resource type="PackedScene" uid="uid://cbgxlvk1mxddy" path="res://world_editor/editor.tscn" id="2_r1hcm"]
-[ext_resource type="Terrain3DStorage" uid="uid://5e4fv74xef80" path="res://tmp/terrain_storage.res" id="5_osm5t"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_xbe4c"]
 
@@ -12,58 +11,6 @@
 albedo_texture = ExtResource("2_1eip5")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bjwf"]
-
-[sub_resource type="Gradient" id="Gradient_vhwan"]
-offsets = PackedFloat32Array(0.2, 1)
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_7825k"]
-noise_type = 2
-frequency = 0.03
-cellular_jitter = 3.0
-cellular_return_type = 0
-domain_warp_enabled = true
-domain_warp_type = 1
-domain_warp_amplitude = 50.0
-domain_warp_fractal_type = 2
-domain_warp_fractal_lacunarity = 1.5
-domain_warp_fractal_gain = 1.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pmijk"]
-seamless = true
-color_ramp = SubResource("Gradient_vhwan")
-noise = SubResource("FastNoiseLite_7825k")
-
-[sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_s33l0"]
-_shader_parameters = {
-"blend_sharpness": 0.87,
-"height_blending": true,
-"macro_variation1": Color(1, 1, 1, 1),
-"macro_variation2": Color(1, 1, 1, 1),
-"noise1_angle": 0.0,
-"noise1_offset": Vector2(0.5, 0.5),
-"noise1_scale": 0.04,
-"noise2_scale": 0.076,
-"noise3_scale": 0.225,
-"noise_texture": SubResource("NoiseTexture2D_pmijk"),
-"vertex_normals_distance": 128.0
-}
-show_checkered = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c37sq"]
-cull_mode = 2
-vertex_color_use_as_albedo = true
-backlight_enabled = true
-backlight = Color(0.5, 0.5, 0.5, 1)
-
-[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_q14yg"]
-height_offset = 0.5
-density = 10.0
-material_override = SubResource("StandardMaterial3D_c37sq")
-generated_type = 1
-
-[sub_resource type="Terrain3DAssets" id="Terrain3DAssets_mgpdq"]
-mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_q14yg")])
 
 [node name="WorldEditor" type="Node3D"]
 script = ExtResource("1_x41r0")
@@ -84,9 +31,6 @@ rotation_tracker_2 = NodePath("RotationTracker_2")
 [node name="RotationTracker_1" type="Marker2D" parent="Editor/DrawEditorUI" index="0"]
 
 [node name="RotationTracker_2" type="Marker2D" parent="Editor/DrawEditorUI" index="1"]
-
-[node name="TerrainEditor" parent="Editor" index="1" node_paths=PackedStringArray("terrain")]
-terrain = NodePath("../../Terrain")
 
 [node name="GroundPlane" parent="." instance=ExtResource("1_noxnp")]
 visible = false
@@ -129,10 +73,5 @@ surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Target_2"]
 transform = Transform3D(0.999998, 0, 0, 0, 0.999998, 0, 0, 0, 0.999998, 0, 0, 0)
 shape = SubResource("BoxShape3D_6bjwf")
-
-[node name="Terrain" type="Terrain3D" parent="."]
-storage = ExtResource("5_osm5t")
-material = SubResource("Terrain3DMaterial_s33l0")
-assets = SubResource("Terrain3DAssets_mgpdq")
 
 [editable path="Editor"]

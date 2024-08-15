@@ -1,7 +1,4 @@
-[gd_resource type="Theme" load_steps=8 format=3 uid="uid://b8qsxvqsy2clq"]
-
-[ext_resource type="FontFile" uid="uid://dpato43ee336o" path="res://ui/fonts/Ubuntu/Ubuntu-Light.ttf" id="1_qq0yg"]
-[ext_resource type="FontFile" uid="uid://dgvf6ypcf4vmv" path="res://ui/fonts/Ubuntu/Ubuntu-Regular.ttf" id="2_u8xv8"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://b8qsxvqsy2clq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q548k"]
 content_margin_left = 4.0
@@ -45,13 +42,12 @@ bg_color = Color(0.278431, 0.54902, 0.74902, 1)
 bg_color = Color(0.169245, 0.169245, 0.169245, 1)
 
 [resource]
-default_font = ExtResource("2_u8xv8")
 default_font_size = 16
 Button/colors/font_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
 Button/colors/icon_focus_color = Color(0.278431, 0.54902, 0.74902, 1)
 Button/colors/icon_hover_pressed_color = Color(0.278431, 0.54902, 0.74902, 1)
 Button/colors/icon_pressed_color = Color(0.567, 0.7557, 0.9, 1)
-Button/fonts/font = ExtResource("1_qq0yg")
+Button/fonts/font = null
 Button/styles/focus = SubResource("StyleBoxFlat_q548k")
 Button/styles/hover = SubResource("StyleBoxFlat_f5dmu")
 Button/styles/normal = SubResource("StyleBoxFlat_t1sux")
