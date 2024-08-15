@@ -133,6 +133,7 @@ func _ready() -> void:
 	reset()	
 	enter_translate_mode()
 
+
 func _exit_tree() -> void:
 	disconnect_signals()
 	if instance == self:

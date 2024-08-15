@@ -146,9 +146,9 @@ func _on_object_selected_changed(old_object:Node3D, new_object:Node3D)->void:
 func _on_option_button_item_selected(index: int) -> void:
 	match index:
 		0:
-			Editor.instance.change_editor_context(Editor.CurrentEditorContext.OBJECT_EDIT)
+			Editor.instance.current_editor_context = Editor.CurrentEditorContext.OBJECT_EDIT
 		1:
-			Editor.instance.change_editor_context(Editor.CurrentEditorContext.TERRAIN_EDIT)
+			Editor.instance.current_editor_context = Editor.CurrentEditorContext.TERRAIN_EDIT 
 		_:
 			pass
 	

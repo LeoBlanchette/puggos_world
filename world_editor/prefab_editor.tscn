@@ -24,6 +24,14 @@ script = ExtResource("1_ubjkp")
 
 [node name="Editor" parent="." instance=ExtResource("2_64suh")]
 
+[node name="DrawEditorUI" parent="Editor" index="0" node_paths=PackedStringArray("rotation_tracker_1", "rotation_tracker_2")]
+rotation_tracker_1 = NodePath("RotationTracker_1")
+rotation_tracker_2 = NodePath("RotationTracker_2")
+
+[node name="RotationTracker_1" type="Marker2D" parent="Editor/DrawEditorUI" index="0"]
+
+[node name="RotationTracker_2" type="Marker2D" parent="Editor/DrawEditorUI" index="1"]
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
@@ -36,4 +44,5 @@ collision_layer = 3
 
 [node name="PrefabRoot" type="Node3D" parent="."]
 
+[editable path="Editor"]
 [editable path="GroundPlane"]

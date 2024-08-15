@@ -180,6 +180,7 @@ func get_current_target():
 
 	target_result = space_state.intersect_ray(query)
 
+
 func select_target():
 	if target_result.is_empty():
 		Editor.instance.clear_active_object()

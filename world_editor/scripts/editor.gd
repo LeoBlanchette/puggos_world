@@ -41,7 +41,11 @@ enum CurrentEditorContext{
 	TERRAIN_EDIT,
 }
 
-var current_editor_context: CurrentEditorContext = CurrentEditorContext.OBJECT_EDIT
+var current_editor_context: CurrentEditorContext:
+	set(value):
+		var old_context:CurrentEditorContext = current_editor_context
+		current_editor_context = value
+		changed_editor_context.emit(old_context, value)
 
 enum CurrentEditorMode{
 	NONE,
@@ -75,6 +79,11 @@ signal object_rotated_ui(previous_rotation, current_rotation)
 signal object_scaled_ui(previous_scale, current_scale)
 
 var previous_edited_object:Node3D = null
+## Last gizmo position before it was removed. Used to restore last position upon new instance.
+var last_gizmo_position:Vector3 = Vector3.ZERO
+## Last gizmo rotation before it was removed. Used to restore last rotation upon new instance.
+var last_gizmo_rotation:Vector3 = Vector3.ZERO
+
 var edited_object:Node3D = null:
 	set(value):
 		previous_edited_object = edited_object
@@ -125,6 +134,7 @@ func initiate():
 	object_translated_ui.connect(_on_object_translated_ui)
 	object_rotated_ui.connect(_on_object_rotated_ui)
 	object_scaled_ui.connect(_on_object_scaled_ui)
+	changed_editor_context.connect(_on_changed_context)
 	GameManager.instance.pre_level_change.connect(_on_changing_levels)
 	
 func _input(event: InputEvent) -> void:
@@ -167,11 +177,6 @@ func trigger_interaction_mode_change_signal():
 	var previous_interaction_mode = current_interaction_mode
 	changed_interaction_mode.emit(previous_interaction_mode, current_interaction_mode)
 
-func change_editor_context(new_context:CurrentEditorContext)->void:
-	var old_context:CurrentEditorContext = current_editor_context
-	current_editor_context = new_context
-	changed_editor_context.emit(old_context, new_context)
-	print(new_context)
 
 func switch_transform_mode():
 	var pressed_button:Button = ui_editor.transform_button_group.get_pressed_button()
@@ -243,11 +248,18 @@ func remove_interaction_node():
 		editor_interactor.remove()
 
 func add_editor_gizmo():
+	if gizmo != null:
+		return
 	gizmo = GIZMO_TSCN.instantiate()
 	add_child(gizmo)
+	gizmo.global_position = last_gizmo_position
+	gizmo.global_rotation_degrees = last_gizmo_rotation
+	print(last_gizmo_position)
 
 func remove_gizmo():
 	if EditorGizmo.instance != null:
+		last_gizmo_position = EditorGizmo.instance.global_position
+		last_gizmo_rotation = EditorGizmo.instance.global_rotation_degrees
 		EditorGizmo.instance.remove()
 	gizmo = null
 
@@ -373,6 +385,17 @@ func _on_object_scaled_ui(old_scale:Vector3, new_scale:Vector3,)->void:
 	# NOTE: An UNDO can be placed here using old rotation. 
 	edited_object.scale = new_scale
 	object_transform_changed_ui.emit()
+#endregion
+
+#region terrain editing
+func _on_changed_context(old_context:CurrentEditorContext, new_context:CurrentEditorContext)->void:
+	match new_context:
+		CurrentEditorContext.OBJECT_EDIT:
+			add_editor_gizmo()
+		CurrentEditorContext.TERRAIN_EDIT:
+			remove_gizmo()
+		_:
+			pass
 #endregion
 
 #region ui text updates

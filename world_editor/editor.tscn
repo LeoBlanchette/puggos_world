@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cbgxlvk1mxddy"]
+[gd_scene load_steps=4 format=3 uid="uid://cbgxlvk1mxddy"]
 
 [ext_resource type="Script" path="res://world_editor/scripts/editor.gd" id="1_mcyiu"]
 [ext_resource type="Script" path="res://world_editor/scripts/draw_editor_ui.gd" id="2_v3qys"]
+[ext_resource type="Script" path="res://world_editor/terrain_editor.gd" id="3_fd5t6"]
 
 [node name="Editor" type="Node3D"]
 script = ExtResource("1_mcyiu")
@@ -12,3 +13,6 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("2_v3qys")
+
+[node name="TerrainEditor" type="Node3D" parent="."]
+script = ExtResource("3_fd5t6")

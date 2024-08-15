@@ -85,6 +85,9 @@ rotation_tracker_2 = NodePath("RotationTracker_2")
 
 [node name="RotationTracker_2" type="Marker2D" parent="Editor/DrawEditorUI" index="1"]
 
+[node name="TerrainEditor" parent="Editor" index="1" node_paths=PackedStringArray("terrain")]
+terrain = NodePath("../../Terrain")
+
 [node name="GroundPlane" parent="." instance=ExtResource("1_noxnp")]
 visible = false
 collision_layer = 8388609
@@ -127,7 +130,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_osw4o")
 transform = Transform3D(0.999998, 0, 0, 0, 0.999998, 0, 0, 0, 0.999998, 0, 0, 0)
 shape = SubResource("BoxShape3D_6bjwf")
 
-[node name="Terrain3D" type="Terrain3D" parent="."]
+[node name="Terrain" type="Terrain3D" parent="."]
 storage = ExtResource("5_osm5t")
 material = SubResource("Terrain3DMaterial_s33l0")
 assets = SubResource("Terrain3DAssets_mgpdq")
