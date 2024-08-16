@@ -1,6 +1,5 @@
-[gd_scene load_steps=8 format=3 uid="uid://wt05je8n5mq"]
+[gd_scene load_steps=7 format=3 uid="uid://wt05je8n5mq"]
 
-[ext_resource type="PackedScene" uid="uid://cvv7vr17nmnje" path="res://nodes/models/helpers/ground_plane.tscn" id="1_noxnp"]
 [ext_resource type="Script" path="res://world_editor/scripts/world_editor.gd" id="1_x41r0"]
 [ext_resource type="Texture2D" uid="uid://bxc23f0347sy3" path="res://images/textures/test-blue.png" id="2_1eip5"]
 [ext_resource type="PackedScene" uid="uid://cbgxlvk1mxddy" path="res://world_editor/editor.tscn" id="2_r1hcm"]
@@ -12,8 +11,9 @@ albedo_texture = ExtResource("2_1eip5")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bjwf"]
 
-[node name="WorldEditor" type="Node3D"]
+[node name="WorldEditor" type="Node3D" node_paths=PackedStringArray("terrain_editor")]
 script = ExtResource("1_x41r0")
+terrain_editor = NodePath("Editor/TerrainEditor")
 
 [node name="Editor" parent="." instance=ExtResource("2_r1hcm")]
 
@@ -31,10 +31,6 @@ rotation_tracker_2 = NodePath("RotationTracker_2")
 [node name="RotationTracker_1" type="Marker2D" parent="Editor/DrawEditorUI" index="0"]
 
 [node name="RotationTracker_2" type="Marker2D" parent="Editor/DrawEditorUI" index="1"]
-
-[node name="GroundPlane" parent="." instance=ExtResource("1_noxnp")]
-visible = false
-collision_layer = 8388609
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)

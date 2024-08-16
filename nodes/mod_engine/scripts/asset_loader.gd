@@ -171,7 +171,7 @@ func populate_user_mods():
 			for mod_directory in valid_mod_directories:
 				var mod_object = modpath + mod_directory + "/" + valid_creator_mod_type[1]
 				if(ResourceLoader.exists(mod_object)):
-					mods.append(mod_object)					
+					mods.append(mod_object)				
 				else:
 					print("Valid path '"+mod_object+"' not found. See documentation for proper mod folder / filename convention.")
 

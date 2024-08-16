@@ -34,6 +34,10 @@ func cmd(command_string:String):
 			spawn(command)
 		"/interact":
 			interact(command)
+		"/teleport":
+			teleport(command)
+		"/t": #teleport shorthand
+			teleport(command)
 		"/equip":
 			equip(command)
 		"/placement":
@@ -121,7 +125,6 @@ func spawn(command: ArgParser):
 	
 	object_category = command.get_argument("1")
 	object_id = int(command.get_argument("2"))
-	
 	var player = Players.get_player_character(peer_id)
 	if player == null:
 		chat(reject_message)
@@ -158,6 +161,17 @@ func interact(command:ArgParser):
 		return
 	World.instance.do_player_interaction.rpc_id(1, ob.get_path())
 
+func teleport(command:ArgParser):
+	var reject_message:String = "Something went wrong."
+	var peer_id:int = multiplayer.get_unique_id()	
+
+	var player = Players.get_player_character(peer_id)
+	if player == null:
+		chat(reject_message)
+		return	
+	var pos = command.vector_from_array(command.get_argument("--p", player.global_position))
+	player.global_position = pos
+	
 ## gives player a thing
 func give(_command: ArgParser):
 	pass

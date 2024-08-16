@@ -285,7 +285,8 @@ func disconnect_signals()->void:
 	#UIEditor.instance.changed_transform_mode.disconnect(_on_transform_mode_changed)
 	for handle:StaticBody3D in handles_static_bodies:
 		handle.visibility_changed.disconnect(_on_visibility_changed.bind(handle))
-	Editor.instance.changed_transform_space_mode.disconnect(update_transform_space_mode)
+	if Editor.instance.changed_transform_space_mode.is_connected(update_transform_space_mode):
+		Editor.instance.changed_transform_space_mode.disconnect(update_transform_space_mode)
 #endregion
 
 #region mode change

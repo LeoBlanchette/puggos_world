@@ -4,7 +4,10 @@ class_name WorldEditor
 
 static var instance:WorldEditor = null
 
+@export var terrain_editor:Node3D
+
 var world_editor_related_mod_groups: Array[String] = [
+	"terrains/terrain/",
 	"structures/modular/",
 	"materials/structures_modular/",
 ]
@@ -17,7 +20,7 @@ func _ready() -> void:
 		queue_free()
 	super._ready()
 	load_world_editor_related_mods()
-
+	terrain_editor.initiate()
 	Achievements.achievement.emit("world_editor")
 
 func _exit_tree() -> void:

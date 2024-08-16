@@ -152,7 +152,8 @@ func connect_editor_interactor():
 func disconnect_editor_interactor():
 	if EditorInteractor.instance == null:
 		return
-	EditorInteractor.instance.object_selected.disconnect(_on_object_selected)
+	if EditorInteractor.instance.object_selected.is_connected(_on_object_selected):
+		EditorInteractor.instance.object_selected.disconnect(_on_object_selected)
 
 func clear_active_object()->void:
 	edited_object = null
