@@ -116,9 +116,8 @@ material_override = ExtResource("7_ngjv3")
 transform = Transform3D(-2.98942e-07, 0, -10, 0, 1, 0, 6.839, 0, -4.37114e-07, 0, -0.5, -16.512)
 material_override = ExtResource("3_7vb8p")
 
-[node name="Player" parent="." node_paths=PackedStringArray("toggleable_nodes_3d") instance=ExtResource("2_nvo2f")]
+[node name="Player" parent="." instance=ExtResource("2_nvo2f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.62268e-06, 6, 13)
-toggleable_nodes_3d = []
 
 [node name="Camera3D" type="Camera3D" parent="Player/Head/FirstPersonCameraReference" index="0"]
 
