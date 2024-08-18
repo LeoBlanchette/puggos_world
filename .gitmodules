@@ -1,3 +1,6 @@
 [submodule "addons/godot_aerodynamic_physics"]
 	path = addons/godot_aerodynamic_physics
 	url = https://github.com/addmix/godot_aerodynamic_physics.git
+[submodule "addons/puggos_world_character"]
+	path = addons/puggos_world_character
+	url = https://github.com/LeoBlanchette/puggos_world_character.git
