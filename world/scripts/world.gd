@@ -12,7 +12,9 @@ const MODULAR_OBJECT_INITIATOR: Resource = preload ("res://nodes/build_kits/modu
 var world_mod_groups: Array[String] = [
 	"structures/modular/",
 	"materials/structures_modular/",
-	"items/junk/"
+	"items/junk/",
+	"items/general/",
+	"items/character/",
 ]
 
 func _ready() -> void:
@@ -29,6 +31,7 @@ func _ready() -> void:
 	ObjectIndex.object_index.spawned.connect(_on_object_spawned)
 	
 	Achievements.achievement.emit("entered_world")
+	
 
 func _enter_tree() -> void:
 	multiplayer_spawner.spawn_function = spawn_player

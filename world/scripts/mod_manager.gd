@@ -16,6 +16,8 @@ static var valid_creator_mod_types: Array = [
 	["materials/structures_modular/", "material.tres"],
 	["images/player_faces/", "face.png"],
 	["items/junk/", "item.tscn"],
+	["items/general/", "item.tscn"],
+	["items/character/", "item.tscn"],
 ]
 
 # Called when the node enters the scene tree for the first time.

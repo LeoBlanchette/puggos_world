@@ -177,8 +177,21 @@ func give(_command: ArgParser):
 	pass
 
 ## equips a thing to the player
-func equip(_command: ArgParser):
-	pass
+func equip(command: ArgParser):
+	var reject_message:String = "Something went wrong."
+	var peer_id:int = multiplayer.get_unique_id()	
+	var object_id = "0"
+	
+	object_id = command.get_argument("1", object_id).to_int()
+	if object_id == 0:
+		print(reject_message)
+		return 
+
+	var player:Player = Players.get_player_character(peer_id)
+	if player == null:
+		chat(reject_message)
+		return
+	player.equip(object_id)
 
 ## places an object onto the ground
 func place(_command: ArgParser):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bgk06cxwm7u8n"]
+[gd_scene load_steps=10 format=3 uid="uid://bgk06cxwm7u8n"]
 
 [ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="1_kprfw"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/register_player.gd" id="2_3b31x"]
@@ -7,12 +7,7 @@
 [ext_resource type="Script" path="res://nodes/characters/scripts/view_switch.gd" id="2_vpfrc"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/interaction_node.gd" id="5_3n0vt"]
 [ext_resource type="Script" path="res://nodes/characters/multiplayer_synchronizer.gd" id="6_f55i6"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_o17ca"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plrjp"]
-albedo_color = Color(1, 0, 0, 1)
-roughness = 0.15
+[ext_resource type="PackedScene" uid="uid://c4bj48um6sbj6" path="res://addons/puggos_world_character/avatar/avatar.tscn" id="8_y755v"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_260u7"]
 properties/0/path = NodePath(".:position")
@@ -21,9 +16,130 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/replication_mode = 1
+properties/2/path = NodePath("Player:slot_0")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath("Player:slot_1")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath("Player:slot_2")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+properties/5/path = NodePath("Player:slot_3")
+properties/5/spawn = true
+properties/5/replication_mode = 2
+properties/6/path = NodePath("Player:slot_4")
+properties/6/spawn = true
+properties/6/replication_mode = 2
+properties/7/path = NodePath("Player:slot_5")
+properties/7/spawn = true
+properties/7/replication_mode = 2
+properties/8/path = NodePath("Player:slot_6")
+properties/8/spawn = true
+properties/8/replication_mode = 2
+properties/9/path = NodePath("Player:slot_7")
+properties/9/spawn = true
+properties/9/replication_mode = 2
+properties/10/path = NodePath("Player:slot_8")
+properties/10/spawn = true
+properties/10/replication_mode = 2
+properties/11/path = NodePath("Player:slot_9")
+properties/11/spawn = true
+properties/11/replication_mode = 2
+properties/12/path = NodePath("Player:slot_10")
+properties/12/spawn = true
+properties/12/replication_mode = 2
+properties/13/path = NodePath("Player:slot_11")
+properties/13/spawn = true
+properties/13/replication_mode = 2
+properties/14/path = NodePath("Player:slot_12")
+properties/14/spawn = true
+properties/14/replication_mode = 2
+properties/15/path = NodePath("Player:slot_13")
+properties/15/spawn = true
+properties/15/replication_mode = 2
+properties/16/path = NodePath("Player:slot_14")
+properties/16/spawn = true
+properties/16/replication_mode = 2
+properties/17/path = NodePath("Player:slot_15")
+properties/17/spawn = true
+properties/17/replication_mode = 2
+properties/18/path = NodePath("Player:slot_16")
+properties/18/spawn = true
+properties/18/replication_mode = 2
+properties/19/path = NodePath("Player:slot_17")
+properties/19/spawn = true
+properties/19/replication_mode = 2
+properties/20/path = NodePath("Player:slot_18")
+properties/20/spawn = true
+properties/20/replication_mode = 2
+properties/21/path = NodePath("Player:slot_19")
+properties/21/spawn = true
+properties/21/replication_mode = 2
+properties/22/path = NodePath("Player:slot_20")
+properties/22/spawn = true
+properties/22/replication_mode = 2
+properties/23/path = NodePath("Player:slot_21")
+properties/23/spawn = true
+properties/23/replication_mode = 2
+properties/24/path = NodePath("Player:slot_22")
+properties/24/spawn = true
+properties/24/replication_mode = 2
+properties/25/path = NodePath("Player:slot_23")
+properties/25/spawn = true
+properties/25/replication_mode = 2
+properties/26/path = NodePath("Player:slot_24")
+properties/26/spawn = true
+properties/26/replication_mode = 2
+properties/27/path = NodePath("Player:slot_25")
+properties/27/spawn = true
+properties/27/replication_mode = 2
+properties/28/path = NodePath("Player:slot_26")
+properties/28/spawn = true
+properties/28/replication_mode = 2
+properties/29/path = NodePath("Player:slot_27")
+properties/29/spawn = true
+properties/29/replication_mode = 2
+properties/30/path = NodePath("Player:slot_28")
+properties/30/spawn = true
+properties/30/replication_mode = 2
+properties/31/path = NodePath("Player:slot_29")
+properties/31/spawn = true
+properties/31/replication_mode = 2
+properties/32/path = NodePath("Player:slot_30")
+properties/32/spawn = true
+properties/32/replication_mode = 2
+properties/33/path = NodePath("Player:slot_31")
+properties/33/spawn = true
+properties/33/replication_mode = 2
+properties/34/path = NodePath("Player:slot_32")
+properties/34/spawn = true
+properties/34/replication_mode = 2
+properties/35/path = NodePath("Player:slot_33")
+properties/35/spawn = true
+properties/35/replication_mode = 2
+properties/36/path = NodePath("Player:slot_34")
+properties/36/spawn = true
+properties/36/replication_mode = 2
+properties/37/path = NodePath("Player:slot_35")
+properties/37/spawn = true
+properties/37/replication_mode = 2
+properties/38/path = NodePath("Player:slot_36")
+properties/38/spawn = true
+properties/38/replication_mode = 2
+properties/39/path = NodePath("Player:slot_37")
+properties/39/spawn = true
+properties/39/replication_mode = 2
+properties/40/path = NodePath("Player:slot_38")
+properties/40/spawn = true
+properties/40/replication_mode = 2
+properties/41/path = NodePath("Player:slot_39")
+properties/41/spawn = true
+properties/41/replication_mode = 2
 
-[node name="Player" node_paths=PackedStringArray("camera_3d", "multiplayer_synchronizer", "builder_node", "spawner_node") instance=ExtResource("1_kprfw")]
+[node name="Player" node_paths=PackedStringArray("camera_3d", "avatar", "multiplayer_synchronizer", "builder_node", "spawner_node") instance=ExtResource("1_kprfw")]
 camera_3d = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D")
+avatar = NodePath("Avatar")
 multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
 builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
 spawner_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/SpawnerNode")
@@ -70,13 +186,12 @@ debug_shape_custom_color = Color(0.0812519, 0.589243, 3.85046e-07, 1)
 [node name="SpawnerNode" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -5)
 
-[node name="PlayerMesh" type="MeshInstance3D" parent="." index="13"]
-mesh = SubResource("CapsuleMesh_o17ca")
-surface_material_override/0 = SubResource("StandardMaterial3D_plrjp")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="14"]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="13"]
 replication_config = SubResource("SceneReplicationConfig_260u7")
 script = ExtResource("6_f55i6")
+
+[node name="Avatar" parent="." index="14" instance=ExtResource("8_y755v")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1, 0)
 
 [editable path="UIHUD"]
 [editable path="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode"]

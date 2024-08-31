@@ -55,6 +55,13 @@ static func spawn(category: String, id: int):
 	ObjectIndex.object_index.spawned.emit(spawned)
 	return spawned
 
+static func has_object(category: String, id: int)->bool:
+	if not index.has(category):
+		return false
+	if not index[category].has(id):		
+		return false
+	return true
+
 static func get_object(category: String, id: int):
 	if not index.has(category):
 		return null
