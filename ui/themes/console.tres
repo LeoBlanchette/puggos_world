@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://dsq8rjmf0j24p"]
+
+[ext_resource type="FontFile" uid="uid://dgvf6ypcf4vmv" path="res://ui/fonts/Ubuntu/Ubuntu-Regular.ttf" id="1_vkoys"]
+
+[resource]
+default_font = ExtResource("1_vkoys")

@@ -4,7 +4,7 @@ class_name UIConsole
 
 static var instance = null
 const CONSOLE_TEXT = preload("res://ui/console_interface_elements/console_text.tscn")
-@onready var v_box_container: VBoxContainer = $MarginContainer/VBoxContainer
+@onready var v_box_container: VBoxContainer = $MarginContainer/ScrollContainer/VBoxContainer
 
 func _ready() -> void:
 	if instance == null:

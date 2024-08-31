@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://158jfcngo378"]
+[gd_scene load_steps=4 format=3 uid="uid://158jfcngo378"]
 
 [ext_resource type="Script" path="res://ui/scripts/ui_console.gd" id="1_gwypj"]
+[ext_resource type="Theme" uid="uid://dsq8rjmf0j24p" path="res://ui/themes/console.tres" id="1_w46x4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d7cl8"]
 bg_color = Color(0, 0, 0, 1)
@@ -12,6 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_w46x4")
 script = ExtResource("1_gwypj")
 
 [node name="Panel" type="Panel" parent="."]
@@ -35,5 +37,10 @@ theme_override_constants/margin_top = 40
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 40
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
 layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

@@ -240,15 +240,29 @@ func print_object(command:ArgParser):
 		print_to_console("Command should appear as --o <object>.")
 		print_to_console("/print_object --o players")
 		print_to_console("/print_object --o loaded_mods")	
+		print_to_console("/print_object --o index")
+	
+	var to_console:Array = []
 	
 	match arg[0]:
 		"players":
 			print_string = JSON.stringify(Players.players)	
+			to_console.append(print_string)
 		"loaded_mods":
 			print_string = JSON.stringify(ObjectIndex.index)	
-	
-	print(print_string)
-	print_to_console(print_string)
+			to_console.append(print_string)
+		"index":
+			for category in ObjectIndex.index:
+				for mod_id in ObjectIndex.index[category]:
+					var id:int = mod_id
+					var ob = ObjectIndex.index[category][id]
+					var mod_type:String = ob.get_meta("mod_type", "-")
+					var item:String = ob.get_meta("name", "[no name]")
+					print_string = "%s: %s [%s]"%[category, str(id), item]
+					to_console.append(print_string)
+					
+	for line in to_console:		
+		print_to_console(line)
 
 func print_to_console(print_string:String)->void:
 	UIConsole.instance.print_to_console(print_string)
