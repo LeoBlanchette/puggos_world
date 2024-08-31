@@ -309,7 +309,8 @@ func _ready():
 	if peer_id == multiplayer.get_unique_id():
 		camera_3d.current = true
 	setup()	
-	$Register_Player.activate()	
+	$Register_Player.activate()
+	equip(28) # DEFAULT skin.
 
 func _physics_process(delta):
 	update_avatar_animation_global()
@@ -342,7 +343,7 @@ func _input(event: InputEvent) -> void:
 	# Mouse look (only if the mouse is captured).
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_head(event.relative)
-		
+
 func update_avatar_animation_local():
 	blend_position = input_axis
 	is_crouched = is_crouching()
@@ -351,7 +352,7 @@ func update_avatar_animation_local():
 		is_moving = true
 	else:
 		is_moving = false
-		
+
 func update_avatar_animation_global():
 	avatar.is_crouching = is_crouched
 	avatar.is_combat_mode = is_combat_mode
@@ -398,7 +399,12 @@ func equip_slot(slot:String, id:int):
 		if slot_number == 0:
 			print("Slot number was improperly assigned. Cannot use.")
 		
-		avatar.equip(slot, ob.scene_file_path)
+		var path = ob.scene_file_path
+		
+		if slot_number in [1, 2, 3]: # if these slots, its skin layers. Change path...
+			path  = path.replace("item.tscn", "texture.png")
+
+		avatar.equip(slot, path)
 
 #func _on_controller_emerged():
 	#camera.environment = null

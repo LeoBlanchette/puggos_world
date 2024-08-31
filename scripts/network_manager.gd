@@ -223,7 +223,6 @@ func server_announce_status(status:String, print_only:bool = true):
 	
 func get_machines_ip_address():
 	var ip_address :String
-
 	if OS.has_feature("windows"):
 		if OS.has_environment("COMPUTERNAME"):
 			ip_address =  IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")),IP.Type.TYPE_IPV4)
@@ -280,7 +279,6 @@ func format_chat_message(_player_info:Dictionary, message:String) -> String:
 	return player_message
 
 #region World related network ops
-
 ## Notifies the server that the player has entered the world.
 ## Called on _ready function in world.
 
