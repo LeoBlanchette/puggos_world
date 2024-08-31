@@ -19,251 +19,6 @@ class_name Player
 
 #endregion
 
-#region appearance
-@export var avatar:Avatar 
-
-## SLOT 0
-var slot_0: int = -1:
-	set(value):
-		slot_0 = value
-		equip_slot("slot_0", value)
-
-## SLOT 1
-var slot_1: int = -1:
-	set(value):
-		slot_1 = value
-		equip_slot("slot_1", value)
-
-## SLOT 2
-var slot_2: int = -1:
-	set(value):
-		slot_2 = value
-		equip_slot("slot_2", value)
-
-## SLOT 3
-var slot_3: int = -1:
-	set(value):
-		slot_3 = value
-		equip_slot("slot_3", value)
-
-## SLOT 4
-var slot_4: int = -1:
-	set(value):
-		slot_4 = value
-		equip_slot("slot_4", value)
-
-## SLOT 5
-var slot_5: int = -1:
-	set(value):
-		slot_5 = value
-		equip_slot("slot_5", value)
-
-## SLOT 6
-var slot_6: int = -1:
-	set(value):
-		slot_6 = value
-		equip_slot("slot_6", value)
-
-## SLOT 7
-var slot_7: int = -1:
-	set(value):
-		slot_7 = value
-		equip_slot("slot_7", value)
-
-## SLOT 8
-var slot_8: int = -1:
-	set(value):
-		slot_8 = value
-		equip_slot("slot_8", value)
-
-## SLOT 9
-var slot_9: int = -1:
-	set(value):
-		slot_9 = value
-		equip_slot("slot_9", value)
-
-## SLOT 10
-var slot_10: int = -1:
-	set(value):
-		slot_10 = value
-		equip_slot("slot_10", value)
-
-## SLOT 11
-var slot_11: int = -1:
-	set(value):
-		slot_11 = value
-		equip_slot("slot_11", value)
-
-## SLOT 12
-var slot_12: int = -1:
-	set(value):
-		slot_12 = value
-		equip_slot("slot_12", value)
-
-## SLOT 13
-var slot_13: int = -1:
-	set(value):
-		slot_13 = value
-		equip_slot("slot_13", value)
-
-## SLOT 14
-var slot_14: int = -1:
-	set(value):
-		slot_14 = value
-		equip_slot("slot_14", value)
-
-## SLOT 15
-var slot_15: int = -1:
-	set(value):
-		slot_15 = value
-		equip_slot("slot_15", value)
-
-## SLOT 16
-var slot_16: int = -1:
-	set(value):
-		slot_16 = value
-		equip_slot("slot_16", value)
-
-## SLOT 17
-var slot_17: int = -1:
-	set(value):
-		slot_17 = value
-		equip_slot("slot_17", value)
-
-## SLOT 18
-var slot_18: int = -1:
-	set(value):
-		slot_18 = value
-		equip_slot("slot_18", value)
-
-## SLOT 19
-var slot_19: int = -1:
-	set(value):
-		slot_19 = value
-		equip_slot("slot_19", value)
-
-## SLOT 20
-var slot_20: int = -1:
-	set(value):
-		slot_20 = value
-		equip_slot("slot_20", value)
-
-## SLOT 21
-var slot_21: int = -1:
-	set(value):
-		slot_21 = value
-		equip_slot("slot_21", value)
-
-## SLOT 22
-var slot_22: int = -1:
-	set(value):
-		slot_22 = value
-		equip_slot("slot_22", value)
-
-## SLOT 23
-var slot_23: int = -1:
-	set(value):
-		slot_23 = value
-		equip_slot("slot_23", value)
-
-## SLOT 24
-var slot_24: int = -1:
-	set(value):
-		slot_24 = value
-		equip_slot("slot_24", value)
-
-## SLOT 25
-var slot_25: int = -1:
-	set(value):
-		slot_25 = value
-		equip_slot("slot_25", value)
-
-## SLOT 26
-var slot_26: int = -1:
-	set(value):
-		slot_26 = value
-		equip_slot("slot_26", value)
-
-## SLOT 27
-var slot_27: int = -1:
-	set(value):
-		slot_27 = value
-		equip_slot("slot_27", value)
-
-## SLOT 28
-var slot_28: int = -1:
-	set(value):
-		slot_28 = value
-		equip_slot("slot_28", value)
-
-## SLOT 29
-var slot_29: int = -1:
-	set(value):
-		slot_29 = value
-		equip_slot("slot_29", value)
-
-## SLOT 30
-var slot_30: int = -1:
-	set(value):
-		slot_30 = value
-		equip_slot("slot_30", value)
-
-## SLOT 31
-var slot_31: int = -1:
-	set(value):
-		slot_31 = value
-		equip_slot("slot_31", value)
-
-## SLOT 32
-var slot_32: int = -1:
-	set(value):
-		slot_32 = value
-		equip_slot("slot_32", value)
-
-## SLOT 33
-var slot_33: int = -1:
-	set(value):
-		slot_33 = value
-		equip_slot("slot_33", value)
-
-## SLOT 34
-var slot_34: int = -1:
-	set(value):
-		slot_34 = value
-		equip_slot("slot_34", value)
-
-## SLOT 35
-var slot_35: int = -1:
-	set(value):
-		slot_35 = value
-		equip_slot("slot_35", value)
-
-## SLOT 36
-var slot_36: int = -1:
-	set(value):
-		slot_36 = value
-		equip_slot("slot_36", value)
-
-## SLOT 37
-var slot_37: int = -1:
-	set(value):
-		slot_37 = value
-		equip_slot("slot_37", value)
-
-## SLOT 38
-var slot_38: int = -1:
-	set(value):
-		slot_38 = value
-		equip_slot("slot_38", value)
-
-## SLOT 39
-var slot_39: int = -1:
-	set(value):
-		slot_39 = value
-		equip_slot("slot_39", value)
-
-#endregion
-
 @export var multiplayer_synchronizer:MultiplayerSynchronizer
 
 @export var input_back_action_name := "move_backward"
@@ -284,30 +39,298 @@ var activated:bool = false
 
 var peer_id:int = 0
 
+#region avatar appearance
+@export var avatar:Avatar 
+
+
+## SLOT 0
+@export var slot_0: int = -1:
+	set(value):
+		slot_0 = value
+		equip_slot("slot_0", value)
+
+## SLOT 1
+@export var slot_1: int = -1:
+	set(value):
+		slot_1 = value
+		equip_slot("slot_1", value)
+
+## SLOT 2
+@export var slot_2: int = -1:
+	set(value):
+		slot_2 = value
+		equip_slot("slot_2", value)
+
+## SLOT 3
+@export var slot_3: int = -1:
+	set(value):
+		slot_3 = value
+		equip_slot("slot_3", value)
+
+## SLOT 4
+@export var slot_4: int = -1:
+	set(value):
+		slot_4 = value
+		equip_slot("slot_4", value)
+
+## SLOT 5
+@export var slot_5: int = -1:
+	set(value):
+		slot_5 = value
+		equip_slot("slot_5", value)
+
+## SLOT 6
+@export var slot_6: int = -1:
+	set(value):
+		slot_6 = value
+		equip_slot("slot_6", value)
+
+## SLOT 7
+@export var slot_7: int = -1:
+	set(value):
+		slot_7 = value
+		equip_slot("slot_7", value)
+
+## SLOT 8
+@export var slot_8: int = -1:
+	set(value):
+		slot_8 = value
+		equip_slot("slot_8", value)
+
+## SLOT 9
+@export var slot_9: int = -1:
+	set(value):
+		slot_9 = value
+		equip_slot("slot_9", value)
+
+## SLOT 10
+@export var slot_10: int = -1:
+	set(value):
+		slot_10 = value
+		equip_slot("slot_10", value)
+
+## SLOT 11
+@export var slot_11: int = -1:
+	set(value):
+		slot_11 = value
+		equip_slot("slot_11", value)
+
+## SLOT 12
+@export var slot_12: int = -1:
+	set(value):
+		slot_12 = value
+		equip_slot("slot_12", value)
+
+## SLOT 13
+@export var slot_13: int = -1:
+	set(value):
+		slot_13 = value
+		equip_slot("slot_13", value)
+
+## SLOT 14
+@export var slot_14: int = -1:
+	set(value):
+		slot_14 = value
+		equip_slot("slot_14", value)
+
+## SLOT 15
+@export var slot_15: int = -1:
+	set(value):
+		slot_15 = value
+		equip_slot("slot_15", value)
+
+## SLOT 16
+@export var slot_16: int = -1:
+	set(value):
+		slot_16 = value
+		equip_slot("slot_16", value)
+
+## SLOT 17
+@export var slot_17: int = -1:
+	set(value):
+		slot_17 = value
+		equip_slot("slot_17", value)
+
+## SLOT 18
+@export var slot_18: int = -1:
+	set(value):
+		slot_18 = value
+		equip_slot("slot_18", value)
+
+## SLOT 19
+@export var slot_19: int = -1:
+	set(value):
+		slot_19 = value
+		equip_slot("slot_19", value)
+
+## SLOT 20
+@export var slot_20: int = -1:
+	set(value):
+		slot_20 = value
+		equip_slot("slot_20", value)
+
+## SLOT 21
+@export var slot_21: int = -1:
+	set(value):
+		slot_21 = value
+		equip_slot("slot_21", value)
+
+## SLOT 22
+@export var slot_22: int = -1:
+	set(value):
+		slot_22 = value
+		equip_slot("slot_22", value)
+
+## SLOT 23
+@export var slot_23: int = -1:
+	set(value):
+		slot_23 = value
+		equip_slot("slot_23", value)
+
+## SLOT 24
+@export var slot_24: int = -1:
+	set(value):
+		slot_24 = value
+		equip_slot("slot_24", value)
+
+## SLOT 25
+@export var slot_25: int = -1:
+	set(value):
+		slot_25 = value
+		equip_slot("slot_25", value)
+
+## SLOT 26
+@export var slot_26: int = -1:
+	set(value):
+		slot_26 = value
+		equip_slot("slot_26", value)
+
+## SLOT 27
+@export var slot_27: int = -1:
+	set(value):
+		slot_27 = value
+		equip_slot("slot_27", value)
+
+## SLOT 28
+@export var slot_28: int = -1:
+	set(value):
+		slot_28 = value
+		equip_slot("slot_28", value)
+
+## SLOT 29
+@export var slot_29: int = -1:
+	set(value):
+		slot_29 = value
+		equip_slot("slot_29", value)
+
+## SLOT 30
+@export var slot_30: int = -1:
+	set(value):
+		slot_30 = value
+		equip_slot("slot_30", value)
+
+## SLOT 31
+@export var slot_31: int = -1:
+	set(value):
+		slot_31 = value
+		equip_slot("slot_31", value)
+
+## SLOT 32
+@export var slot_32: int = -1:
+	set(value):
+		slot_32 = value
+		equip_slot("slot_32", value)
+
+## SLOT 33
+@export var slot_33: int = -1:
+	set(value):
+		slot_33 = value
+		equip_slot("slot_33", value)
+
+## SLOT 34
+@export var slot_34: int = -1:
+	set(value):
+		slot_34 = value
+		equip_slot("slot_34", value)
+
+## SLOT 35
+@export var slot_35: int = -1:
+	set(value):
+		slot_35 = value
+		equip_slot("slot_35", value)
+
+## SLOT 36
+@export var slot_36: int = -1:
+	set(value):
+		slot_36 = value
+		equip_slot("slot_36", value)
+
+## SLOT 37
+@export var slot_37: int = -1:
+	set(value):
+		slot_37 = value
+		equip_slot("slot_37", value)
+
+## SLOT 38
+@export var slot_38: int = -1:
+	set(value):
+		slot_38 = value
+		equip_slot("slot_38", value)
+
+## SLOT 39
+@export var slot_39: int = -1:
+	set(value):
+		slot_39 = value
+		equip_slot("slot_39", value)
+#endregion
+
+#region avatar animation
+var input_axis:Vector2 = Vector2.ZERO
+		
+var input_jump:bool = false
+		
+var input_crouch:bool = false
+		
+var input_sprint:bool = false
+		
+var input_swim_down:bool = false
+		
+var input_swim_up:bool = false
+
+@export var blend_position:Vector2 
+@export var is_crouched:bool = false
+@export var is_combat_mode:bool = false
+@export var is_moving:bool = false
+@export var is_running:bool = false
+@export var affected_body_region:String = "NONE"
+#endregion
+
 func _ready():		
 	if peer_id == multiplayer.get_unique_id():
 		camera_3d.current = true
 	setup()	
 	$Register_Player.activate()	
 
-
 func _physics_process(delta):
+	update_avatar_animation_global()
 	multiplayer_synchronizer.position = position
 	multiplayer_synchronizer.rotation = rotation
 	if not multiplayer_synchronizer.is_multiplayer_authority():
 		return
+	update_avatar_animation_local()
 	var is_valid_input := Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 	
 	if is_valid_input:
 		if Input.is_action_just_pressed(input_fly_mode_action_name):
 			fly_ability.set_active(not fly_ability.is_actived())
-		var input_axis = Input.get_vector(input_left_action_name, input_right_action_name, input_back_action_name, input_forward_action_name)
-		var input_jump = Input.is_action_just_pressed(input_jump_action_name)
-		var input_crouch = Input.is_action_pressed(input_crouch_action_name)
-		var input_sprint = Input.is_action_pressed(input_sprint_action_name)
-		var input_swim_down = Input.is_action_pressed(input_crouch_action_name)
-		var input_swim_up = Input.is_action_pressed(input_jump_action_name)
+		input_axis = Input.get_vector(input_left_action_name, input_right_action_name, input_back_action_name, input_forward_action_name)
+		input_jump = Input.is_action_just_pressed(input_jump_action_name)
+		input_crouch = Input.is_action_pressed(input_crouch_action_name)
+		input_sprint = Input.is_action_pressed(input_sprint_action_name)
+		input_swim_down = Input.is_action_pressed(input_crouch_action_name)
+		input_swim_up = Input.is_action_pressed(input_jump_action_name)
 		move(delta, input_axis, input_jump, input_crouch, input_sprint, input_swim_down, input_swim_up)
+		
 	else:
 		# NOTE: It is important to always call move() even if we have no inputs 
 		## to process, as we still need to calculate gravity and collisions.
@@ -319,6 +342,21 @@ func _input(event: InputEvent) -> void:
 	# Mouse look (only if the mouse is captured).
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_head(event.relative)
+		
+func update_avatar_animation_local():
+	blend_position = input_axis
+	is_crouched = is_crouching()
+	is_running = is_sprinting()
+	if blend_position != Vector2.ZERO:
+		is_moving = true
+	else:
+		is_moving = false
+		
+func update_avatar_animation_global():
+	avatar.is_crouching = is_crouched
+	avatar.is_combat_mode = is_combat_mode
+	avatar.is_running = is_running
+	avatar.movement = blend_position
 
 func enter_placement_mode(object_category:String, object_id:int):
 	builder_node.enter_placement_mode(object_category, object_id)
