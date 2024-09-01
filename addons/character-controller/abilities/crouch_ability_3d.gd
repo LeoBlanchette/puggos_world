@@ -29,6 +29,7 @@ func get_speed_modifier() -> float:
 
 ## Set collision height 
 func apply(velocity: Vector3, speed : float, is_on_floor : bool, direction : Vector3, delta: float) -> Vector3:
+	return velocity # ABORT THIS FUNCTION because it is not necessary for this avatar.
 	if is_actived():
 		collision.shape.height -= delta * 8
 	elif not head_check.is_colliding():

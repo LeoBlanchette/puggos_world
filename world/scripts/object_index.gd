@@ -30,7 +30,11 @@ static func add_object_to_index(mod_object: Node):
 	var mod_path = mod_object.get_meta("mod_path")
 	var mod_type = mod_object.get_meta("mod_type")
 	#var mod_type_category = mod_object.get_meta("mod_type_category")
-	var id_check =  mod_object.get_meta("id")
+	var id_check =  mod_object.get_meta("id", 0)
+	
+	if id_check == 0:
+		print("No ID associated with %s. Cannot add it to index."%mod_path)
+		return
 	
 	var id: int = 0
 	if id_check != null:

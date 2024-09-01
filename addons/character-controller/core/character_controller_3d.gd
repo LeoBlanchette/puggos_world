@@ -220,7 +220,7 @@ func move(_delta: float, input_axis := Vector2.ZERO, input_jump := false, input_
 	jump_ability.set_active(input_jump and is_on_floor() and not head_check.is_colliding())
 	walk_ability.set_active(not is_fly_mode() and not swim_ability.is_floating())
 	crouch_ability.set_active(input_crouch and is_on_floor() and not is_floating() and not is_submerged() and not is_fly_mode())
-	sprint_ability.set_active(input_sprint and is_on_floor() and  input_axis.y >= 0.5 and !is_crouching() and not is_fly_mode() and not swim_ability.is_floating() and not swim_ability.is_submerged())
+	sprint_ability.set_active(input_sprint and is_on_floor() and  (abs(input_axis.y) >= 0.5 || abs(input_axis.x) >= 0.5) and !is_crouching() and not is_fly_mode() and not swim_ability.is_floating() and not swim_ability.is_submerged())
 	
 	var multiplier = 1.0
 	for ability in _abilities:
