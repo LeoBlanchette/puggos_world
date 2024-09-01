@@ -390,6 +390,11 @@ func equip(id:int):
 ## The avatar controller function for equipping object to a slot. It is called by
 ## a slot_<i> variable being set.
 func equip_slot(slot:String, id:int):
+	if avatar == null:
+		return # not ready yet
+	if id == -1: # This means to clear the slot:
+		unequip(slot)
+		return
 	if ObjectIndex.object_index.has_object("items", id):
 		var ob:Node3D = ObjectIndex.object_index.get_object("items", id)
 		if not ob.has_meta("equippable_slot"):
@@ -400,11 +405,14 @@ func equip_slot(slot:String, id:int):
 			print("Slot number was improperly assigned. Cannot use.")
 		
 		var path = ob.scene_file_path
-		
+	
 		if slot_number in [1, 2, 3]: # if these slots, its skin layers. Change path...
 			path  = path.replace("item.tscn", "texture.png")
 
 		avatar.equip(slot, path)
+
+func unequip(slot:String):
+	avatar.equip(slot, "")
 
 #func _on_controller_emerged():
 	#camera.environment = null

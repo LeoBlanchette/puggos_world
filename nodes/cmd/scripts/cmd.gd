@@ -40,6 +40,8 @@ func cmd(command_string:String):
 			teleport(command)
 		"/equip":
 			equip(command)
+		"/unequip":
+			unequip(command)
 		"/placement":
 			placement(command)
 		"/place":
@@ -192,6 +194,28 @@ func equip(command: ArgParser):
 		chat(reject_message)
 		return
 	player.equip(object_id)
+
+## equips a thing to the player
+func unequip(command: ArgParser):
+	var reject_message:String = "Something went wrong."
+	var peer_id:int = multiplayer.get_unique_id()	
+	var slot_number = "-1"
+	
+	slot_number = command.get_argument("1", slot_number).to_int()
+	if slot_number == -1:
+		print(reject_message)
+		return 
+
+	var player:Player = Players.get_player_character(peer_id)
+	if player == null:
+		chat(reject_message)
+		return
+	
+	if not range(0, 39).has(slot_number):
+		chat(reject_message)
+		return
+		
+	player.equip_slot("slot_%s"%slot_number, -1)
 
 ## places an object onto the ground
 func place(_command: ArgParser):
