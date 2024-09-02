@@ -14,6 +14,7 @@ func get_icon_directory():
 	return AssetLoader.get_mod_folder()+"icons/"
 
 func generate_icon(mod_path: String):
+	return
 	show_icon_generator(true)
 	var original_camera_position: Vector3 = camera_3d.position
 	var original_camera_rotation: Vector3 = camera_3d.rotation_degrees

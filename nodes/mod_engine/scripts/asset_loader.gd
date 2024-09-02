@@ -74,11 +74,13 @@ func get_mod_info(mod_path: String) -> Dictionary:
 	var mod_info_node: String	
 	if mod_path.ends_with("/"):
 		mod_info_node = mod_path+"info.tscn"
-	elif mod_path.ends_with(".tscn"):
+	elif mod_path.ends_with("info.tscn"):
 		mod_info_node = mod_path
 	var info: Dictionary = {}	
 	if(ResourceLoader.exists(mod_info_node)):
 		var info_tscn: Resource = ResourceLoader.load(mod_info_node)
+		if info_tscn == null:
+			return info
 		var info_node: Node = info_tscn.instantiate()
 		var keys: Array[String]
 		keys.assign(info_node.get_meta_list())
@@ -122,11 +124,15 @@ func populate_mod_packs():
 		MOD_DIRECTORY = MOD_FOLDER
 	
 	## This is populated with other directories as well, especially steam mods.
-	var mod_directories:Array = [MOD_DIRECTORY]
+	var mod_directories:Array = []
+	
+	var local_mods:PackedStringArray = DirAccess.get_directories_at(MOD_DIRECTORY)
+	for mod_path in local_mods:
+		mod_directories.append("%s%s"%[MOD_DIRECTORY, mod_path])
 
 	for mod_path in Workshop.get_mod_paths():
 		mod_directories.append(mod_path)
-	
+	print(mod_directories)
 	for mod_dir in mod_directories:
 		var modpacks: Array[String] = HelperFunctions.get_directory_contents(mod_dir, HelperFunctions.Scan.FILES_ONLY)
 		for mod in modpacks:
