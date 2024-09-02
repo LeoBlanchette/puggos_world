@@ -9,4 +9,6 @@
 								   
 [b][color=orange]UniLink[/color][/b]: A [color=green]Unix-like[/color] [b][color=#0096FF]HAM RADIO[/color][/b] System 
 made by [i]post-apocalypitic[/i] [b][color=#ff000d]HaCkErS[/color][/b] like you!
+	
+[color=gray][i]"It's a UNIX system! I know this!"[/i][/color]
 -----------------------------------------------------------------------------
