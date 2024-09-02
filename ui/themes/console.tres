@@ -1,12 +1,21 @@
-[gd_resource type="Theme" load_steps=4 format=3 uid="uid://dsq8rjmf0j24p"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://dsq8rjmf0j24p"]
 
-[ext_resource type="FontFile" uid="uid://dgvf6ypcf4vmv" path="res://ui/fonts/Ubuntu/Ubuntu-Regular.ttf" id="1_vkoys"]
+[ext_resource type="FontFile" uid="uid://nnvncctgps68" path="res://ui/fonts/roboto/static/RobotoMono-Regular.ttf" id="1_0l7he"]
+[ext_resource type="FontFile" uid="uid://d1675pbehjely" path="res://ui/fonts/roboto/static/RobotoMono-Bold.ttf" id="1_bcund"]
+[ext_resource type="FontFile" uid="uid://c6ppw621l1x02" path="res://ui/fonts/roboto/static/RobotoMono-BoldItalic.ttf" id="2_fcs4u"]
+[ext_resource type="FontFile" uid="uid://4f4ueb5lg18m" path="res://ui/fonts/roboto/static/RobotoMono-Italic.ttf" id="3_exfsg"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dgu4a"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hlht1"]
 
 [resource]
-default_font = ExtResource("1_vkoys")
+default_font = ExtResource("1_0l7he")
+default_font_size = 16
 LineEdit/styles/focus = SubResource("StyleBoxEmpty_dgu4a")
 LineEdit/styles/normal = SubResource("StyleBoxEmpty_hlht1")
+RichTextLabel/fonts/bold_font = ExtResource("1_bcund")
+RichTextLabel/fonts/bold_italics_font = ExtResource("2_fcs4u")
+RichTextLabel/fonts/italics_font = ExtResource("3_exfsg")
+RichTextLabel/fonts/mono_font = ExtResource("1_0l7he")
+RichTextLabel/fonts/normal_font = ExtResource("1_0l7he")

@@ -14,7 +14,7 @@ func _ready() -> void:
 		instance = self
 	else: 
 		queue_free()
-	
+	Cmd.cmd("/unilink")
 	visible = false
 	
 	
@@ -81,6 +81,9 @@ func submit_command():
 	command_input.grab_focus()
 	scroll_to_end()
 
+func clear():
+	for child in v_box_container.get_children():
+		child.queue_free()
 
 func _on_line_edit_text_changed(new_text: String) -> void:
 	# Stops the tilde key from registering into the input when the 

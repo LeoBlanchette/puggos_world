@@ -1,0 +1,2 @@
+	
+Type [color=green]/clear[/color] to clear all text from the console.

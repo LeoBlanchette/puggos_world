@@ -19,6 +19,8 @@ func cmd(command_string:String):
 	match command.get_command():
 		"/help":
 			help(command)
+		"/unilink":
+			unilink(command)
 		"/whoami":
 			whoami(command)
 		"/whois":
@@ -91,13 +93,14 @@ func print_help_doc(command:String)->void:
 func help(command:ArgParser):
 	var commands:Dictionary = {
 		"/help":"Prints a list of commands and a brief description of what they do.",
+		"/unilink":"Prints out UniLink info.",
 		"/whoami":"Shows your player information.",
 		"/whois":"Shows information on a player based on Steam persona name.",
 		"/list_players":"Lists information of player currently in game.",
 		"/save":"Saves a game / map / prefab state.",
 		"/load":"Loads level such as World, Editor, or Prefab.",
 		"/load_prefab":"Loads a prefab while in the world editor.",
-		"/clear":"Does nothing yet.",
+		"/clear":"Clears the console.",
 		"/give":"Gives player an item. Not operative yet.",
 		"/spawn":"Spawns an object.",
 		"/interact":"Interacts with an object. Typically called by game, not console.",
@@ -122,7 +125,7 @@ func help(command:ArgParser):
 	if cmd == "/help":
 		print_to_console("[color=green]Available Commands:[/color]")
 		for key in commands:
-			print_to_console("[color=green]%s[/color]:   %s"%[key, commands[key]])
+			print_to_console("[color=green]%s[/color]: %s"%[key, commands[key]])
 		print_to_console(" ")
 		print_to_console("type [color=green]/<command> --help[/color] to find more on the given command.")
 		return
@@ -131,7 +134,7 @@ func help(command:ArgParser):
 		var key:String = cmd
 		if commands.has(key):		
 			
-			print_to_console("[color=green]%s[/color]:   %s"%[key, commands[key]])
+			print_to_console("[color=green]%s[/color]: %s"%[key, commands[key]])
 			print_help_doc(key)
 
 
@@ -145,7 +148,10 @@ func print_player_information_to_console(peer_id):
 		print_to_console("player == null")
 		return
 	for key in player:
-		print_to_console("[color=green]%s:[/color]   %s"%[str(key), str(player[key])])
+		print_to_console("[color=green]%s:[/color] %s"%[str(key), str(player[key])])
+
+func unilink(command:ArgParser):
+	print_help_doc("unilink")
 
 func whois(command:ArgParser):
 	if is_help_request(command):
@@ -227,7 +233,7 @@ func do_load(command:ArgParser):
 func do_clear(command:ArgParser):
 	if is_help_request(command):
 		help(command)
-		return
+	UIConsole.instance.clear()
 
 #endregion
 
@@ -356,7 +362,7 @@ func print_index(command:ArgParser)->void:
 			var mod_name:String = ob.get_meta("name", "* not named")
 			
 			var basic_print:String = "%s: %s [%s]"%[key, str(id), mod_name]
-			var console_print:String = "[color=green]%s:[/color]    [color=yellow]%s[/color]    [ %s ]"%[key, str(id), mod_name]
+			var console_print:String = "[color=green]%s:[/color] [color=yellow]%s[/color] [ %s ]"%[key, str(id), mod_name]
 			print(basic_print)
 			print_to_console(console_print)
 
@@ -385,14 +391,14 @@ func list_equipped(command:ArgParser):
 			if ObjectIndex.index["items"].has(id):
 				var ob:Node  = ObjectIndex.index["items"][id]
 				var mod_name:String = ob.get_meta("name", "* no name")
-				print_to_console("[color=green]%s[/color]:   [color=yellow]%s[/color]    [color=gray][ %s ][/color]"%[slot, str(id), mod_name])
+				print_to_console("[color=green]%s[/color]: [color=yellow]%s[/color]    [color=gray][ %s ][/color]"%[slot, str(id), mod_name])
 				
 func list_slots(command:ArgParser = null):
 	if is_help_request(command):
 		help(command)
 		return
 	for key in CharacterAppearance.Equippable.keys():
-		var slot_info:String ="[color=yellow]%s[/color]:    %s"%[key, CharacterAppearance.get_slot_description(CharacterAppearance.Equippable.get(key))]
+		var slot_info:String ="[color=yellow]%s[/color]: %s"%[key, CharacterAppearance.get_slot_description(CharacterAppearance.Equippable.get(key))]
 		UIConsole.instance.print_to_console(slot_info)
 
 ## equips a thing to the player
