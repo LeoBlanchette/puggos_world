@@ -1,0 +1,13 @@
+	
+Prints out the entire index of objects available in a level.
+	
+This will obviously not work outside of a level.
+	
+Please note that the loaded index will differ based on which level you are 
+currently in. For example, the prefab editor will have less items available
+than the world level.
+	
+This can be used to discover the IDs of items you wish to spawn in testing.
+
+[color=gray]The names assigned to the items may not be descriptive.[/color]
+[color=gray]For example, some are character faces with funny names.[/color]

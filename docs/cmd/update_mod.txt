@@ -1,0 +1,10 @@
+	
+	
+Used internally, but you can upload a mod using a path like so:
+	
+[color=yellow]IMPORTANT - NOT FINISHED YET. IT WILL NOT WORK[/color]
+It will work if you set it up properly. You must run the command with an 
+absolute path to the folder containing the mod like so:
+	
+[color=green]/update_mod[/color] C:\Users\thesw\Desktop\PW-MODS\more_books
+	

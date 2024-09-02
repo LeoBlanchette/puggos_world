@@ -1,0 +1,9 @@
+	
+Loads a prefab into a level with a position and rotation.
+	
+Example: 
+	
+	[color=green]/load_prefab[/color] <file_name> 
+	
+This is used internally by Puggo's World. If you use the command, 
+simply load it in and use the gizmos to reposition it in the level.

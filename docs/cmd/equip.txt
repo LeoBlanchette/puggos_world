@@ -1,0 +1,7 @@
+	
+Equips an item to a character slot. 
+	
+If you are modding and are trying out items via the command line, 
+then you should use this workflow:
+	
+	[color=green]list_

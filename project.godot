@@ -41,6 +41,7 @@ enabled=PackedStringArray("res://addons/character-controller/plugin.cfg", "res:/
 
 folder_colors={
 "res://addons/": "yellow",
+"res://docs/": "gray",
 "res://image/": "green",
 "res://mods/": "pink",
 "res://nodes/": "red",

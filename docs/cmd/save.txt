@@ -1,0 +1,8 @@
+	
+Will save the current state of these three levels:
+	World
+	World Editor
+	Prefab Editor
+	
+Example:
+	[color=green]/save[/color] <label_or_name>

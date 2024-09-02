@@ -1,0 +1,12 @@
+ 
+Will spawn an item by id. Optionally with coordinates and rotation provided.
+
+Used internally by Puggo's World as well.
+The simplest format of the spawn command looks this:
+ 
+[color=green]/spawn <mod_type> <id>[/color]
+or
+[color=green]/spawn items 1[/color]
+ 
+The more complex command used internally, involving position and rotation:
+[color=green]/spawn[/color] [color=yellow]structures[/color] 1 [color=yellow]--p[/color] 1.086 0.0 -4.795 [color=yellow]--r[/color]  -0.0 -0.0 -0.0

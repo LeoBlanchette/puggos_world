@@ -35,7 +35,6 @@ func _ready():
 	
 	ui_main.set_active(false)
 	
-
 	
 func _exit_tree():
 	if UI.instance == self:
@@ -78,6 +77,9 @@ func _on_game_manager_level_changed(old_level: Variant, new_level: Variant) -> v
 	match old_level: 
 		pass
 
+func add_to_blocking_ui(node):
+	instance.escapable_ui_nodes.append(node)
+
 func close_blocking_ui():
 	for ui_node in escapable_ui_nodes:
 		if ui_node == null:
@@ -90,9 +92,11 @@ func is_ui_blocking()->bool:
 	for ui_node in escapable_ui_nodes:
 		if ui_node == null:
 			continue
-		if ui_node.is_visible():
+		if ui_node.is_visible():			
 			return true
 	if UIChat.instance.is_chat_open():
+		return true
+	if UIConsole.instance.is_console_open():
 		return true
 	return false
 

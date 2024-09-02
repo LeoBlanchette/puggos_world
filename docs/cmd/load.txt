@@ -1,0 +1,9 @@
+	
+This will load a level or prefab.
+	
+Example:
+	
+	[color=green]/load[/color] <file_name>
+	
+The provided file name is just the label it was given at creation. There is
+no need to provide an entire file path, as that will not work.

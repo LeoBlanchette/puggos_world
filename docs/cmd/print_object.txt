@@ -1,0 +1,11 @@
+	
+Made for seeing important object status in the game. Mostly for modding
+and development. 
+	
+Command should appear as [color=green]/print_object[/color] --o <object>.
+	
+	/print_object --o players
+	/print_object --o loaded_mods
+	/print_object --o index
+	
+NOTE: it will print out unformatted dictionaries or other basic information.

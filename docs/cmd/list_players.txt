@@ -1,0 +1,18 @@
+	
+No arguments are necessary for this command.
+	
+This will print out a list of players as though you had run 
+	
+	[color=green]/whois[/color] <name>
+	
+for every player in the game.
+	
+Info shown:
+	
+	peer_id: The id of their current network peer id, Godot-specific.
+	steam_id: Their Steam id.
+	name: Their Steam persona name.
+	character_name: The name of their current character.
+	nick_name: Their Steam nick name, if applicable.
+	character: Their character object present in game, if applicable.
+	avatar: Their steam avatar / image object present in game, if applicable. 

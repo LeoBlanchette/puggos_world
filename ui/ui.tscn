@@ -24,7 +24,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("1_wfx8k")
 script = ExtResource("1_w4cnj")
-escapable_ui_nodes = [NodePath("EscMenu"), NodePath("UIChat"), NodePath("UIBuildingInterface"), NodePath("UIMain/MenuRight/PlayOptions"), NodePath("UIMain/MenuRight/WorldEditorOptions"), NodePath("UIMain/MenuRight/ModsOptions"), NodePath("UIMain/MenuRight/ConfigsOptions"), NodePath("UIMain/MenuRight/DirectConnection"), NodePath("UIMain/StatusPanel")]
+escapable_ui_nodes = [NodePath("EscMenu"), NodePath("UIChat"), NodePath("UIBuildingInterface"), NodePath("UIMain/MenuRight/PlayOptions"), NodePath("UIMain/MenuRight/WorldEditorOptions"), NodePath("UIMain/MenuRight/ModsOptions"), NodePath("UIMain/MenuRight/ConfigsOptions"), NodePath("UIMain/MenuRight/DirectConnection"), NodePath("UIMain/StatusPanel"), NodePath("UIConsole")]
 
 [node name="UIMain" parent="." instance=ExtResource("2_g37sc")]
 layout_mode = 1
@@ -69,5 +69,4 @@ layout_mode = 1
 
 [editable path="UIMain"]
 [editable path="UIChat"]
-[editable path="UIConsole"]
 [editable path="UIConnectionDropped"]

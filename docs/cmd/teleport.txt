@@ -1,0 +1,12 @@
+		
+	A convenience method for teleporting around the world. Useful when building mods.
+	
+Run it like this:
+	
+	[color=green]/teleport[/color] [color=yellow]--p[/color] <x> <y> <z>
+	
+Example:
+	
+	/teleport --p 5 20 -10
+
+...which will teleport you 20 meters high up into the air, 5 on x, -10 on z.

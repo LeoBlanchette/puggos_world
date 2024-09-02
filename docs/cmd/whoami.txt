@@ -1,0 +1,10 @@
+ 
+Shows the currently logged in user with info:
+	
+	peer_id: The id of your current network peer id, Godot-specific.
+	steam_id: Your Steam id.
+	name: Your Steam persona name.
+	character_name: The name of the current character.
+	nick_name: Steam nick name, if applicable.
+	character: The character object present in game, if applicable.
+	avatar: The steam avatar / image object present in game, if applicable. 

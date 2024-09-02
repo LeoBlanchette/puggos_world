@@ -1,0 +1,23 @@
+	
+Used internally, but you can upload a mod using a path like so:
+	
+[color=yellow]IMPORTANT[/color]
+It will work if you set it up properly. You must run the command with an 
+absolute path to the folder containing the mod like so:
+	
+[color=green]/upload_mod[/color] C:\Users\thesw\Desktop\PW-MODS\more_books
+	
+
+Afterward, go to your steam account and finish preparing the mod on their system / UI.
+	
+The folder sould be structure like this:
+
+<mod_folder>
+
+	- the-mod.pck
+	- preview.png
+	- meta.cfg
+	
+
+...where preview.png is the 960x540 preview image that will be uploaded to steam.
+...and meta.cfg is the resource / config file created by the SDK on export.

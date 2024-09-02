@@ -1,0 +1,6 @@
+	
+The much-useful kick command. 
+	
+Will kick a user based on the persona-name. Example:
+	
+	[color=green]/kick[/color] SomeAnnoyingDumbass

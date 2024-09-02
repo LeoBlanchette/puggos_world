@@ -52,6 +52,11 @@ func get_argument(arg: String, default_value = null):
 	else:
 		return default_value
 
+func get_first_argument()->String:
+	if arguments["args"].size() > 0:
+		return arguments["args"][0]
+	return ""
+	
 func get_command()->String:
 	return arguments["command"]
 

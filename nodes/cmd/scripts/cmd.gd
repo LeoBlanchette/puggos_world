@@ -1,16 +1,13 @@
 @icon("res://images/icons/computer.svg")
 extends Node
 
-
 ## beginning root of the cmd cycle
 func cmd(command_string:String):	
 	
 	if command_string.is_empty():
+		print_to_console(" ") ## For formatting.
 		return
 	
-	if command_string.begins_with("/message"):
-		message(command_string)
-		return	
 	if not command_string.begins_with("/"):
 		chat(command_string)
 		return
@@ -20,6 +17,14 @@ func cmd(command_string:String):
 	var command:ArgParser = ArgParser.new(command_string)
 	
 	match command.get_command():
+		"/help":
+			help(command)
+		"/whoami":
+			whoami(command)
+		"/whois":
+			whois(command)
+		"/list_players":
+			list_players(command)
 		"/save":
 			do_save(command)
 		"/load":
@@ -42,27 +47,135 @@ func cmd(command_string:String):
 			equip(command)
 		"/unequip":
 			unequip(command)
+		"/list_slots":
+			list_slots(command)
+		"/print_index":
+			print_index(command)
 		"/placement":
 			placement(command)
 		"/place":
 			place(command)
 		"/kick":
 			kick(command)		
-		"/print_command":
-			print_command(command)
 		"/print_object":
 			print_object(command)
 		"/print_peer_id":
-			print_peer_id()
+			print_peer_id(command)
 		# MODDING
 		"/upload_mod":
 			upload_mod(command)
 		"/update_mod":
 			update_mod(command)
+		"/rick":
+			rick(command)
+		_:
+			print_to_console("[color=red]Command not recognized.[/color]")
+			print_to_console("[color=orange]type [color=green][b]/help[/b][/color] to get a list of commands.[/color]")
 
 #region level editing 
 
+func print_help_doc(command:String)->void:
+
+	const DOCS:String = "res://docs/cmd/"
+	var file_path:String = "%s%s.txt"%[DOCS, command]
+	if not FileAccess.file_exists(file_path):
+		return
+	var file = FileAccess.open(file_path, FileAccess.READ)
+	while not file.eof_reached():
+		var line:String = file.get_line()
+		print_to_console(line)
+
+	
+func help(command:ArgParser):
+	var commands:Dictionary = {
+		"/help":"Prints a list of commands and a brief description of what they do.",
+		"/whoami":"Shows your player information.",
+		"/whois":"Shows information on a player based on Steam persona name.",
+		"/list_players":"Lists information of player currently in game.",
+		"/save":"Saves a game / map / prefab state.",
+		"/load":"Loads level such as World, Editor, or Prefab.",
+		"/load_prefab":"Loads a prefab while in the world editor.",
+		"/clear":"Does nothing yet.",
+		"/give":"Gives player an item. Not operative yet.",
+		"/spawn":"Spawns an object.",
+		"/interact":"Interacts with an object. Typically called by game, not console.",
+		"/teleport":"Teleports a player based on X,Y,Z coordinates supplied.",
+		"/t":"Shortcut for the /teleport command.",
+		"/equip":"Equips an item.",
+		"/unequip":"Unequips a slot, removing the item in the slot.",
+		"/list_slots":"Lists all character slots with their descriptions.",
+		"/print_index":"Prints the entire item index loaded into the game.",
+		"/placement":"Puts user into placement mode, for placing an object such as modular building part.",
+		"/place":"Places an item.",
+		"/kick":"Kick a player by Steam persona name.",
+		"/print_object":"Prints the status / info of an important object in the game. For modder use.",
+		"/print_peer_id":"Prints your peer id.",
+		"/upload_mod":"Uploads a new mod to steam based on path supplied to it's root folder.",
+		"/update_mod":"Uploads / Updates a mod to steam based on path supplied to it's root folder. (Not yet working.)",
+		"/rick": "For when you are tired of reading documentation"
+	}
+	var cmd:String = command.get_first_argument().strip_edges().to_lower()
+	
+	if cmd == "/help":
+		print_to_console("[color=green]Available Commands:[/color]")
+		for key in commands:
+			print_to_console("[color=green]%s[/color]:   %s"%[key, commands[key]])
+		print_to_console(" ")
+		print_to_console("type [color=green]/<command> --help[/color] to find more on the given command.")
+		return
+		
+	if not command.get_first_argument().is_empty():
+		var key:String = cmd
+		if commands.has(key):		
+			
+			print_to_console("[color=green]%s[/color]:   %s"%[key, commands[key]])
+			print_help_doc(key)
+
+
+func is_help_request(command:ArgParser)->bool:
+	return command.arguments["argument_string"].contains("--help")
+
+
+func print_player_information_to_console(peer_id):
+	var player = Players.get_player(peer_id)
+	if player == null:
+		print_to_console("player == null")
+		return
+	for key in player:
+		print_to_console("[color=green]%s:[/color]   %s"%[str(key), str(player[key])])
+
+func whois(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	var reject:String = "Cannot find that player..."
+	var player_name:String = command.get_argument("1", "")
+	if player_name.is_empty():
+		print_to_console(reject)
+	var peer_id:int = Players.get_peer_id_by_persona_name(player_name)
+	if peer_id == 0:
+		print_to_console(reject)
+	print_player_information_to_console(peer_id)
+	
+func whoami(command:ArgParser = null):
+	if is_help_request(command):
+		help(command)
+		return
+	var peer_id:int = multiplayer.get_unique_id()
+	print_player_information_to_console(peer_id)
+	
+func list_players(command:ArgParser = null):
+	if is_help_request(command):
+		help(command)
+		return
+	for peer_id in Players.players:
+		print_player_information_to_console(peer_id)
+		print_to_console("---- ---- ---- ---- ---- ---- ")
+
 func do_save(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var file_name = command.get_argument("1", null)
 	if file_name==null:
 		print_to_console("Please save with a file name...")
@@ -78,6 +191,9 @@ func do_save(command:ArgParser):
 			Save.save_world()
 
 func load_prefab(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	if GameManager.current_level == GameManager.SCENES.PREFAB_EDITOR:
 		print_to_console("When using the Prefab Editor, use \"load\" instead. \"load_prefab\" is for World and World Editor use.")
 		return
@@ -89,6 +205,9 @@ func load_prefab(command:ArgParser):
 	Save.load_prefab(file_name)
 
 func do_load(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var file_name = command.get_argument("1", null)
 	if file_name==null:
 		print_to_console("Please load by a file name...")
@@ -103,7 +222,9 @@ func do_load(command:ArgParser):
 			Save.load_world()
 
 func do_clear(command:ArgParser):
-	pass
+	if is_help_request(command):
+		help(command)
+		return
 
 #endregion
 
@@ -115,16 +236,28 @@ func chat(command:String):
 		NetworkManager.server_chat_message.rpc(command)
 		
 ## specific chat messages
-func message(_command:String):
-	pass	
+func message(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 
 ## The main spawning command.
 func spawn(command: ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var reject_message:String = "Something went wrong."
 	var peer_id:int = multiplayer.get_unique_id()	
 	var object_category = 0
 	var object_id = 0
 	
+	if command.get_argument("1") == null:
+		help(command)
+		return
+	if command.get_argument("2") == null:
+		help(command)
+		return
+		
 	object_category = command.get_argument("1")
 	object_id = int(command.get_argument("2"))
 	var player = Players.get_player_character(peer_id)
@@ -151,6 +284,9 @@ func spawn(command: ArgParser):
 
 ## Basic interaction.
 func interact(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var instance_id_string = command.get_argument("1")
 	if instance_id_string == null:
 		return
@@ -164,6 +300,9 @@ func interact(command:ArgParser):
 	World.instance.do_player_interaction.rpc_id(1, ob.get_path())
 
 func teleport(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var reject_message:String = "Something went wrong."
 	var peer_id:int = multiplayer.get_unique_id()	
 
@@ -171,15 +310,23 @@ func teleport(command:ArgParser):
 	if player == null:
 		chat(reject_message)
 		return	
+	if command.get_argument("--p", "").is_empty():
+		help(command)
+		return
 	var pos = command.vector_from_array(command.get_argument("--p", player.global_position))
 	player.global_position = pos
 	
 ## gives player a thing
-func give(_command: ArgParser):
-	pass
+func give(command: ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 
 ## equips a thing to the player
 func equip(command: ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var reject_message:String = "Something went wrong."
 	var peer_id:int = multiplayer.get_unique_id()	
 	var object_id = "0"
@@ -195,8 +342,34 @@ func equip(command: ArgParser):
 		return
 	player.equip(object_id)
 
+
+func print_index(command:ArgParser)->void:
+	if is_help_request(command):
+		help(command)
+		return
+	for key in ObjectIndex.index:
+		for id in ObjectIndex.index[key]:
+			var ob:Node = ObjectIndex.index[key][id]
+			var mod_name:String = ob.get_meta("name", "* not named")
+			
+			var basic_print:String = "%s: %s [%s]"%[key, str(id), mod_name]
+			var console_print:String = "[color=green]%s:[/color]    [color=yellow]%s[/color]    [ %s ]"%[key, str(id), mod_name]
+			print(basic_print)
+			print_to_console(console_print)
+			
+func list_slots(command:ArgParser = null):
+	if is_help_request(command):
+		help(command)
+		return
+	for key in CharacterAppearance.Equippable.keys():
+		var slot_info:String ="[color=yellow]%s[/color]:    %s"%[key, CharacterAppearance.get_slot_description(CharacterAppearance.Equippable.get(key))]
+		UIConsole.instance.print_to_console(slot_info)
+
 ## equips a thing to the player
 func unequip(command: ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var reject_message:String = "Something went wrong."
 	var peer_id:int = multiplayer.get_unique_id()	
 	var slot_number = "-1"
@@ -218,10 +391,15 @@ func unequip(command: ArgParser):
 	player.equip_slot("slot_%s"%slot_number, -1)
 
 ## places an object onto the ground
-func place(_command: ArgParser):
-	pass
+func place(command: ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 
 func kick(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var user:String = ""
 	var m:Array = command.get_argument("--m", "You were kicked from the server.".split(" "))
 	var message:String = ""
@@ -233,11 +411,11 @@ func kick(command:ArgParser):
 		user = command.get_argument("1")
 		NetworkManager.drop_user(user, message)
 
-func print_command(command:ArgParser):
-	print(command)
-
 ## puts user into placement mode with a certain object
 func placement(command: ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var reject_message:String = "Something went wrong."
 	var peer_id:int = multiplayer.get_unique_id()	
 	var object_category = 0
@@ -253,18 +431,21 @@ func placement(command: ArgParser):
 	
 	player.enter_placement_mode(object_category, object_id)
 
-func print_peer_id():
+func print_peer_id(command:ArgParser = null):
+	if is_help_request(command):
+		help(command)
+		return
 	UIConsole.instance.print_to_console(str(multiplayer.get_unique_id()))
 
 func print_object(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var print_string:String = ""
 
 	var arg:Array = command.get_argument("--o")	
 	if arg == null || arg.size() == 0:
-		print_to_console("Command should appear as --o <object>.")
-		print_to_console("/print_object --o players")
-		print_to_console("/print_object --o loaded_mods")	
-		print_to_console("/print_object --o index")
+		help(command)
 	
 	var to_console:Array = []
 	
@@ -292,8 +473,19 @@ func print_to_console(print_string:String)->void:
 	UIConsole.instance.print_to_console(print_string)
 
 func upload_mod(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
 	var mod_path:String = command.get_argument("1")
 	Workshop.upload_mod(mod_path)
 
 func update_mod(command:ArgParser):
-	pass
+	if is_help_request(command):
+		help(command)
+		return
+
+func rick(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	OS.shell_open("https://www.youtube.com/watch?v=dQw4w9WgXcQ")

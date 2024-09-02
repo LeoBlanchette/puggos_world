@@ -1,0 +1,16 @@
+ 	
+Shows a currently logged in user with info:
+	
+	peer_id: The id of their current network peer id, Godot-specific.
+	steam_id: Their Steam id.
+	name: Their Steam persona name.
+	character_name: The name of their current character.
+	nick_name: Their Steam nick name, if applicable.
+	character: Their character object present in game, if applicable.
+	avatar: Their steam avatar / image object present in game, if applicable. 
+	
+Run command like this:
+	
+	[color=green]/whois[/color] <name>
+	
+...where the name is the Steam persona name.
