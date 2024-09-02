@@ -70,6 +70,10 @@ func cmd(command_string:String):
 			upload_mod(command)
 		"/update_mod":
 			update_mod(command)
+		"/ip":
+			ip(command)
+		"/shutdown":
+			shutdown(command)
 		"/rick":
 			rick(command)
 		_:
@@ -118,6 +122,8 @@ func help(command:ArgParser):
 		"/print_peer_id":"Prints your peer id.",
 		"/upload_mod":"Uploads a new mod to steam based on path supplied to it's root folder.",
 		"/update_mod":"Uploads / Updates a mod to steam based on path supplied to it's root folder. (Not yet working.)",
+		"/ip":"Prints the IP Address to the console.",
+		"/shutdown":"Quits the application. ",
 		"/rick": "For when you are tired of reading documentation"
 	}
 	var cmd:String = command.get_first_argument().strip_edges().to_lower()
@@ -519,6 +525,19 @@ func update_mod(command:ArgParser):
 	if is_help_request(command):
 		help(command)
 		return
+
+func ip(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	var ip_addr = NetworkManager.get_machines_ip_address()
+	print_to_console(ip_addr)
+
+func shutdown(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	get_tree().quit()
 
 func rick(command:ArgParser):
 	if is_help_request(command):

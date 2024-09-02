@@ -132,7 +132,7 @@ func populate_mod_packs():
 
 	for mod_path in Workshop.get_mod_paths():
 		mod_directories.append(mod_path)
-	print(mod_directories)
+
 	for mod_dir in mod_directories:
 		var modpacks: Array[String] = HelperFunctions.get_directory_contents(mod_dir, HelperFunctions.Scan.FILES_ONLY)
 		for mod in modpacks:

@@ -35,7 +35,8 @@ func _exit_tree() -> void:
 		ModManager.mod_manager = null
 
 func load_mod_from_path(mod_path: String):
-	var loaded_mod: Resource = ResourceLoader.load(mod_path)
+	var loaded_mod = load(mod_path)
+
 	if mod_path.ends_with(".tscn"):
 		var instanced_mod = loaded_mod.instantiate()
 		instanced_mod.set_meta("mod_path", mod_path)
