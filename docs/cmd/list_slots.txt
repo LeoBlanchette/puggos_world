@@ -1,0 +1,12 @@
+	
+Puggo's World Characters use a slot system for the avatar, 
+allowing for maximum customizing.
+	
+There are 40 character slots! This command will print a list 
+with descriptions of each of them. This is very handy for when 
+you are designing a mod and must test character using commands.
+	
+Example:
+	
+	[color=green]/list_slots[/color]
+	

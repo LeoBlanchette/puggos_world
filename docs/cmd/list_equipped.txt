@@ -1,0 +1,14 @@
+	
+List all equipped slots.
+	
+Use this when you want to see which slots are holding which items on your 
+character. Type another player's name to get a list of what they have equipped.
+	
+Useful for testing and swapping out gear via commands when you are modding.
+Does not list empty slots.
+	
+For self:
+[color=green]/list_equipped[/color] 
+	
+Other player:
+[color=green]/list_equipped[/color] <player_name>

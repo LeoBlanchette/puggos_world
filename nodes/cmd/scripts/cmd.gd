@@ -49,6 +49,8 @@ func cmd(command_string:String):
 			unequip(command)
 		"/list_slots":
 			list_slots(command)
+		"/list_equipped":
+			list_equipped(command)
 		"/print_index":
 			print_index(command)
 		"/placement":
@@ -104,6 +106,7 @@ func help(command:ArgParser):
 		"/equip":"Equips an item.",
 		"/unequip":"Unequips a slot, removing the item in the slot.",
 		"/list_slots":"Lists all character slots with their descriptions.",
+		"/list_equipped":"Lists all items equipped on character.",
 		"/print_index":"Prints the entire item index loaded into the game.",
 		"/placement":"Puts user into placement mode, for placing an object such as modular building part.",
 		"/place":"Places an item.",
@@ -356,7 +359,34 @@ func print_index(command:ArgParser)->void:
 			var console_print:String = "[color=green]%s:[/color]    [color=yellow]%s[/color]    [ %s ]"%[key, str(id), mod_name]
 			print(basic_print)
 			print_to_console(console_print)
-			
+
+func list_equipped(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	var reject_message:String = "Something went wrong."
+	
+	var peer_id:int = multiplayer.get_unique_id()	
+	
+	var target_player:String = command.get_second_argument().strip_edges()
+	if not target_player.is_empty():
+		peer_id = Players.get_peer_id_by_persona_name(target_player)
+	var player:Player = Players.get_player_character(peer_id)
+	if player == null:
+		print_to_console(reject_message)
+		return	
+	var player_name:String = Players.get_player_name(peer_id)
+	print_to_console(" ")
+	print_to_console("[color=orange]%s[/color] equipped items: "%player_name)
+	for slot_number:int in range(0, 40):
+		var slot = "slot_%s"%str(slot_number)
+		var id:int = player.get(slot)
+		if ObjectIndex.index.has("items"):
+			if ObjectIndex.index["items"].has(id):
+				var ob:Node  = ObjectIndex.index["items"][id]
+				var mod_name:String = ob.get_meta("name", "* no name")
+				print_to_console("[color=green]%s[/color]:   [color=yellow]%s[/color]    [color=gray][ %s ][/color]"%[slot, str(id), mod_name])
+				
 func list_slots(command:ArgParser = null):
 	if is_help_request(command):
 		help(command)

@@ -1,0 +1,12 @@
+	
+Unequips a character slot.
+	
+Example:
+	[color=green]/unequip[/color] <slot_number>
+or
+	[color=green]/unequip[/color] 11
+
+
+Need to know which slots are which? 
+Run [color=green]/list_slots[/color] to see which slots contain 
+which items.
