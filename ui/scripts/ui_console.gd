@@ -9,12 +9,13 @@ const CONSOLE_TEXT = preload("res://ui/console_interface_elements/console_text.t
 @onready var scrollbar = $MarginContainer/ScrollContainer.get_v_scroll_bar()
 @onready var command_input: LineEdit = $Input/LineEdit
 
+var unilink_shown:bool =false
+
 func _ready() -> void:
 	if instance == null:
 		instance = self
 	else: 
 		queue_free()
-	Cmd.cmd("/unilink")
 	visible = false
 	
 	
@@ -66,12 +67,17 @@ func _on_visibility_changed() -> void:
 		get_tree().create_timer(0.1).timeout
 		command_input.set_process_input(true)
 		command_input.grab_focus()
+		show_unilink_message()
 		scroll_to_end()
 	else:
 		GameManager.instance.lock_mouse()
 		command_input.set_process_input(false)
 
-		
+func show_unilink_message():
+	if !unilink_shown:
+		Cmd.cmd("/unilink")
+		unilink_shown = true
+
 func submit_command():
 	var text:String = command_input.text.strip_edges()	
 	Cmd.cmd(text)
