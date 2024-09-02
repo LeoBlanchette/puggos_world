@@ -96,7 +96,5 @@ func _on_asset_loader_assets_loaded() -> void:
 ## This will fire twice if after initial loading, more subscriptions
 ## are found.
 func populate_mod_content_from_workshop_update():
-	await AssetLoader.asset_loader != null
-	await AssetLoader.asset_loader.is_node_ready()
 	AssetLoader.asset_loader.populate_mod_content()
 	

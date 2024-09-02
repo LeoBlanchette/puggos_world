@@ -14,7 +14,6 @@ func get_icon_directory():
 	return AssetLoader.get_mod_folder()+"icons/"
 
 func generate_icon(mod_path: String):
-	return
 	show_icon_generator(true)
 	var original_camera_position: Vector3 = camera_3d.position
 	var original_camera_rotation: Vector3 = camera_3d.rotation_degrees
@@ -23,7 +22,11 @@ func generate_icon(mod_path: String):
 	
 	var asset_resource: Resource = ResourceLoader.load(mod_path)
 	var asset: Node = asset_resource.instantiate()
-	 
+	
+	if not asset.has_meta("icon_camera_position"):
+		#This is not able to do an icon.
+		return
+	
 	var orthagonal_size: float = get_camera_orthagonal_size(asset)
 	var camera_position: Vector3 = get_camera_position(asset, original_camera_position)
 	var camera_rotation: Vector3 = get_camera_rotation(asset, original_camera_position)

@@ -92,6 +92,7 @@ func generate_icons():
 	for mod_path in mod_paths:
 		if not mod_path.ends_with(".tscn"):
 			continue
+	
 		await get_tree().process_frame		
 		icon_generator.generate_icon(mod_path)
 		
