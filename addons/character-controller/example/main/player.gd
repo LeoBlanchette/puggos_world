@@ -393,7 +393,7 @@ func equip_slot(slot:String, id:int):
 	if avatar == null:
 		return # not ready yet
 	if id == -1: # This means to clear the slot:
-		unequip(slot)
+		avatar.equip(slot, "")
 		return
 	if ObjectIndex.object_index.has_object("items", id):
 		var ob:Node3D = ObjectIndex.object_index.get_object("items", id)
@@ -412,7 +412,7 @@ func equip_slot(slot:String, id:int):
 		avatar.equip(slot, path)
 
 func unequip(slot:String):
-	avatar.equip(slot, "")
+	set(slot, -1)
 
 #func _on_controller_emerged():
 	#camera.environment = null

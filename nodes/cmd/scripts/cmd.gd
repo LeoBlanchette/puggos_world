@@ -415,7 +415,7 @@ func unequip(command: ArgParser):
 	var reject_message:String = "Something went wrong."
 	var peer_id:int = multiplayer.get_unique_id()	
 	var slot_number = "-1"
-	
+
 	slot_number = command.get_argument("1", slot_number).to_int()
 	if slot_number == -1:
 		print(reject_message)
@@ -430,7 +430,7 @@ func unequip(command: ArgParser):
 		chat(reject_message)
 		return
 		
-	player.equip_slot("slot_%s"%slot_number, -1)
+	player.unequip("slot_%s"%slot_number)
 
 ## places an object onto the ground
 func place(command: ArgParser):
