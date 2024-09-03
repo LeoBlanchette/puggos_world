@@ -61,6 +61,8 @@ func cmd(command_string:String):
 			place(command)
 		"/kick":
 			kick(command)		
+		"/object_meta":
+			object_meta(command)
 		"/print_object":
 			print_object(command)
 		"/print_peer_id":
@@ -121,6 +123,7 @@ func help(command:ArgParser):
 		"/place":"Places an item.",
 		"/kick":"Kick a player by Steam persona name.",
 		"/print_object":"Prints the status / info of an important object in the game. For modder use.",
+		"/object_meta":"Prints the meta data on a mod object.",
 		"/print_peer_id":"Prints your peer id.",
 		"/upload_mod":"Uploads a new mod to steam based on path supplied to it's root folder.",
 		"/update_mod":"Uploads / Updates a mod to steam based on path supplied to it's root folder. (Not yet working.)",
@@ -482,6 +485,33 @@ func print_peer_id(command:ArgParser = null):
 		return
 	UIConsole.instance.print_to_console(str(multiplayer.get_unique_id()))
 
+func object_meta(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	var reject_message:String = "Something went wrong."
+	var object_category = 0
+	var object_id = 0
+	
+	if command.get_argument("1") == null:
+		help(command)
+		return
+	if command.get_argument("2") == null:
+		help(command)
+		return
+		
+	object_category = command.get_argument("1")
+	object_id = int(command.get_argument("2"))
+	
+	var ob:Node = ObjectIndex.get_object(object_category, object_id)
+	if ob == null:
+		print_to_console("Object not found. Either the mod_type or ID was incorrect.")
+		help(command)
+		return
+	for meta in ob.get_meta_list():
+		var val = ob.get_meta(meta, null)
+		print_to_console("[color=green]%s[/color]: [color=yellow]%s[/color]"%[meta, str(val)])
+		
 func print_object(command:ArgParser):
 	if is_help_request(command):
 		help(command)

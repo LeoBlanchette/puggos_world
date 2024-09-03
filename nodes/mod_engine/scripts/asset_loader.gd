@@ -6,7 +6,7 @@ class_name AssetLoader
 ## mod format:
 ## </mods/<mod>.pck
 ## becomes:
-## </mods/<creator>/<project>/<mod_type>/<mod_type_category>/<object>/<object>.tscn | .png | etc
+## </mods/<creator>/<project>/<mod_type>/<mod_type_category>/<object>/<object>.tscn , .png | etc
 ## THUS: 
 ## 1: creator           - the main author of a set of projects.
 ## 2: project           - the project of a given mod. Can be an individual thing or a set.

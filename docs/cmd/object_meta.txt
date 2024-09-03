@@ -1,0 +1,6 @@
+	
+Prints all meta data on a given mod object.
+Should be accessed by specifying <mod_type> then <id> as follows:
+	
+[color=green]/object_meta[/color] [color=yellow]items[/color] 10001
+	
