@@ -74,6 +74,8 @@ func cmd(command_string:String):
 			ip(command)
 		"/shutdown":
 			shutdown(command)
+		"/server_info":
+			server_info(command)
 		"/rick":
 			rick(command)
 		_:
@@ -124,6 +126,7 @@ func help(command:ArgParser):
 		"/update_mod":"Uploads / Updates a mod to steam based on path supplied to it's root folder. (Not yet working.)",
 		"/ip":"Prints the IP Address to the console.",
 		"/shutdown":"Quits the application. ",
+		"/server_info":"Prints out server information. Ip Address, Port, Etc.",
 		"/rick": "For when you are tired of reading documentation"
 	}
 	var cmd:String = command.get_first_argument().strip_edges().to_lower()
@@ -539,6 +542,15 @@ func shutdown(command:ArgParser):
 		return
 	get_tree().quit()
 
+func server_info(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	var ip:String = "[color=green]IP Address:[/color] %s"%NetworkManager.get_machines_ip_address()
+	var port:String = "[color=green]Port:[/color] %s"%NetworkManager.current_port
+	print_to_console(ip)
+	print_to_console(port)
+	
 func rick(command:ArgParser):
 	if is_help_request(command):
 		help(command)
