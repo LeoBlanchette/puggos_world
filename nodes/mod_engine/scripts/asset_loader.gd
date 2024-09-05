@@ -92,11 +92,11 @@ func generate_icons():
 	for mod_path in mod_paths:
 		if not mod_path.ends_with(".tscn"):
 			continue
-	
+		
 		await get_tree().process_frame		
 		icon_generator.generate_icon(mod_path)
 		
-
+		
 func create_mod_tree_node(node_name: String, meta: Dictionary) -> Node:
 	var mod_tree_node: Node = Node.new()
 	mod_tree_node.name = node_name	
@@ -225,6 +225,8 @@ func get_mod_type_category(mod_path:String)->String:
 	
 func get_mod_name(mod_path:String)->String:
 	return get_mod_hierarchy(mod_path)["mod_name"]	
+	
+	
 
 ## Sets up the mod tree itself which contains more info for UI.
 func populate_mod_tree():		

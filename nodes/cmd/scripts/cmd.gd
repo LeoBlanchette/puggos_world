@@ -27,6 +27,8 @@ func cmd(command_string:String):
 			whois(command)
 		"/list_players":
 			list_players(command)
+		"/print_mod_dir":
+			print_mod_dir(command)
 		"/save":
 			do_save(command)
 		"/load":
@@ -37,6 +39,8 @@ func cmd(command_string:String):
 			do_clear(command)
 		"/give":
 			give(command)
+		"/play_animation":
+			play_animation(command)
 		"/spawn":
 			spawn(command)
 		"/interact":
@@ -61,8 +65,8 @@ func cmd(command_string:String):
 			place(command)
 		"/kick":
 			kick(command)		
-		"/object_meta":
-			object_meta(command)
+		"/print_object_meta":
+			print_object_meta(command)
 		"/print_object":
 			print_object(command)
 		"/print_peer_id":
@@ -110,6 +114,7 @@ func help(command:ArgParser):
 		"/load_prefab":"Loads a prefab while in the world editor.",
 		"/clear":"Clears the console.",
 		"/give":"Gives player an item. Not operative yet.",
+		"/play_animation":"Plays an animation on the character.",
 		"/spawn":"Spawns an object.",
 		"/interact":"Interacts with an object. Typically called by game, not console.",
 		"/teleport":"Teleports a player based on X,Y,Z coordinates supplied.",
@@ -118,13 +123,14 @@ func help(command:ArgParser):
 		"/unequip":"Unequips a slot, removing the item in the slot.",
 		"/list_slots":"Lists all character slots with their descriptions.",
 		"/list_equipped":"Lists all items equipped on character.",
-		"/print_index":"Prints the entire item index loaded into the game.",
 		"/placement":"Puts user into placement mode, for placing an object such as modular building part.",
 		"/place":"Places an item.",
+		"/print_mod_dir": "Gets the directory of a mod. Returns a string when used in code. Example: /get_mod_dir animations 3",
 		"/kick":"Kick a player by Steam persona name.",
+		"/print_index":"Prints the entire item index loaded into the game.",
 		"/print_object":"Prints the status / info of an important object in the game. For modder use.",
-		"/object_meta":"Prints the meta data on a mod object.",
 		"/print_peer_id":"Prints your peer id.",
+		"/print_object_meta":"Prints the meta data on a mod object.",
 		"/upload_mod":"Uploads a new mod to steam based on path supplied to it's root folder.",
 		"/update_mod":"Uploads / Updates a mod to steam based on path supplied to it's root folder. (Not yet working.)",
 		"/ip":"Prints the IP Address to the console.",
@@ -132,6 +138,7 @@ func help(command:ArgParser):
 		"/server_info":"Prints out server information. Ip Address, Port, Etc.",
 		"/rick": "For when you are tired of reading documentation"
 	}
+		
 	var cmd:String = command.get_first_argument().strip_edges().to_lower()
 	
 	if cmd == "/help":
@@ -162,8 +169,10 @@ func print_player_information_to_console(peer_id):
 	for key in player:
 		print_to_console("[color=green]%s:[/color] %s"%[str(key), str(player[key])])
 
+
 func unilink(command:ArgParser):
 	print_help_doc("unilink")
+
 
 func whois(command:ArgParser):
 	if is_help_request(command):
@@ -177,14 +186,46 @@ func whois(command:ArgParser):
 	if peer_id == 0:
 		print_to_console(reject)
 	print_player_information_to_console(peer_id)
-	
+
+
 func whoami(command:ArgParser = null):
 	if is_help_request(command):
 		help(command)
 		return
 	var peer_id:int = multiplayer.get_unique_id()
 	print_player_information_to_console(peer_id)
+
+func print_mod_dir(command:ArgParser)->String:
+	if is_help_request(command):
+		help(command)
+		return ""
+		
+	var reject_message:String = "Something went wrong."
+	var object_category = 0
+	var object_id = 0
 	
+	if command.get_argument("1") == null:
+		help(command)
+		return ""
+	if command.get_argument("2") == null:
+		help(command)
+		return ""
+	
+	var dir:String = get_mod_dir(command.get_argument("1"), int(command.get_argument("2")))
+	if dir.is_empty():
+		print_error_to_console("ERROR CODE #WTF: Recieved null value. Requested non-existent object or wrong input or incompetent user.")
+		return ""
+	print_to_console(dir)
+	return dir
+
+func get_mod_dir(object_category:String, object_id:int)->String:
+	var ob:Node = ObjectIndex.get_object(object_category, object_id)
+	if ob == null:
+		return ""
+	var path:String = ob.scene_file_path
+	var dir:String = path.get_base_dir()
+	return dir
+
 func list_players(command:ArgParser = null):
 	if is_help_request(command):
 		help(command)
@@ -343,6 +384,12 @@ func give(command: ArgParser):
 		help(command)
 		return
 
+## plays an animation
+func play_animation(command: ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+
 ## equips a thing to the player
 func equip(command: ArgParser):
 	if is_help_request(command):
@@ -485,7 +532,7 @@ func print_peer_id(command:ArgParser = null):
 		return
 	UIConsole.instance.print_to_console(str(multiplayer.get_unique_id()))
 
-func object_meta(command:ArgParser):
+func print_object_meta(command:ArgParser):
 	if is_help_request(command):
 		help(command)
 		return
@@ -543,6 +590,12 @@ func print_object(command:ArgParser):
 					
 	for line in to_console:		
 		print_to_console(line)
+
+func print_warning_to_console(print_string:String)->void:
+	print_to_console("[color=yellow]%s[/color]"%print_string)
+
+func print_error_to_console(print_string:String)->void:
+	print_to_console("[color=red]%s[/color]"%print_string)
 
 func print_to_console(print_string:String)->void:
 	UIConsole.instance.print_to_console(print_string)

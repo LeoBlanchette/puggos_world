@@ -13,6 +13,14 @@ class_name Player
 ## This script also adds submerged and emerged signals to change the 
 ## [Environment] when we are in the water.
 
+#region action signals
+signal primary_action_pressed
+signal secondary_action_pressed
+signal primary_action_alt_pressed
+signal seconary_action_alt_pressed
+signal do_action_basic_interact_pressed
+#endregion
+
 #region deactivate if not player
 
 @export var camera_3d:Camera3D
@@ -343,7 +351,22 @@ func _input(event: InputEvent) -> void:
 	# Mouse look (only if the mouse is captured).
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_head(event.relative)
+		
+	# Main Actions
+	if event is InputEventMouseButton:
+		if event.is_action_pressed("left_mouse_button"):
+			do_action_primary()
+		if event.is_action_pressed("right_mouse_button"):
+			do_action_secondary()
+		if event.is_action_pressed("left_mouse_button_alt"):
+			do_action_primary_alt()
+		if event.is_action_pressed("right_mouse_button_alt"):
+			do_action_secondary_alt()
 
+	if event is InputEventKey:
+		if event.is_action_pressed("basic_interact"):
+			do_action_basic_interact()
+			
 func update_avatar_animation_local():
 	blend_position = input_axis
 	is_crouched = is_crouching()
@@ -413,6 +436,26 @@ func equip_slot(slot:String, id:int):
 
 func unequip(slot:String):
 	set(slot, -1)
+
+func do_action_primary():
+	print("do_action_primary()")
+	primary_action_pressed.emit()
+
+func do_action_secondary():
+	print("do_action_secondary()")
+	secondary_action_pressed.emit()
+
+func do_action_primary_alt():
+	print("do_action_primary_alt()")
+	primary_action_alt_pressed.emit()
+	
+func do_action_secondary_alt():
+	print("do_action_secondary_alt()")
+	seconary_action_alt_pressed.emit()
+
+func do_action_basic_interact():
+	print("do_action_basic_interact()")
+	do_action_basic_interact_pressed.emit()
 
 #func _on_controller_emerged():
 	#camera.environment = null
