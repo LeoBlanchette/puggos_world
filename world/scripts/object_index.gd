@@ -8,7 +8,7 @@ class_name ObjectIndex
 
 signal spawned(ob:Node)
 
-static var object_index = null
+static var object_index:ObjectIndex = null
 
 ## main mod index of game. {ID: Object} format.
 ## mirrors children of ObjectIndex node like this: 9_$Node
@@ -75,6 +75,36 @@ static func get_object(category: String, id: int):
 
 static func reset():
 	object_index.index = {}
+
+func get_mod_dir(object_category:String, id:int)->String:
+	var ob:Node = ObjectIndex.get_object(object_category, id)
+	if ob == null:
+		return ""
+	var path:String = ob.scene_file_path
+	var dir:String = path.get_base_dir()
+	
+	return dir
+
+## Gets an animation path based on it's ID.
+func get_animation_path(id:int)->String:
+	var dir:String = get_mod_dir("animations", id)
+	var ob:Node = ObjectIndex.get_object("animations", id)
+	var animation_name:String = ob.get_meta("mod_name")
+	var animation_path = "%s/%s%s"%[dir,animation_name, ".res"]
+	if not FileAccess.file_exists(animation_path):
+		print("Animation not found at %s"%animation_path)
+		return ""
+	return animation_path
+
+## Gets animation based on it's ID.
+func get_animation(id)->Animation:
+	var animation_path:String = get_animation_path(id)
+	var animation = load(animation_path)
+	if animation == null:
+		print("Animation == null. Resource loaded from: %s"%animation_path)
+		return null
+	return animation
+
 
 static func query(params:Dictionary) -> Dictionary:	
 	if not index.has(params["query"]):

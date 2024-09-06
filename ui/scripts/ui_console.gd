@@ -27,6 +27,11 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("enter"):		
 		submit_command()
 		accept_event()
+	
+	if event.is_action_pressed("ui_up"):
+		scroll_input_history("UP")
+	if event.is_action_pressed("ui_down"):
+		scroll_input_history("DOWN")
 
 func _exit_tree():
 	if UI.instance == self:
@@ -97,6 +102,15 @@ func _on_line_edit_text_changed(new_text: String) -> void:
 	if new_text.strip_edges() == "`":
 		command_input.clear()
 
+func scroll_input_history(action:String):
+	var up:bool = true
+	if action=="UP":
+		populate_input_text(Cmd.get_cmd_history_back())
+	if action == "DOWN":
+		populate_input_text(Cmd.get_cmd_history_forward())
+
+func populate_input_text(text:String)->void:
+	command_input.text = text
 
 func _on_v_box_container_resized() -> void:
 	scroll_to_end()

@@ -1,6 +1,8 @@
 @icon("res://images/icons/computer.svg")
 extends Node
 
+var history:Array[String] = []
+var history_current_index:int = 0
 ## beginning root of the cmd cycle
 func cmd(command_string:String):	
 	
@@ -12,6 +14,7 @@ func cmd(command_string:String):
 		chat(command_string)
 		return
 	
+	add_cmd_history(command_string)
 	command_string = command_string.to_lower()
 	
 	var command:ArgParser = ArgParser.new(command_string)
@@ -211,20 +214,13 @@ func print_mod_dir(command:ArgParser)->String:
 		help(command)
 		return ""
 	
-	var dir:String = get_mod_dir(command.get_argument("1"), int(command.get_argument("2")))
+	var dir:String = ObjectIndex.object_index.get_mod_dir(command.get_argument("1"), int(command.get_argument("2")))
 	if dir.is_empty():
 		print_error_to_console("ERROR CODE #WTF: Recieved null value. Requested non-existent object or wrong input or incompetent user.")
 		return ""
 	print_to_console(dir)
 	return dir
 
-func get_mod_dir(object_category:String, object_id:int)->String:
-	var ob:Node = ObjectIndex.get_object(object_category, object_id)
-	if ob == null:
-		return ""
-	var path:String = ob.scene_file_path
-	var dir:String = path.get_base_dir()
-	return dir
 
 func list_players(command:ArgParser = null):
 	if is_help_request(command):
@@ -639,3 +635,27 @@ func rick(command:ArgParser):
 		help(command)
 		return
 	OS.shell_open("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+## Adds to the CMD history. Should only be used in the CMD command and nowhere else.
+func add_cmd_history(command:String):
+	history.append(command)
+	history_current_index = 0
+
+## Gets CMD history back one index.
+func get_cmd_history_back()->String:
+	if history.size() == 0:
+		return ""
+	history_current_index = history_current_index -1
+	if history_current_index < 0:
+		history_current_index = history.size()-1
+	return history[history_current_index]
+	
+## Gets CMD history forward one index.
+func get_cmd_history_forward()->String:
+	if history.size() == 0:
+		return ""
+	if history_current_index == history.size() - 1:
+		history_current_index = 0
+		return history[0]
+	history_current_index = history_current_index +1
+	return history[history_current_index]

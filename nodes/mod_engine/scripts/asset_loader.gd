@@ -68,6 +68,7 @@ func populate_mod_content():
 	populate_mod_tree()
 	generate_icons()
 	assets_loaded.emit()
+	
 
 ## gets creator info from the info.tscn node in /mods/creator folder.
 func get_mod_info(mod_path: String) -> Dictionary:	

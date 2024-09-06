@@ -61,6 +61,7 @@ func load_mods_by_path(asset_paths: Array[String]):
 		ObjectIndex.add_object_to_index(instanced_mod)
 		if World.instance != null:
 			World.instance.add_spawnable_scene(mod)
+	ObjectIndex.object_index.get_animation(20)
 
 '''
 ## unloads mods by path parts supplied, such as "/structures/modular/" 	

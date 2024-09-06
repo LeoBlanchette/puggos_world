@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bgk06cxwm7u8n"]
+[gd_scene load_steps=11 format=3 uid="uid://bgk06cxwm7u8n"]
 
 [ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="1_kprfw"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/register_player.gd" id="2_3b31x"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://nodes/characters/scripts/view_switch.gd" id="2_vpfrc"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/interaction_node.gd" id="5_3n0vt"]
 [ext_resource type="Script" path="res://nodes/characters/multiplayer_synchronizer.gd" id="6_f55i6"]
+[ext_resource type="Script" path="res://nodes/characters/scripts/action_manager.gd" id="8_av0vo"]
 [ext_resource type="PackedScene" uid="uid://c4bj48um6sbj6" path="res://addons/puggos_world_character/avatar/avatar.tscn" id="8_y755v"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_260u7"]
@@ -254,8 +255,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -5)
 replication_config = SubResource("SceneReplicationConfig_260u7")
 script = ExtResource("6_f55i6")
 
-[node name="Avatar" parent="." index="14" instance=ExtResource("8_y755v")]
+[node name="ActionManager" type="Node3D" parent="." index="14"]
+script = ExtResource("8_av0vo")
+
+[node name="Avatar" parent="." index="15" instance=ExtResource("8_y755v")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1, 0)
+
+[connection signal="do_action_basic_interact_pressed" from="." to="ActionManager" method="_on_player_do_action_basic_interact_pressed"]
+[connection signal="primary_action_alt_pressed" from="." to="ActionManager" method="_on_player_primary_action_alt_pressed"]
+[connection signal="primary_action_pressed" from="." to="ActionManager" method="_on_player_primary_action_pressed"]
+[connection signal="seconary_action_alt_pressed" from="." to="ActionManager" method="_on_player_seconary_action_alt_pressed"]
+[connection signal="secondary_action_pressed" from="." to="ActionManager" method="_on_player_secondary_action_pressed"]
 
 [editable path="UIHUD"]
 [editable path="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode"]
