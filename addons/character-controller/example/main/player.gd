@@ -420,9 +420,9 @@ func start_idle():
 
 func break_idle():
 	time_idling = 0
-	avatar.animation_tree.stop_animation()
 	if is_long_idle:
 		is_long_idle = false
+		avatar.animation_tree.stop_animation()
 
 func get_spawner_node()->Node3D:
 	return spawner_node
