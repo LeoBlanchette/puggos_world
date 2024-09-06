@@ -103,6 +103,8 @@ func _on_line_edit_text_changed(new_text: String) -> void:
 		command_input.clear()
 
 func scroll_input_history(action:String):
+	if not is_console_open():
+		return
 	var up:bool = true
 	if action=="UP":
 		populate_input_text(Cmd.get_cmd_history_back())

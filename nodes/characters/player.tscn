@@ -152,6 +152,9 @@ properties/45/replication_mode = 2
 properties/46/path = NodePath(".:affected_body_region")
 properties/46/spawn = true
 properties/46/replication_mode = 2
+properties/47/path = NodePath(".:is_long_idle")
+properties/47/spawn = true
+properties/47/replication_mode = 1
 
 [node name="Player" node_paths=PackedStringArray("camera_3d", "multiplayer_synchronizer", "builder_node", "spawner_node", "avatar") instance=ExtResource("1_kprfw")]
 camera_3d = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D")
@@ -205,6 +208,8 @@ is_combat_mode = false
 is_moving = false
 is_running = false
 affected_body_region = "NONE"
+long_idle_time = 10.0
+is_long_idle = false
 speed = 1.75
 acceleration = 5.0
 sprint_speed_multiplier = 3.0
@@ -257,11 +262,24 @@ script = ExtResource("6_f55i6")
 
 [node name="ActionManager" type="Node3D" parent="." index="14"]
 script = ExtResource("8_av0vo")
+default_basic_interaction_animation_id = 41
+default_primary_action_animation_id = 41
+default_secondary_action_animation_id = 40
+default_primary_action_alt_animation_id = 30
+default_secondary_action_alt_animation_id = 29
+default_long_idle_animation_id = 55
+default_basic_interaction_animation_mask = "TORSO"
+default_primary_action_animation_mask = "TORSO"
+default_secondary_action_animation_mask = "TORSO"
+default_primary_action_alt_animation_mask = "FULL"
+default_secondary_action_alt_animation_mask = "FULL"
+default_long_idle_animation_mask = "FULL"
 
 [node name="Avatar" parent="." index="15" instance=ExtResource("8_y755v")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1, 0)
 
 [connection signal="do_action_basic_interact_pressed" from="." to="ActionManager" method="_on_player_do_action_basic_interact_pressed"]
+[connection signal="is_long_idle_changed" from="." to="ActionManager" method="_on_player_is_long_idle_changed"]
 [connection signal="primary_action_alt_pressed" from="." to="ActionManager" method="_on_player_primary_action_alt_pressed"]
 [connection signal="primary_action_pressed" from="." to="ActionManager" method="_on_player_primary_action_pressed"]
 [connection signal="seconary_action_alt_pressed" from="." to="ActionManager" method="_on_player_seconary_action_alt_pressed"]

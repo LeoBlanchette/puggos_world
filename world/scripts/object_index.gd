@@ -85,10 +85,18 @@ func get_mod_dir(object_category:String, id:int)->String:
 	
 	return dir
 
+func get_animation_name(id:int, default:String="")->String:
+	var animation:Animation = get_animation(id)
+	if animation == null:
+		return default
+	return animation.resource_name
+
 ## Gets an animation path based on it's ID.
 func get_animation_path(id:int)->String:
 	var dir:String = get_mod_dir("animations", id)
 	var ob:Node = ObjectIndex.get_object("animations", id)
+	if ob == null:
+		return ""
 	var animation_name:String = ob.get_meta("mod_name")
 	var animation_path = "%s/%s%s"%[dir,animation_name, ".res"]
 	if not FileAccess.file_exists(animation_path):
@@ -99,11 +107,22 @@ func get_animation_path(id:int)->String:
 ## Gets animation based on it's ID.
 func get_animation(id)->Animation:
 	var animation_path:String = get_animation_path(id)
+	if animation_path.is_empty():
+		return null
 	var animation = load(animation_path)
 	if animation == null:
 		print("Animation == null. Resource loaded from: %s"%animation_path)
 		return null
 	return animation
+
+func get_all_animation_paths()->Array:
+	var animation_paths:Array = []
+	if not index.has("animations"):
+		return []
+	for key in index["animations"]:
+		var path:String = get_animation_path(key)
+		animation_paths.append(path)
+	return animation_paths
 
 
 static func query(params:Dictionary) -> Dictionary:	

@@ -311,6 +311,16 @@ var input_swim_up:bool = false
 @export var is_moving:bool = false
 @export var is_running:bool = false
 @export var affected_body_region:String = "NONE"
+
+signal  is_long_idle_changed(value)
+@export var long_idle_time:float = 45.0
+@export var is_long_idle:bool = false:
+	set(value): 
+		if value != is_long_idle:
+			is_long_idle_changed.emit(value)
+		is_long_idle = value
+var last_position:Vector3 = Vector3.ZERO
+var time_idling:float = 0.0
 #endregion
 
 func _ready():		
@@ -319,6 +329,8 @@ func _ready():
 	setup()	
 	$Register_Player.activate()
 	equip(28) # DEFAULT skin.
+	last_position = position
+	setup_animation_library()
 
 func _physics_process(delta):
 	update_avatar_animation_global()
@@ -343,7 +355,8 @@ func _physics_process(delta):
 	else:
 		# NOTE: It is important to always call move() even if we have no inputs 
 		## to process, as we still need to calculate gravity and collisions.
-		move(delta)
+		move(delta)	
+	detect_idle(delta)
 
 func _input(event: InputEvent) -> void:
 	if not multiplayer_synchronizer.is_multiplayer_authority():
@@ -366,7 +379,13 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if event.is_action_pressed("basic_interact"):
 			do_action_basic_interact()
-			
+
+func setup_animation_library():
+	var animation_paths:Array = ObjectIndex.object_index.get_all_animation_paths()
+	for animation_path in animation_paths:
+		avatar.add_animation(animation_path)
+	
+
 func update_avatar_animation_local():
 	blend_position = input_axis
 	is_crouched = is_crouching()
@@ -385,6 +404,25 @@ func update_avatar_animation_global():
 func enter_placement_mode(object_category:String, object_id:int):
 	builder_node.enter_placement_mode(object_category, object_id)
 
+## Runs by physics process. Will set idle to true when no interupting conditions occur.
+func detect_idle(delta:float):
+	if position == last_position:
+		time_idling += delta
+	else:
+		break_idle()
+	last_position = position
+	
+	if time_idling >= long_idle_time && !is_long_idle:
+		start_idle()
+
+func start_idle():
+	is_long_idle = true
+
+func break_idle():
+	time_idling = 0
+	avatar.animation_tree.stop_animation()
+	if is_long_idle:
+		is_long_idle = false
 
 func get_spawner_node()->Node3D:
 	return spawner_node
@@ -397,6 +435,9 @@ func get_camera()->Camera3D:
 
 ## The main entry point for equipping object to a slot.
 func equip(id:int):
+	if not avatar.is_node_ready():
+		await avatar.ready
+		
 	if ObjectIndex.object_index.has_object("items", id):
 		var ob:Node3D = ObjectIndex.object_index.get_object("items", id)
 		if not ob.has_meta("equippable_slot"):
@@ -431,31 +472,32 @@ func equip_slot(slot:String, id:int):
 	
 		if slot_number in [1, 2, 3]: # if these slots, its skin layers. Change path...
 			path  = path.replace("item.tscn", "texture.png")
-
-		avatar.equip(slot, path)
+		var meta:Dictionary = {"id":id}
+		avatar.equip(slot, path, meta)
 
 func unequip(slot:String):
 	set(slot, -1)
 
 func do_action_primary():
-	print("do_action_primary()")
+	break_idle()
 	primary_action_pressed.emit()
 
 func do_action_secondary():
-	print("do_action_secondary()")
+	break_idle()
 	secondary_action_pressed.emit()
 
 func do_action_primary_alt():
-	print("do_action_primary_alt()")
+	break_idle()
 	primary_action_alt_pressed.emit()
 	
 func do_action_secondary_alt():
-	print("do_action_secondary_alt()")
+	break_idle()
 	seconary_action_alt_pressed.emit()
 
 func do_action_basic_interact():
-	print("do_action_basic_interact()")
+	break_idle()
 	do_action_basic_interact_pressed.emit()
+
 
 #func _on_controller_emerged():
 	#camera.environment = null
