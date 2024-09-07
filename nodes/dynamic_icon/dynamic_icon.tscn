@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://v52cr8ghpyob"]
+
+[ext_resource type="Script" path="res://nodes/dynamic_icon/dynamic_icon.gd" id="1_lv37j"]
+
+[sub_resource type="World3D" id="World3D_jsj1j"]
+
+[node name="DynamicIcon" type="Node3D" node_paths=PackedStringArray("sub_viewport", "anchor", "camera_3d", "directional_light_3d")]
+script = ExtResource("1_lv37j")
+sub_viewport = NodePath("SubViewport")
+anchor = NodePath("SubViewport/Anchor")
+camera_3d = NodePath("SubViewport/Camera3D")
+directional_light_3d = NodePath("SubViewport/DirectionalLight3D")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+own_world_3d = true
+world_3d = SubResource("World3D_jsj1j")
+transparent_bg = true
+render_target_clear_mode = 1
+render_target_update_mode = 4
+
+[node name="Anchor" type="Node3D" parent="SubViewport"]
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+projection = 1
+size = 5.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport"]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0)

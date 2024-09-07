@@ -14,6 +14,7 @@ static var object_index:ObjectIndex = null
 ## mirrors children of ObjectIndex node like this: 9_$Node
 static var index: Dictionary = {}
 
+const DYNAMIC_ICON = preload("res://nodes/dynamic_icon/dynamic_icon.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -130,3 +131,16 @@ static func query(params:Dictionary) -> Dictionary:
 		return{}
 	var results:Dictionary = index[params["query"]]
 	return results
+
+func get_icon(mod_type:String, id:int, size_x:int = 512, size_y:int = 512)->DynamicIcon:
+	var ob:Node3D = get_object(mod_type, id)
+	var tmp_ob:Node3D = ob.duplicate()
+	
+	var dynamic_icon:DynamicIcon = DYNAMIC_ICON.instantiate()	
+	add_child(dynamic_icon)
+	dynamic_icon.set_icon_size(size_x, size_y)
+	dynamic_icon.name = "dynamic_icon:%s"%[tmp_ob.get_meta("mod_name", tmp_ob.name)]
+	dynamic_icon.subject = tmp_ob
+	dynamic_icon.capture()	
+	await  dynamic_icon.icon_ready
+	return dynamic_icon

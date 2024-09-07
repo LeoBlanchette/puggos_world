@@ -39,3 +39,5 @@ columns = 5
 
 [node name="ButtonItem" parent="GridContainer" instance=ExtResource("2_6j237")]
 layout_mode = 2
+
+[connection signal="hidden" from="." to="." method="_on_hidden"]

@@ -66,7 +66,6 @@ func populate_mod_content():
 	populate_creator_projects()
 	populate_user_mods()
 	populate_mod_tree()
-	generate_icons()
 	assets_loaded.emit()
 	
 
@@ -89,14 +88,7 @@ func get_mod_info(mod_path: String) -> Dictionary:
 			info[key] = info_node.get_meta(key)
 	return info
 
-func generate_icons():
-	for mod_path in mod_paths:
-		if not mod_path.ends_with(".tscn"):
-			continue
-		
-		await get_tree().process_frame		
-		icon_generator.generate_icon(mod_path)
-		
+
 		
 func create_mod_tree_node(node_name: String, meta: Dictionary) -> Node:
 	var mod_tree_node: Node = Node.new()

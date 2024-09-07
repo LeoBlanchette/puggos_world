@@ -49,6 +49,8 @@ var long_idle_animation_mask:String="FULL"
 
 ## The main function for coordinating actions with animations.
 func coordinate_action(action_type:ActionType)->void:
+	if not avatar.is_node_ready():
+		await avatar.ready
 	var animation_name:String = ""
 	var default_animation_name:String = ""
 	match action_type:

@@ -7,8 +7,9 @@ signal building_interface_visible(old_state, new_state)
 static var instance: UIBuildingInterface = null
 @onready var grid_container: GridContainer = $GridContainer
 
-const ICONS_FOLDER:String = "res://mods/icons/"
 const BUTTON_MOD_OBJECT:Resource = preload("res://ui/building_interface_elements/button_mod_object.tscn")
+
+var dynamic_icons:Array[DynamicIcon] = []
 
 func _ready():
 	if instance == null:
@@ -67,21 +68,28 @@ func populate_building_interface_grid(results:Dictionary):
 	for key in results:
 		var id:int = key
 		var ob:Node = results[key]
-		instance.create_button_mod_object(ob, id)
-		var button:Node = instance.create_button_mod_object(ob, id)
+		var button:Node = await instance.create_button_mod_object(ob, id)
 		instance.add_button_to_grid_container(button)
 		
 func create_button_mod_object(ob:Node, id:int) -> Node:
-	var mod_path:String = ob.get_meta("mod_path") 
-	var signature: String = AssetLoader.asset_loader.get_mod_name_signature(mod_path, ".")
-	var icon_img_file:String = "%s%s.png"%[ICONS_FOLDER, signature]
+	var mod_type:String = ob.get_meta("mod_type", "NONE")
+	
+	if mod_type == "NONE":
+		#do something
+		pass
 	
 	var button:Button = BUTTON_MOD_OBJECT.instantiate()
-	button.icon = load(icon_img_file) 
 	
+	var dynamic_icon:DynamicIcon = await ObjectIndex.object_index.get_icon(mod_type, id, 128, 128)
+	dynamic_icons.append(dynamic_icon)
+	button.icon = dynamic_icon.icon
+
 	button.item_id = id
-	button.scene_path = mod_path
+	button.mod_type = mod_type
 	return button
+
+func apply_button_icon(image:ImageTexture, button:Button):
+	button.icon = image
 
 func add_button_to_grid_container(button:Node)->void:
 	grid_container.add_child(button)
@@ -90,3 +98,9 @@ func clear_grid_container():
 	var children:Array = grid_container.get_children()
 	for child:Node in children:
 		child.queue_free()
+
+
+func _on_hidden() -> void:
+	for dynamic_icon:DynamicIcon in dynamic_icons:
+		dynamic_icon.queue_free()
+	dynamic_icons.clear()

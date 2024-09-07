@@ -39,6 +39,8 @@ mouse_filter = 1
 [node name="UIChat" parent="UI" index="6"]
 visible = true
 
+[node name="Node3D" type="Node3D" parent="."]
+
 [connection signal="level_changed" from="GameManager" to="UI" method="_on_game_manager_level_changed"]
 [connection signal="level_changed" from="GameManager" to="UI/EscMenu" method="_on_game_manager_level_changed"]
 [connection signal="level_changed" from="GameManager" to="UI/UIChat" method="_on_game_manager_level_changed"]

@@ -13,43 +13,6 @@ class_name  IconGenerator
 func get_icon_directory():
 	return AssetLoader.get_mod_folder()+"icons/"
 
-func generate_icon(mod_path: String):
-	show_icon_generator(true)
-	var original_camera_position: Vector3 = camera_3d.position
-	var original_camera_rotation: Vector3 = camera_3d.rotation_degrees
-
-	var signature = AssetLoader.asset_loader.get_mod_name_signature(mod_path, ".")
-	
-	var asset_resource: Resource = ResourceLoader.load(mod_path)
-	var asset: Node = asset_resource.instantiate()
-	
-	if not asset.has_meta("icon_camera_position"):
-		#This is not able to do an icon.
-		return
-	
-	var orthagonal_size: float = get_camera_orthagonal_size(asset)
-	var camera_position: Vector3 = get_camera_position(asset, original_camera_position)
-	var camera_rotation: Vector3 = get_camera_rotation(asset, original_camera_position)
-	
-	camera_3d.size = orthagonal_size
-	camera_3d.position = camera_position
-	camera_3d.rotation_degrees = camera_rotation
-	
-	anchor.add_child(asset)
-	
-	sub_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
-	
-	await RenderingServer.frame_pre_draw
-	await RenderingServer.frame_post_draw
-	
-	var img = sub_viewport.get_viewport().get_texture().get_image()
-		
-	img.save_png(get_icon_directory()+signature+".png")
-	asset.hide()
-	asset.queue_free()
-	camera_3d.position = original_camera_position
-	camera_3d.rotation = original_camera_rotation
-	show_icon_generator(false)
 	
 	
 func show_icon_generator(isvisible:bool):

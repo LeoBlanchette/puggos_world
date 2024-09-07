@@ -368,17 +368,17 @@ func _input(event: InputEvent) -> void:
 	# Main Actions
 	if event is InputEventMouseButton:
 		if event.is_action_pressed("left_mouse_button"):
-			do_action_primary()
+			do_action_primary.rpc()
 		if event.is_action_pressed("right_mouse_button"):
-			do_action_secondary()
+			do_action_secondary.rpc()
 		if event.is_action_pressed("left_mouse_button_alt"):
-			do_action_primary_alt()
+			do_action_primary_alt.rpc()
 		if event.is_action_pressed("right_mouse_button_alt"):
-			do_action_secondary_alt()
+			do_action_secondary_alt.rpc()
 
 	if event is InputEventKey:
 		if event.is_action_pressed("basic_interact"):
-			do_action_basic_interact()
+			do_action_basic_interact.rpc()
 
 func setup_animation_library():
 	var animation_paths:Array = ObjectIndex.object_index.get_all_animation_paths()
@@ -478,22 +478,27 @@ func equip_slot(slot:String, id:int):
 func unequip(slot:String):
 	set(slot, -1)
 
+@rpc("any_peer", "call_local", "reliable")
 func do_action_primary():
 	break_idle()
 	primary_action_pressed.emit()
 
+@rpc("any_peer", "call_local", "reliable")
 func do_action_secondary():
 	break_idle()
 	secondary_action_pressed.emit()
 
+@rpc("any_peer", "call_local", "reliable")
 func do_action_primary_alt():
 	break_idle()
 	primary_action_alt_pressed.emit()
-	
+
+@rpc("any_peer", "call_local", "reliable")
 func do_action_secondary_alt():
 	break_idle()
 	seconary_action_alt_pressed.emit()
 
+@rpc("any_peer", "call_local", "reliable")
 func do_action_basic_interact():
 	break_idle()
 	do_action_basic_interact_pressed.emit()
