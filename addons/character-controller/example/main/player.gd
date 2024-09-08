@@ -19,6 +19,8 @@ signal secondary_action_pressed
 signal primary_action_alt_pressed
 signal seconary_action_alt_pressed
 signal do_action_basic_interact_pressed
+signal is_long_idle_changed(value)
+signal personality_id_changed(value:int)
 #endregion
 
 #region deactivate if not player
@@ -312,7 +314,13 @@ var input_swim_up:bool = false
 @export var is_running:bool = false
 @export var affected_body_region:String = "NONE"
 
-signal  is_long_idle_changed(value)
+
+@export var personality_id:int = 55:
+	set(value):
+		personality_id = value
+		personality_id_changed.emit(personality_id)
+		
+
 @export var long_idle_time:float = 45.0
 @export var is_long_idle:bool = false:
 	set(value): 
@@ -329,8 +337,6 @@ var time_idling:float = 0.0
 			enter_display_mode()
 @onready var view_switch: Node = $"View Switch"
 		
-	
-
 #endregion
 
 func _ready():		
@@ -464,7 +470,7 @@ func equip(id:int):
 		if slot_number == 0:
 			print("Slot number was improperly assigned. Cannot use.")
 		var slot:String = "slot_%s"%str(slot_number)
-		
+		print(slot, id)
 		## Set the given variable by string 
 		set(slot, id)
 		

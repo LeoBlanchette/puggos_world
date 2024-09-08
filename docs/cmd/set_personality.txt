@@ -1,0 +1,17 @@
+	
+Sets a personality (which is an idle animation that kicks in after idling after
+so much time)
+	
+[color=green]/set_personality[/color] <item id>
+	
+...where the <item id> is an animation id that can be found by running:
+	
+[color=green]/print_index[/color]
+	
+All personalities have their name beginning with "personality_"
+	
+To verify a valid personality animation, you can also run 
+	
+[color=green]/print_object_meta items <item_id>[/color]
+	
+If the output contains "personality" as a meta key, it is a valid personality.

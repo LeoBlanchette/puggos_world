@@ -13,6 +13,8 @@ enum ActionType{
 	SECONDARY_ACTION_ALT,
 	LONG_IDLE,
 }
+
+@onready var player: Player = $".."
 @onready var avatar: Avatar = $"../Avatar"
 
 #region default animations
@@ -136,4 +138,10 @@ func _on_player_is_long_idle_changed(_value: Variant) -> void:
 func _on_character_appearance_pre_slot_equiped(slot: CharacterAppearance.Equippable, meta: Dictionary) -> void:
 	change_action_animation(slot, meta)
 
+## This is first triggered in the Console or UI. It changes the personality 
+## aka long idle of the character.
+func _on_player_personality_id_changed(value: int) -> void:
+	long_idle_animation_id = value
+	if player.display_mode:
+		coordinate_action(ActionType.LONG_IDLE)
 #endregion 

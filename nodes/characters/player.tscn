@@ -155,6 +155,9 @@ properties/46/replication_mode = 2
 properties/47/path = NodePath(".:is_long_idle")
 properties/47/spawn = true
 properties/47/replication_mode = 1
+properties/48/path = NodePath(".:personality_id")
+properties/48/spawn = true
+properties/48/replication_mode = 1
 
 [node name="Player" node_paths=PackedStringArray("camera_3d", "multiplayer_synchronizer", "builder_node", "spawner_node", "avatar") instance=ExtResource("1_kprfw")]
 camera_3d = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D")
@@ -208,6 +211,7 @@ is_combat_mode = false
 is_moving = false
 is_running = false
 affected_body_region = "NONE"
+personality_id = 55
 long_idle_time = 10.0
 is_long_idle = false
 display_mode = false
@@ -281,6 +285,7 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1,
 
 [connection signal="do_action_basic_interact_pressed" from="." to="ActionManager" method="_on_player_do_action_basic_interact_pressed"]
 [connection signal="is_long_idle_changed" from="." to="ActionManager" method="_on_player_is_long_idle_changed"]
+[connection signal="personality_id_changed" from="." to="ActionManager" method="_on_player_personality_id_changed"]
 [connection signal="primary_action_alt_pressed" from="." to="ActionManager" method="_on_player_primary_action_alt_pressed"]
 [connection signal="primary_action_pressed" from="." to="ActionManager" method="_on_player_primary_action_pressed"]
 [connection signal="seconary_action_alt_pressed" from="." to="ActionManager" method="_on_player_seconary_action_alt_pressed"]

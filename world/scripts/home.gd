@@ -29,7 +29,9 @@ func _ready() -> void:
 	GameManager.instance.ui_ready.connect(populate_character_options)
 
 func _exit_tree() -> void:
-	NetworkManager.unregister_world()
+	# This was commented out because it seems to be a race condition 
+	# where it nulls out the new world.
+	#NetworkManager.unregister_world()
 	if instance == self:
 		instance = null
  

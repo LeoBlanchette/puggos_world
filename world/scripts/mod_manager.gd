@@ -6,6 +6,15 @@ extends Node
 
 class_name ModManager
 
+#region post-processing of mods
+## After mods are loaded and initial meta data is added, 
+## all mods are run through an analysis for post processing
+## for example, "mark_animation_types()" in this class 
+## utilizes it to add more meta data to animation tscn objects
+signal pre_analyze_mod(mod)
+signal post_analyze_mod(mod)
+#endregion
+
 static var mod_manager: ModManager = null
 
 ## IMPORTANT array that contains the core information for mod scanning
@@ -26,7 +35,7 @@ func _ready() -> void:
 	if ModManager.mod_manager == null:
 		ModManager.mod_manager = self
 		Workshop.mod_paths_updated.connect(populate_mod_content_from_workshop_update)
-		
+		pre_analyze_mod.connect(mark_animation_types)
 	else:
 		queue_free()
 	
@@ -34,6 +43,12 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	if ModManager.mod_manager == self:
 		ModManager.mod_manager = null
+
+func analyze_loaded_mods():
+	var mod_objects:Array = ObjectIndex.object_index.get_all_mod_objects()
+	for mod_object in mod_objects:
+		pre_analyze_mod.emit(mod_object)
+		post_analyze_mod.emit(mod_object)
 
 func load_mod_from_path(mod_path: String):
 	var loaded_mod = load(mod_path)
@@ -60,8 +75,8 @@ func load_mods_by_path(asset_paths: Array[String]):
 			instanced_mod.set_meta(key, mod_hierarchy[key])
 		ObjectIndex.add_object_to_index(instanced_mod)
 		if World.instance != null:
-			World.instance.add_spawnable_scene(mod)
-	ObjectIndex.object_index.get_animation(20)
+			World.instance.add_spawnable_scene(mod)	
+	analyze_loaded_mods()
 
 '''
 ## unloads mods by path parts supplied, such as "/structures/modular/" 	
@@ -89,9 +104,6 @@ func filter_mod_list_by_paths(asset_paths) -> Array[String]:
 func clear_mods(asset_paths: Array[String]):
 	pass
 '''
-
-func _on_asset_loader_assets_loaded() -> void:	
-	pass
 	
 ## Triggered at Workshop.mod_paths_updated.emit()
 ## This happens when the workshop updates from steam.
@@ -100,3 +112,10 @@ func _on_asset_loader_assets_loaded() -> void:
 func populate_mod_content_from_workshop_update():
 	AssetLoader.asset_loader.populate_mod_content()
 	
+func mark_animation_types(mod:Node):
+	var mod_type:String = mod.get_meta("mod_type", "")
+	var mod_name:String = mod.get_meta("mod_name", "")
+
+	# Mark if it is a personality, for in-game detection.
+	if mod_name.begins_with("personality_") && mod_type == "animations":
+		mod.set_meta("personality", true)

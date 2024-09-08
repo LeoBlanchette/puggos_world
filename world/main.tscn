@@ -35,6 +35,9 @@ script = ExtResource("6_8k5yp")
 [node name="UI" parent="." node_paths=PackedStringArray("escapable_ui_nodes") instance=ExtResource("8_5tnxo")]
 escapable_ui_nodes = [NodePath("EscMenu"), NodePath("UIBuildingInterface"), NodePath("UIMain/MenuRight/PlayOptions"), NodePath("UIMain/MenuRight/WorldEditorOptions"), NodePath("UIMain/MenuRight/ModsOptions"), NodePath("UIMain/MenuRight/ConfigsOptions"), NodePath("UIMain/MenuRight/DirectConnection"), NodePath("UIMain/StatusPanel"), NodePath("UIConsole"), NodePath("UIMain/MenuRight/CharacterItemsScrollContainer")]
 
+[node name="CharacterOptions" parent="UI/UIMain/MenuRight" index="1" node_paths=PackedStringArray("personality_option_button")]
+personality_option_button = NodePath("CharacterEditMarginContainer/VBoxContainer/MarginContainer2/PersonalityOptionButton")
+
 [node name="UIWorldEditor" parent="UI" index="2"]
 visible = true
 mouse_filter = 1

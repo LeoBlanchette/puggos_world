@@ -4,4 +4,26 @@ Equips an item to a character slot.
 If you are modding and are trying out items via the command line, 
 then you should use this workflow:
 	
-	[color=green]list_
+[color=green]/equip[/color] <id>
+	
+Example:
+	
+[color=green]/equip[/color] 22 
+	
+...which at this time should place a police hat on the character.
+	
+[color=green]/print_index[/color] will provide a list of item ids that exist.
+Not all item IDs can be equipped obviously, as some of them are animations.
+	
+ADMINS / SERVER:
+
+Need to target a player for equipping an item? 
+First, find their peer id:
+	
+[color=green]/list_players[/color] 
+	
+Then:
+	
+[color=green]/equip[/color] <id> [color=yellow]--pid[/color] <peer_id>
+
+... Will target the player for an equip operation.

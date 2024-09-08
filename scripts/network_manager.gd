@@ -111,13 +111,45 @@ func player_loaded():
 # When a peer connects, send them my player info.
 # This allows transfer of all desired data for each player, not only the unique ID.
 func _on_player_connected(id):	
+	Global.peer_id = multiplayer.get_unique_id()
 	server_announce_status("%s has joined the game."%id)
 
 func _on_player_entered_world(peer_id):
+	
 	var player_name = Players.get_player_name(peer_id)
 	var character_name = Players.get_player_character_name(peer_id)
 	update_character_objects.rpc() #this is called here so that the newly spawned charcter object is added to player lists
 	server_announce_status("%s (%s) has entered the world..."%[character_name, player_name], false)
+
+
+## THIS RUNS ON SERVER. 
+@rpc("authority", "call_local", "reliable")
+func request_character_appearance(players_peer_id:int):
+	print(players_peer_id)
+	submit_character_appearance.rpc_id(players_peer_id)
+
+## CALLED ON CLIENT FROM SERVER. To submit requested appearance.
+@rpc("authority", "call_local", "reliable")
+func submit_character_appearance():
+	if Global.character_appearance.is_empty():
+		return	
+	# Capture local appearance stuff here
+	process_character_appearance.rpc_id(1, Global.character_appearance)
+
+## CALLED ON SERVER FROM A CLIENT. Process the requested appearance.
+@rpc("any_peer", "call_local", "reliable")
+func process_character_appearance( appearance:Dictionary):
+	if not multiplayer.is_server():
+		return
+	var peer_id:int =  multiplayer.get_remote_sender_id()
+	if appearance.is_empty():
+		return
+	
+	if appearance.has("personality"):
+		Cmd.cmd("/set_personality %s --pid %s"%[appearance["personality"], str(peer_id)])
+	for key:String in appearance:
+		if key.contains("slot_"):
+			Cmd.cmd("/equip %s --pid %s"%[appearance[key], str(peer_id)])
 
 @rpc("any_peer", "reliable")
 func _register_player(new_player_info):

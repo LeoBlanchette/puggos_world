@@ -77,6 +77,14 @@ static func get_object(category: String, id: int):
 static func reset():
 	object_index.index = {}
 
+func get_all_mod_objects()->Array:
+	var mod_objects:Array = []
+	for key in ObjectIndex.index:
+		for id in index[key]:
+			mod_objects.append(index[key][id])
+	return mod_objects
+			
+
 func get_mod_dir(object_category:String, id:int)->String:
 	var ob:Node = ObjectIndex.get_object(object_category, id)
 	if ob == null:

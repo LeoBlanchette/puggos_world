@@ -16,13 +16,20 @@ func load_characters():
 	Global.currently_selected_character_id = characters["current_character"]
 	
 
+## Loads the character appearance. Used first in the main home UI, character
+## creation area.
 func load_current_character_appearance():	
 	var current_character:int = Global.currently_selected_character_id
 	var character:Dictionary = get_character_by_id(current_character)
+	Global.character_appearance = character
 	clear_current_character_appearance()
+	# Equip all used slots...
 	for key:String in character:
 		if key.contains("slot_"):
 			Cmd.cmd("/equip %s"%str(character[key]))
+	# Now load personality...
+	if character.has("personality"):
+		Cmd.cmd("/set_personality %s"%character["personality"])
 
 func clear_current_character_appearance():
 	for x in range(40):

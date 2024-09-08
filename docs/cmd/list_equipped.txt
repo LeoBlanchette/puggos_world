@@ -12,3 +12,5 @@ For self:
 	
 Other player:
 [color=green]/list_equipped[/color] <player_name>
+
+Using this method with --pid <peer_id> is not yet implemented.

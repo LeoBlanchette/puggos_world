@@ -10,3 +10,16 @@ or
 Need to know which slots are which? 
 Run [color=green]/list_slots[/color] to see which slots contain 
 which items.
+
+ADMINS / SERVER:
+
+Need to target a player for unequipping an item? 
+First, find their peer id:
+	
+[color=green]/list_players[/color] 
+	
+Then:
+	
+[color=green]/unequip[/color] <slot> [color=yellow]--pid[/color] <peer_id>
+
+... Will target the player for an unequip operation.

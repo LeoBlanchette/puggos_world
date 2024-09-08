@@ -12,6 +12,7 @@ class_name CharacterOptions
 @export var character_manage_container: MarginContainer
 @export var choose_character_option_button: OptionButton
 @export var edit_character_button: Button 
+@export var personality_option_button: OptionButton 
 
 const create_new_character_id = 76767676
 
@@ -85,6 +86,7 @@ func save_from_character_edit()->void:
 	var character_template:Dictionary = Characters.new_character()
 	character_template["id"] = currently_editing_character_id
 	character_template["name"] = character_name_line_edit.text	
+	character_template["personality"] = personality_option_button.get_item_id(personality_option_button.selected)
 	var equipped:Dictionary = Cmd.list_equipped()
 	# Adds all items equipped to the template.
 	for key in equipped:
@@ -96,6 +98,14 @@ func save_from_character_edit()->void:
 	
 func update_character_edit_panel(character:Dictionary):
 	character_name_line_edit.text = character["name"]	
+	
+	# Select the appropriate personality option 
+	if character.has("personality"):
+		for idx in range(0, personality_option_button.item_count):
+			var personality_id = personality_option_button.get_item_id(idx)
+			if personality_id != character["personality"]:
+				continue
+			personality_option_button.selected = idx
 
 func go_to_character_manage():
 	character_edit_container.hide()
@@ -124,6 +134,7 @@ func _on_delete_button_pressed() -> void:
 	currently_editing_character_id = 0
 	go_to_character_manage()
 
+## Populates the main character options involving animations and appearance.
 func populate_character_options():
 
 	for child in character_customizer_buttons.get_children():
@@ -133,6 +144,16 @@ func populate_character_options():
 	for key in keys:
 		var description:String = appearance.get_slot_description(appearance.Equippable.get(key))
 		make_character_slot_button(key, description)
+	if ObjectIndex.index.has("animations"):
+		for key in ObjectIndex.index["animations"]:
+			var animation:Node = ObjectIndex.index["animations"][key]
+			if animation.has_meta("personality"):
+				add_personality_option(animation)
+
+func add_personality_option(animation:Node):
+	var animation_name:String = animation.get_meta("name", "Personality")
+	var id:int = animation.get_meta("id")
+	personality_option_button.add_item(animation_name, id)
 
 func make_character_slot_button(slot:String, description:String):
 	var button:Button = Button.new()
@@ -140,3 +161,7 @@ func make_character_slot_button(slot:String, description:String):
 	
 	button.connect("pressed", character_items_scroll_container.open.bind(slot, description))
 	character_customizer_buttons.add_child(button)
+
+func _on_personality_option_button_item_selected(index: int) -> void:
+	var id:int = personality_option_button.get_item_id(index)
+	Cmd.cmd("/set_personality %s"%str(id))

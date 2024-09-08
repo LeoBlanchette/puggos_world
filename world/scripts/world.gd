@@ -47,6 +47,9 @@ func do_player_spawn(peer_id: int):
 	if not multiplayer.is_server():
 		return
 	multiplayer_spawner.spawn(peer_id)
+	# This is called here because it is certain not to return null 
+	# during the request_character_appearance process.
+	NetworkManager.request_character_appearance.rpc_id(1, peer_id)
 
 ## The player spawner of any given world.
 func spawn_player(peer_id: int):
@@ -55,6 +58,7 @@ func spawn_player(peer_id: int):
 	p.name = "player-%s" %str(peer_id)
 	p.peer_id = peer_id
 	NetworkManager.player_joined_world.emit(peer_id)
+
 	return p
 
 @rpc("any_peer", "call_local", "reliable")

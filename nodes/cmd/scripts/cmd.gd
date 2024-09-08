@@ -13,7 +13,7 @@ func cmd(command_string:String):
 	if not command_string.begins_with("/"):
 		chat(command_string)
 		return
-	
+	print(command_string)
 	add_cmd_history(command_string)
 	command_string = command_string.to_lower()
 	var command:ArgParser = ArgParser.new(command_string)
@@ -51,6 +51,8 @@ func cmd(command_string:String):
 			teleport(command)
 		"/t": #teleport shorthand
 			teleport(command)
+		"/set_personality":
+			set_personality(command)
 		"/equip":
 			equip(command)
 		"/unequip":
@@ -121,6 +123,7 @@ func help(command:ArgParser):
 		"/interact":"Interacts with an object. Typically called by game, not console.",
 		"/teleport":"Teleports a player based on X,Y,Z coordinates supplied.",
 		"/t":"Shortcut for the /teleport command.",
+		"/set_personality":"Sets the personality (long idle) of the character. /set_personality --help for for information on this system.",
 		"/equip":"Equips an item.",
 		"/unequip":"Unequips a slot, removing the item in the slot.",
 		"/list_slots":"Lists all character slots with their descriptions.",
@@ -385,6 +388,46 @@ func play_animation(command: ArgParser):
 		help(command)
 		return
 
+## Sets the character personality, the personality being an animation id
+## that has meta "personality" as true.
+func set_personality(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	var reject_message:String = "Something went wrong."
+	var peer_id:int = multiplayer.get_unique_id()	
+	var personality_id = "0"
+	
+	personality_id = command.get_argument("1", personality_id).to_int()
+	if personality_id == 0:
+		print(reject_message)
+		return 
+
+	# target player if specified 
+	var target_player:String = ""	
+	if command != null:
+		if command.has_argument("--pid"):
+			target_player = command.get_argument("--pid", str(peer_id))[0]
+	if not target_player.is_empty():
+		peer_id = target_player.to_int()
+	# end taret player if specified 
+
+	var player:Player = Players.get_player_character(peer_id)
+	if player == null:
+		chat(reject_message)
+		return
+	
+	if not target_player.is_empty():
+		set_personality_remote.rpc_id(peer_id, personality_id)
+	else:
+		player.personality_id = personality_id
+
+@rpc("authority", "call_local", "reliable")
+func set_personality_remote(personality_id):
+	var peer_id:int = multiplayer.get_unique_id()
+	var player:Player = Players.get_player_character(peer_id)
+	player.personality_id = personality_id
+
 ## equips a thing to the player
 func equip(command: ArgParser):
 	if is_help_request(command):
@@ -398,13 +441,33 @@ func equip(command: ArgParser):
 	if object_id == 0:
 		print(reject_message)
 		return 
-
+	
+	
+	# target player if specified 
+	var target_player:String = ""	
+	if command != null:
+		if command.has_argument("--pid"):
+			target_player = command.get_argument("--pid", str(peer_id))[0]
+	if not target_player.is_empty():
+		peer_id = target_player.to_int()
+	# end taret player if specified 
+	
 	var player:Player = Players.get_player_character(peer_id)
+	
 	if player == null:
 		chat(reject_message)
 		return
-	player.equip(object_id)
+	if not target_player.is_empty():
+		equip_remote.rpc_id(peer_id, object_id)
+	else:
+		player.equip(object_id)
 
+## For the server to call equip actions to clients...
+@rpc("authority", "call_local", "reliable")
+func equip_remote(id:int):
+	multiplayer.get_unique_id()
+	var player:Player = Players.get_player_character(multiplayer.get_unique_id())
+	player.equip(id)
 
 func print_index(command:ArgParser)->void:
 	if is_help_request(command):
@@ -460,7 +523,7 @@ func list_slots(command:ArgParser = null):
 		var slot_info:String ="[color=yellow]%s[/color]: %s"%[key, CharacterAppearance.get_slot_description(CharacterAppearance.Equippable.get(key))]
 		UIConsole.instance.print_to_console(slot_info)
 
-## equips a thing to the player
+## unequips a thing to the player
 func unequip(command: ArgParser):
 	if is_help_request(command):
 		help(command)
@@ -468,6 +531,15 @@ func unequip(command: ArgParser):
 	var reject_message:String = "Something went wrong."
 	var peer_id:int = multiplayer.get_unique_id()	
 	var slot_number = "-1"
+
+	# target player if specified 
+	var target_player:String = ""	
+	if command != null:
+		if command.has_argument("--pid"):
+			target_player = command.get_argument("--pid", str(peer_id))[0]
+	if not target_player.is_empty():
+		peer_id = target_player.to_int()
+	# end taret player if specified 
 
 	slot_number = command.get_argument("1", slot_number).to_int()
 	if slot_number == -1:
@@ -482,9 +554,18 @@ func unequip(command: ArgParser):
 	if not range(0, 39).has(slot_number):
 		chat(reject_message)
 		return
-		
-	player.unequip("slot_%s"%slot_number)
+	
+	if not target_player.is_empty():
+		unequip_remote.rpc_id(peer_id, slot_number)
+	else:
+		player.unequip("slot_%s"%slot_number)
 
+@rpc("authority", "call_local", "reliable")
+func unequip_remote(slot_number:int):
+	var peer_id:int = multiplayer.get_unique_id()
+	var player:Player = Players.get_player_character(peer_id)
+	player.unequip("slot_%s"%slot_number)
+	
 ## places an object onto the ground
 func place(command: ArgParser):
 	if is_help_request(command):
