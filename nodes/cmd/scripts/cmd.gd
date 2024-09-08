@@ -16,7 +16,6 @@ func cmd(command_string:String):
 	
 	add_cmd_history(command_string)
 	command_string = command_string.to_lower()
-	
 	var command:ArgParser = ArgParser.new(command_string)
 	
 	match command.get_command():
@@ -125,7 +124,7 @@ func help(command:ArgParser):
 		"/equip":"Equips an item.",
 		"/unequip":"Unequips a slot, removing the item in the slot.",
 		"/list_slots":"Lists all character slots with their descriptions.",
-		"/list_equipped":"Lists all items equipped on character.",
+		"/list_equipped":"Lists all items equipped on character. Returns a dictionary {'slot_<num>':<id>} if used in code.",
 		"/placement":"Puts user into placement mode, for placing an object such as modular building part.",
 		"/place":"Places an item.",
 		"/print_mod_dir": "Gets the directory of a mod. Returns a string when used in code. Example: /get_mod_dir animations 3",
@@ -421,24 +420,27 @@ func print_index(command:ArgParser)->void:
 			print(basic_print)
 			print_to_console(console_print)
 
-func list_equipped(command:ArgParser):
-	if is_help_request(command):
-		help(command)
-		return
+func list_equipped(command:ArgParser = null)->Dictionary:
+	if command != null: #If null, it is used from code and not a text command.
+		if is_help_request(command):
+			help(command)
+			return {}
 	var reject_message:String = "Something went wrong."
-	
+		
 	var peer_id:int = multiplayer.get_unique_id()	
-	
-	var target_player:String = command.get_second_argument().strip_edges()
+	var target_player:String = ""
+	if command != null:
+		target_player = command.get_second_argument().strip_edges()
 	if not target_player.is_empty():
 		peer_id = Players.get_peer_id_by_persona_name(target_player)
 	var player:Player = Players.get_player_character(peer_id)
 	if player == null:
 		print_to_console(reject_message)
-		return	
+		return	 {}
 	var player_name:String = Players.get_player_name(peer_id)
 	print_to_console(" ")
 	print_to_console("[color=orange]%s[/color] equipped items: "%player_name)
+	var equipped:Dictionary = {}
 	for slot_number:int in range(0, 40):
 		var slot = "slot_%s"%str(slot_number)
 		var id:int = player.get(slot)
@@ -447,7 +449,9 @@ func list_equipped(command:ArgParser):
 				var ob:Node  = ObjectIndex.index["items"][id]
 				var mod_name:String = ob.get_meta("name", "* no name")
 				print_to_console("[color=green]%s[/color]: [color=yellow]%s[/color]    [color=gray][ %s ][/color]"%[slot, str(id), mod_name])
-				
+				equipped[slot]=id
+	return equipped
+	
 func list_slots(command:ArgParser = null):
 	if is_help_request(command):
 		help(command)

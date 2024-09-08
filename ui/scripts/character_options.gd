@@ -44,6 +44,7 @@ func load_character_selection():
 		#add_character(character["name"], character["id"])	
 	set_current_character_selection()
 	add_new_character_option()
+	Characters.load_current_character_appearance()
 
 func add_character(character_name:String, character_id:int):	
 	choose_character_option_button.add_item(character_name, character_id)
@@ -79,10 +80,16 @@ func go_to_character_edit(character_id)->void:
 	character_manage_container.hide()
 	update_character_edit_panel(character)
 
+## The save function for a character template.
 func save_from_character_edit()->void:
 	var character_template:Dictionary = Characters.new_character()
 	character_template["id"] = currently_editing_character_id
 	character_template["name"] = character_name_line_edit.text	
+	var equipped:Dictionary = Cmd.list_equipped()
+	# Adds all items equipped to the template.
+	for key in equipped:
+		var id:int = equipped[key]
+		character_template[key]=id
 	Characters.set_currently_selected_character_id(currently_editing_character_id)
 	Characters.save_character(character_template)
 	Achievements.achievement.emit("created_character")
@@ -109,6 +116,7 @@ func _on_choose_character_option_button_item_selected(_index: int) -> void:
 		go_to_character_edit(choose_character_option_button.get_selected_id())
 	else:
 		Characters.set_currently_selected_character_id(selected)
+		Characters.load_current_character_appearance()
 		
 func _on_delete_button_pressed() -> void:
 	var to_delete = currently_editing_character_id

@@ -7,6 +7,7 @@ var characters: Dictionary = {
 
 func _ready() -> void:
 	load_characters()
+	
 
 func load_characters():
 	self.characters = Save.load_character_info()
@@ -14,6 +15,18 @@ func load_characters():
 		reset_characters()
 	Global.currently_selected_character_id = characters["current_character"]
 	
+
+func load_current_character_appearance():	
+	var current_character:int = Global.currently_selected_character_id
+	var character:Dictionary = get_character_by_id(current_character)
+	clear_current_character_appearance()
+	for key:String in character:
+		if key.contains("slot_"):
+			Cmd.cmd("/equip %s"%str(character[key]))
+
+func clear_current_character_appearance():
+	for x in range(40):
+		Cmd.cmd("/unequip %s"%str(x))
 
 func get_characters_template()->Dictionary:
 	var characters_template: Dictionary = {
@@ -61,8 +74,10 @@ func new_character(_name:String = "")->Dictionary:
 	character["id"] = rng.randf_range(0, 2147483647)
 	return character
 
+## Do not use this directly. It might be broken. But I don't know if it is used already.
 func get_character(idx:int)->Dictionary:	
 	return get_characters()[idx]
+
 
 func get_character_by_id(id:int)->Dictionary:
 	for x in range(get_characters().size()):
