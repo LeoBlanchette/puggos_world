@@ -14,8 +14,8 @@ enum ActionType{
 	LONG_IDLE,
 }
 
-@onready var player: Player = $".."
-@onready var avatar: Avatar = $"../Avatar"
+@export var player: Player
+@export var avatar: Avatar 
 
 #region default animations
 @export var default_basic_interaction_animation_id:int=0

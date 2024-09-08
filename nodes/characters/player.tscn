@@ -265,8 +265,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -5)
 replication_config = SubResource("SceneReplicationConfig_260u7")
 script = ExtResource("6_f55i6")
 
-[node name="ActionManager" type="Node3D" parent="." index="14"]
+[node name="ActionManager" type="Node3D" parent="." index="14" node_paths=PackedStringArray("player", "avatar")]
 script = ExtResource("8_av0vo")
+player = NodePath("..")
+avatar = NodePath("../Avatar")
 default_basic_interaction_animation_id = 41
 default_primary_action_animation_id = 41
 default_secondary_action_animation_id = 40
