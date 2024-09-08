@@ -19,6 +19,7 @@ static func get_scene_type():
 	return UIMain.instance.SCENE_TYPE
 
 static func set_active(active:bool):
+	
 	if active:
 		instance.show()
 	else:

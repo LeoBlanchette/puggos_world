@@ -34,7 +34,7 @@ func _ready():
 	GameManager.instance.level_changed.emit(GameManager.SCENES.MENU, GameManager.SCENES.MENU)
 	
 	ui_main.set_active(false)
-	
+	GameManager.instance.ui_ready.emit()
 	
 func _exit_tree():
 	if UI.instance == self:

@@ -210,6 +210,7 @@ is_running = false
 affected_body_region = "NONE"
 long_idle_time = 10.0
 is_long_idle = false
+display_mode = false
 speed = 1.75
 acceleration = 5.0
 sprint_speed_multiplier = 3.0

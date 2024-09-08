@@ -29,7 +29,6 @@ const MOD_FOLDER: String = "res://mods/"
 
 @export var mod_tree: Node = null
 
-@onready var icon_generator: IconGenerator = $IconGenerator
 
 ## Individual .pck files at the res://mods/ directory.
 static var mod_packs: Array[String] = [] 

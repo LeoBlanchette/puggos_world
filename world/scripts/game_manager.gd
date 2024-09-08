@@ -3,6 +3,7 @@ extends Node
 
 class_name GameManager
 
+signal ui_ready
 signal pre_level_change(current_level, next_level)
 signal post_level_change(previous, current)
 signal level_changed(old_level, new_level)
@@ -51,6 +52,8 @@ func _ready():
 	
 	# Do achievement 
 	Achievements.achievement.emit("started_game", {})
+
+	
 
 func _exit_tree() -> void:
 	if GameManager.instance == self:

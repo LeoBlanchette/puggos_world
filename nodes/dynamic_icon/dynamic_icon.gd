@@ -35,13 +35,13 @@ func capture():
 	icon_ready.emit()
 
 func get_camera_orthagonal_size(asset: Node, default: float = 2.0) -> float:
-	var size: float = float(asset.get_meta("icon_camera_orthographic_size", default))
+	var size: float = float(asset.get_meta("icon_camera_orthographic_size", camera_3d.size))
 	return size
 	
 func get_camera_position(asset: Node, default: Vector3 = Vector3.ZERO) -> Vector3:
-	var pos: Vector3 = asset.get_meta("icon_camera_position", default)
+	var pos: Vector3 = asset.get_meta("icon_camera_position", camera_3d.position)
 	return pos
 
 func get_camera_rotation(asset: Node, default: Vector3 = Vector3.ZERO) -> Vector3:
-	var rot: Vector3 = asset.get_meta("icon_camera_rotation", default)
+	var rot: Vector3 = asset.get_meta("icon_camera_rotation", camera_3d.rotation_degrees)
 	return rot

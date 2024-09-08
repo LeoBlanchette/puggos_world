@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b7675gqeab4ta"]
+[gd_scene load_steps=11 format=3 uid="uid://b7675gqeab4ta"]
 
 [ext_resource type="Theme" uid="uid://1cgrcgf7at3y" path="res://ui/themes/main_theme.tres" id="1_5j53r"]
 [ext_resource type="Script" path="res://ui/scripts/ui_main.gd" id="2_a3bab"]
@@ -6,12 +6,13 @@
 [ext_resource type="Texture2D" uid="uid://c1job18gp24nu" path="res://images/icons/game/edit.svg" id="4_1puwn"]
 [ext_resource type="Script" path="res://ui/scripts/character_options.gd" id="4_2ue3u"]
 [ext_resource type="Script" path="res://ui/scripts/main_menu/direct_connection.gd" id="4_5o7gv"]
+[ext_resource type="Script" path="res://ui/scripts/character_items_scroll_container.gd" id="7_tfjgu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gq6qh"]
 bg_color = Color(0, 0, 0, 0.392157)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ron3a"]
-bg_color = Color(0.6, 0, 0, 0.294118)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8hpba"]
+bg_color = Color(0.099986, 0.099986, 0.099986, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gkree"]
 bg_color = Color(0, 0, 0, 1)
@@ -142,7 +143,6 @@ anchor_bottom = 1.0
 offset_left = 350.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ron3a")
 
 [node name="PlayOptions" type="VBoxContainer" parent="MenuRight"]
 visible = false
@@ -175,7 +175,7 @@ text = "Direct Connection"
 layout_mode = 2
 text = "Lobby"
 
-[node name="CharacterOptions" type="Control" parent="MenuRight" node_paths=PackedStringArray("character_edit_container", "character_name_line_edit", "delete_button", "back_button", "character_manage_container", "choose_character_option_button", "edit_character_button")]
+[node name="CharacterOptions" type="Control" parent="MenuRight" node_paths=PackedStringArray("character_edit_container", "character_name_line_edit", "delete_button", "back_button", "character_manage_container", "choose_character_option_button", "edit_character_button", "character_customizer_buttons", "character_items_scroll_container")]
 custom_minimum_size = Vector2(350, 0)
 layout_mode = 1
 anchors_preset = 11
@@ -192,9 +192,10 @@ back_button = NodePath("CharacterEditMarginContainer/VBoxContainer/BackButton")
 character_manage_container = NodePath("CharacterManageMarginContainer")
 choose_character_option_button = NodePath("CharacterManageMarginContainer/CharacterEditControl/ChooseCharacterOptionButton")
 edit_character_button = NodePath("CharacterManageMarginContainer/CharacterEditControl/EditCharacterButton")
+character_customizer_buttons = NodePath("CharacterEditMarginContainer/VBoxContainer/CharacterCustomizer/CharacterCustomizerButtons")
+character_items_scroll_container = NodePath("../CharacterItemsScrollContainer")
 
 [node name="CharacterEditMarginContainer" type="MarginContainer" parent="MenuRight/CharacterOptions"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -228,7 +229,16 @@ theme_override_constants/margin_top = 40
 layout_mode = 2
 text = "Delete"
 
+[node name="CharacterCustomizer" type="ScrollContainer" parent="MenuRight/CharacterOptions/CharacterEditMarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CharacterCustomizerButtons" type="VBoxContainer" parent="MenuRight/CharacterOptions/CharacterEditMarginContainer/VBoxContainer/CharacterCustomizer"]
+layout_mode = 2
+
 [node name="CharacterManageMarginContainer" type="MarginContainer" parent="MenuRight/CharacterOptions"]
+visible = false
 custom_minimum_size = Vector2(350, 0)
 layout_mode = 1
 anchors_preset = 15
@@ -393,6 +403,20 @@ theme_override_constants/margin_top = 20
 layout_mode = 2
 text = "< Back"
 
+[node name="CharacterItemsScrollContainer" type="ScrollContainer" parent="MenuRight"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8hpba")
+script = ExtResource("7_tfjgu")
+
+[node name="CharacterItemsGridContainer" type="GridContainer" parent="MenuRight/CharacterItemsScrollContainer"]
+layout_mode = 2
+columns = 4
+
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
 layout_mode = 0
 offset_right = 40.0
@@ -436,3 +460,4 @@ autowrap_mode = 3
 [connection signal="pressed" from="MenuRight/DirectConnection/DirectJoinButton" to="MenuRight/DirectConnection" method="_on_direct_join_button_pressed"]
 [connection signal="pressed" from="MenuRight/DirectConnection/DirectHostButton" to="MenuRight/DirectConnection" method="_on_direct_host_button_pressed"]
 [connection signal="pressed" from="MenuRight/DirectConnection/MarginContainer/DirectConnectionBack" to="." method="_on_direct_connection_back_pressed"]
+[connection signal="hidden" from="MenuRight/CharacterItemsScrollContainer" to="MenuRight/CharacterItemsScrollContainer" method="_on_hidden"]

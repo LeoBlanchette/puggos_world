@@ -16,8 +16,14 @@ class_name CharacterOptions
 const create_new_character_id = 76767676
 
 var currently_editing_character_id:int = 0
+var player:Player = null
 
-static var instance
+# Container
+@export var character_customizer_buttons: VBoxContainer
+@export var character_items_scroll_container: CharacterItemsUI 
+
+
+static var instance:CharacterOptions
 
 func _ready():
 	if instance == null:
@@ -109,3 +115,20 @@ func _on_delete_button_pressed() -> void:
 	Characters.delete_character_by_id(to_delete)
 	currently_editing_character_id = 0
 	go_to_character_manage()
+
+func populate_character_options():
+
+	for child in character_customizer_buttons.get_children():
+		child.queue_free()
+	var appearance:CharacterAppearance = player.avatar.character_appearance
+	var keys = appearance.Equippable.keys()
+	for key in keys:
+		var description:String = appearance.get_slot_description(appearance.Equippable.get(key))
+		make_character_slot_button(key, description)
+
+func make_character_slot_button(slot:String, description:String):
+	var button:Button = Button.new()
+	button.text = description
+	
+	button.connect("pressed", character_items_scroll_container.open.bind(slot, description))
+	character_customizer_buttons.add_child(button)

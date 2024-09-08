@@ -321,6 +321,16 @@ signal  is_long_idle_changed(value)
 		is_long_idle = value
 var last_position:Vector3 = Vector3.ZERO
 var time_idling:float = 0.0
+
+@export var display_mode = false:
+	set(value):
+		display_mode = value
+		if value == true:
+			enter_display_mode()
+@onready var view_switch: Node = $"View Switch"
+		
+	
+
 #endregion
 
 func _ready():		
@@ -331,8 +341,11 @@ func _ready():
 	equip(28) # DEFAULT skin.
 	last_position = position
 	setup_animation_library()
+	
 
 func _physics_process(delta):
+	if display_mode:
+		return
 	update_avatar_animation_global()
 	multiplayer_synchronizer.position = position
 	multiplayer_synchronizer.rotation = rotation
@@ -359,6 +372,8 @@ func _physics_process(delta):
 	detect_idle(delta)
 
 func _input(event: InputEvent) -> void:
+	if display_mode:
+		return
 	if not multiplayer_synchronizer.is_multiplayer_authority():
 		return
 	# Mouse look (only if the mouse is captured).
@@ -384,8 +399,10 @@ func setup_animation_library():
 	var animation_paths:Array = ObjectIndex.object_index.get_all_animation_paths()
 	for animation_path in animation_paths:
 		avatar.add_animation(animation_path)
-	
 
+func enter_display_mode():
+	pass
+	
 func update_avatar_animation_local():
 	blend_position = input_axis
 	is_crouched = is_crouching()

@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://bw6dxxmvmjqtx"]
+
+[ext_resource type="Script" path="res://world/scripts/home.gd" id="1_g1fqj"]
+[ext_resource type="PackedScene" uid="uid://l2tpk6ukl3o" path="res://addons/puggos_world_character/character/gltf/Character.gltf" id="2_gqba1"]
+
+[sub_resource type="Environment" id="Environment_5tft7"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_1f27a"]
+
+[sub_resource type="Compositor" id="Compositor_1jjrf"]
+
+[node name="Home" type="Node3D"]
+script = ExtResource("1_g1fqj")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.956305, 0.0532705, -0.287478, 0, 0.983261, 0.182201, 0.292372, -0.17424, 0.940297, -0.637822, 1.3776, 2.07978)
+
+[node name="CharacterSpawn" type="Marker3D" parent="."]
+transform = Transform3D(-0.953528, 0, 0.301305, 0, 1, 0, -0.301305, 0, -0.953528, 0, 1, 0)
+
+[node name="Character2" parent="CharacterSpawn" instance=ExtResource("2_gqba1")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.947891, -0.225282, 0.225282, -4.90715e-08, 0.707107, 0.707107, -0.318597, -0.670259, 0.67026, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_5tft7")
+camera_attributes = SubResource("CameraAttributesPractical_1f27a")
+compositor = SubResource("Compositor_1jjrf")
