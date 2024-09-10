@@ -33,8 +33,8 @@ func update_character_objects():
 		players[peer_id]["character"] = get_character_object_by_peer_id(peer_id)
 
 func get_character_object_by_peer_id(peer_id:int)->Player:
-	var players = get_tree().get_nodes_in_group("players")
-	for player:Player in players:
+	var _players = get_tree().get_nodes_in_group("players")
+	for player:Player in _players:
 		var character_peer_id:int = player.get_peer_id()
 		if character_peer_id == peer_id:
 			return player

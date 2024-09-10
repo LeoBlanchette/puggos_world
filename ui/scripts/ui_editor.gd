@@ -92,7 +92,7 @@ func _on_transform_button_pressed():
 	if Editor.instance != null:
 		Editor.instance.switch_transform_mode()
 
-func change_interaction_mode(old_mode:Editor.InteractionMode, new_mode:Editor.InteractionMode):
+func change_interaction_mode(_old_mode:Editor.InteractionMode, new_mode:Editor.InteractionMode):
 	match new_mode:
 		Editor.instance.InteractionMode.PLAY:
 			enter_play_mode()
@@ -133,7 +133,7 @@ func _on_unpack_prefab_button_pressed() -> void:
 	Editor.instance.unpack_prefab()
 	unpack_prefab_button.hide()
 	
-func _on_object_selected_changed(old_object:Node3D, new_object:Node3D)->void:
+func _on_object_selected_changed(_old_object:Node3D, new_object:Node3D)->void:
 	if new_object == null:
 		return
 	selected_object_label.text = new_object.name
@@ -152,7 +152,7 @@ func _on_option_button_item_selected(index: int) -> void:
 		_:
 			pass
 	
-func _on_editor_context_changed(old_context:Editor.CurrentEditorContext, new_context:Editor.CurrentEditorContext)->void:
+func _on_editor_context_changed(_old_context:Editor.CurrentEditorContext, new_context:Editor.CurrentEditorContext)->void:
 	object_ops.hide()
 	object_ops_right.hide()
 	match new_context:

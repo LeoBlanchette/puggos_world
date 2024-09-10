@@ -92,7 +92,7 @@ func save_world():
 
 
 func load_prefab(prefab_name:="", pos:=Vector3.ZERO,rot:=Vector3.ZERO)->Prefab:
-	var dir = DirAccess.open(get_prefabs_path())	
+	#var dir = DirAccess.open(get_prefabs_path())	
 
 	var prefab_data_path:String = get_prefab_data_path(prefab_name)
 	var meta_data_path := prefab_data_path+"data.json"
@@ -120,7 +120,7 @@ func load_prefab(prefab_name:="", pos:=Vector3.ZERO,rot:=Vector3.ZERO)->Prefab:
 	return prefab_instantiated
 	
 func load_prefab_editor(prefab_name:=""):
-	var dir = DirAccess.open(get_prefabs_path())
+	#var dir = DirAccess.open(get_prefabs_path())
 	
 
 	var prefab_data_path:String = get_prefab_data_path(prefab_name)

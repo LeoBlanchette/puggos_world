@@ -142,7 +142,7 @@ func populate_character_options():
 	var appearance:CharacterAppearance = player.avatar.character_appearance
 	var keys = appearance.Equippable.keys()
 	for key in keys:
-		var description:String = appearance.get_slot_description(appearance.Equippable.get(key))
+		var description:String = CharacterAppearance.get_slot_description(appearance.Equippable.get(key))
 		make_character_slot_button(key, description)
 	if ObjectIndex.index.has("animations"):
 		for key in ObjectIndex.index["animations"]:

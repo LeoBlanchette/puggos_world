@@ -7,7 +7,7 @@ class_name CharacterItemsUI
 func _ready() -> void:
 	hide()
 
-func open(slot:String, slot_description:String):
+func open(slot:String, _slot_description:String):
 	var slot_number:int = CharacterAppearance.Equippable.get(slot)
 	
 	show()

@@ -16,8 +16,8 @@ func _exit_tree() -> void:
 	if instance == self:
 		instance = null
 
-func activate(show:bool=true):
-	if show:
+func activate(_show:bool=true):
+	if _show:
 		show()
 	else:
 		hide()

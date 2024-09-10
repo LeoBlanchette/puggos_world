@@ -18,8 +18,8 @@ func build(meta_data:Dictionary, commands:Array)->void:
 		object_category = command.get_argument("1")
 		
 		object_id = int(command.get_argument("2"))
-		var pos = command.vector_from_array(command.get_argument("--p", Vector3.ZERO))
-		var rot = command.vector_from_array(command.get_argument("--r", Vector3.ZERO))
+		var pos = ArgParser.vector_from_array(command.get_argument("--p", Vector3.ZERO))
+		var rot = ArgParser.vector_from_array(command.get_argument("--r", Vector3.ZERO))
 		anchor_object(object_category, object_id, pos, rot)
 
 func unpack():
@@ -34,7 +34,7 @@ func unpack():
 	queue_free()
 
 func anchor_object(category:String, id:int, pos:Vector3, rot:Vector3)->void:
-	var ob:Node3D = ObjectIndex.object_index.spawn(category, id)
+	var ob:Node3D = ObjectIndex.spawn(category, id)
 	ob.position = pos
 	ob.rotation_degrees = rot
 	mark_prefab_root(ob)

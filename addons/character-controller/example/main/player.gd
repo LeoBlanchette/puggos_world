@@ -470,7 +470,6 @@ func equip(id:int):
 		if slot_number == 0:
 			print("Slot number was improperly assigned. Cannot use.")
 		var slot:String = "slot_%s"%str(slot_number)
-		print(slot, id)
 		## Set the given variable by string 
 		set(slot, id)
 		

@@ -13,7 +13,7 @@ func cmd(command_string:String):
 	if not command_string.begins_with("/"):
 		chat(command_string)
 		return
-	print(command_string)
+
 	add_cmd_history(command_string)
 	command_string = command_string.to_lower()
 	var command:ArgParser = ArgParser.new(command_string)
@@ -21,8 +21,8 @@ func cmd(command_string:String):
 	match command.get_command():
 		"/help":
 			help(command)
-		"/unilink":
-			unilink(command)
+		"/unilink_info":
+			unilink_info(command)
 		"/whoami":
 			whoami(command)
 		"/whois":
@@ -109,7 +109,7 @@ func print_help_doc(command:String)->void:
 func help(command:ArgParser):
 	var commands:Dictionary = {
 		"/help":"Prints a list of commands and a brief description of what they do.",
-		"/unilink":"Prints out UniLink info.",
+		"/unilink_info":"Prints out UniLink info.",
 		"/whoami":"Shows your player information.",
 		"/whois":"Shows information on a player based on Steam persona name.",
 		"/list_players":"Lists information of player currently in game.",
@@ -144,9 +144,9 @@ func help(command:ArgParser):
 		"/rick": "For when you are tired of reading documentation"
 	}
 		
-	var cmd:String = command.get_first_argument().strip_edges().to_lower()
+	var cmd_:String = command.get_first_argument().strip_edges().to_lower()
 	
-	if cmd == "/help":
+	if cmd_ == "/help":
 		print_to_console("[color=green]Available Commands:[/color]")
 		for key in commands:
 			print_to_console("[color=green]%s[/color]: %s"%[key, commands[key]])
@@ -155,7 +155,7 @@ func help(command:ArgParser):
 		return
 		
 	if not command.get_first_argument().is_empty():
-		var key:String = cmd
+		var key:String = cmd_
 		if commands.has(key):		
 			
 			print_to_console("[color=green]%s[/color]: %s"%[key, commands[key]])
@@ -175,8 +175,8 @@ func print_player_information_to_console(peer_id):
 		print_to_console("[color=green]%s:[/color] %s"%[str(key), str(player[key])])
 
 
-func unilink(command:ArgParser):
-	print_help_doc("unilink")
+func unilink_info(_command:ArgParser):
+	print_help_doc("unilink_info")
 
 
 func whois(command:ArgParser):
@@ -204,10 +204,6 @@ func print_mod_dir(command:ArgParser)->String:
 	if is_help_request(command):
 		help(command)
 		return ""
-		
-	var reject_message:String = "Something went wrong."
-	var object_category = 0
-	var object_id = 0
 	
 	if command.get_argument("1") == null:
 		help(command)
@@ -330,8 +326,8 @@ func spawn(command: ArgParser):
 	var default_pos = [spawn_node.global_position.x, spawn_node.global_position.y, spawn_node.global_position.z]
 	var default_rot = [spawn_node.global_rotation_degrees.x, spawn_node.global_rotation_degrees.y, spawn_node.global_rotation_degrees.z]
 	
-	var pos = command.vector_from_array(command.get_argument("--p", default_pos))
-	var rot = command.vector_from_array(command.get_argument("--r", default_rot))
+	var pos = ArgParser.vector_from_array(command.get_argument("--p", default_pos))
+	var rot = ArgParser.vector_from_array(command.get_argument("--r", default_rot))
 	
 	# now spawn object according to context / level
 	match GameManager.current_level:
@@ -373,7 +369,7 @@ func teleport(command:ArgParser):
 	if command.get_argument("--p", "").is_empty():
 		help(command)
 		return
-	var pos = command.vector_from_array(command.get_argument("--p", player.global_position))
+	var pos = ArgParser.vector_from_array(command.get_argument("--p", player.global_position))
 	player.global_position = pos
 	
 ## gives player a thing
@@ -441,7 +437,6 @@ func equip(command: ArgParser):
 	if object_id == 0:
 		print(reject_message)
 		return 
-	
 	
 	# target player if specified 
 	var target_player:String = ""	
@@ -578,14 +573,14 @@ func kick(command:ArgParser):
 		return
 	var user:String = ""
 	var m:Array = command.get_argument("--m", "You were kicked from the server.".split(" "))
-	var message:String = ""
+	var _message:String = ""
 	command.print_arguments()
 	for word in m:
-		message += "%s "%word
+		_message += "%s "%word
 
 	if command.get_argument("1") != null:
 		user = command.get_argument("1")
-		NetworkManager.drop_user(user, message)
+		NetworkManager.drop_user(user, _message)
 
 ## puts user into placement mode with a certain object
 func placement(command: ArgParser):
@@ -617,7 +612,6 @@ func print_object_meta(command:ArgParser):
 	if is_help_request(command):
 		help(command)
 		return
-	var reject_message:String = "Something went wrong."
 	var object_category = 0
 	var object_id = 0
 	
@@ -664,7 +658,7 @@ func print_object(command:ArgParser):
 				for mod_id in ObjectIndex.index[category]:
 					var id:int = mod_id
 					var ob = ObjectIndex.index[category][id]
-					var mod_type:String = ob.get_meta("mod_type", "-")
+					#var mod_type:String = ob.get_meta("mod_type", "-")
 					var item:String = ob.get_meta("name", "[no name]")
 					print_string = "%s: %s [%s]"%[category, str(id), item]
 					to_console.append(print_string)
@@ -710,9 +704,9 @@ func server_info(command:ArgParser):
 	if is_help_request(command):
 		help(command)
 		return
-	var ip:String = "[color=green]IP Address:[/color] %s"%NetworkManager.get_machines_ip_address()
+	var _ip:String = "[color=green]IP Address:[/color] %s"%NetworkManager.get_machines_ip_address()
 	var port:String = "[color=green]Port:[/color] %s"%NetworkManager.current_port
-	print_to_console(ip)
+	print_to_console(_ip)
 	print_to_console(port)
 	
 func rick(command:ArgParser):

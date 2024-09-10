@@ -69,7 +69,6 @@ func _on_visibility_changed() -> void:
 	if visible:
 		command_input.clear()
 		GameManager.instance.free_mouse()
-		get_tree().create_timer(0.1).timeout
 		command_input.set_process_input(true)
 		command_input.grab_focus()
 		show_unilink_message()
@@ -80,7 +79,7 @@ func _on_visibility_changed() -> void:
 
 func show_unilink_message():
 	if !unilink_shown:
-		Cmd.cmd("/unilink")
+		Cmd.cmd("/unilink_info")
 		unilink_shown = true
 
 func submit_command():
@@ -105,7 +104,6 @@ func _on_line_edit_text_changed(new_text: String) -> void:
 func scroll_input_history(action:String):
 	if not is_console_open():
 		return
-	var up:bool = true
 	if action=="UP":
 		populate_input_text(Cmd.get_cmd_history_back())
 	if action == "DOWN":

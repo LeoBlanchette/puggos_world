@@ -10,7 +10,7 @@ func activate():
 	achievement.connect(do_achievement)
 	text_achievement.connect(do_text_achievement)
 	
-func do_achievement(api_name, info={})->void:
+func do_achievement(api_name, _info={})->void:
 	var _achievement = Steam.getAchievement(api_name)
 
 	if not _achievement.ret || _achievement.achieved:

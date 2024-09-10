@@ -12,13 +12,13 @@ func _ready() -> void:
 func spawn_object(category:String, id:int, pos:Vector3, rot:Vector3):
 	if not multiplayer.is_server():
 		return
-	var ob:Node3D = ObjectIndex.object_index.spawn(category, id)
+	var ob:Node3D = ObjectIndex.spawn(category, id)
 	ob.position = pos
 	ob.rotation_degrees = rot
 	ob.name = ob.get_meta("name", "spawned_object")
 	self.add_child(ob, true)
 
-func add_prefab(prefab:Prefab, pos:Vector3, rot:Vector3)->void:
+func add_prefab(prefab:Prefab, _pos:Vector3, _rot:Vector3)->void:
 	add_child(prefab)
 	prefab.set_to_gizmo() #this will only work if Gizmo instance != null.
 

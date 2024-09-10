@@ -56,9 +56,9 @@ static func spawn(category: String, id: int):
 	if mod_path.is_empty():
 		print("mod_path meta not found on %s"%ob)
 		return		
-	var spawned = ResourceLoader.load(mod_path).instantiate()
-	ObjectIndex.object_index.spawned.emit(spawned)
-	return spawned
+	var _spawned = ResourceLoader.load(mod_path).instantiate()
+	ObjectIndex.object_index.spawned.emit(_spawned)
+	return _spawned
 
 static func has_object(category: String, id: int)->bool:
 	if not index.has(category):
@@ -109,7 +109,7 @@ func get_animation_path(id:int)->String:
 	var animation_name:String = ob.get_meta("mod_name")
 	var animation_path = "%s/%s%s"%[dir,animation_name, ".res"]
 	if not FileAccess.file_exists(animation_path):
-		print("Animation not found at %s"%animation_path)
+		print("Animation (%s) not found at %s"%[str(ob), animation_path])
 		return ""
 	return animation_path
 

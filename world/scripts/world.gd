@@ -58,7 +58,7 @@ func spawn_player(peer_id: int):
 	p.name = "player-%s" %str(peer_id)
 	p.peer_id = peer_id
 	NetworkManager.player_joined_world.emit(peer_id)
-
+	
 	return p
 
 @rpc("any_peer", "call_local", "reliable")

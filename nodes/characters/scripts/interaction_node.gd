@@ -42,9 +42,9 @@ func _exit_tree() -> void:
 	if not is_multiplayer_authority():
 		return
 	if instance == self:
-		instance == null
+		instance = null
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
 	update_collision_point()

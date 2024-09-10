@@ -146,7 +146,7 @@ func _process(_delta: float) -> void:
 	scale = Vector3(cam_distance, cam_distance, cam_distance)*gizmo_distance_scale
 	
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	get_handle_target()
 	update_handle_indication()
 	attempt_transform()
@@ -285,12 +285,14 @@ func disconnect_signals()->void:
 	#UIEditor.instance.changed_transform_mode.disconnect(_on_transform_mode_changed)
 	for handle:StaticBody3D in handles_static_bodies:
 		handle.visibility_changed.disconnect(_on_visibility_changed.bind(handle))
+	if Editor.instance == null:
+		return
 	if Editor.instance.changed_transform_space_mode.is_connected(update_transform_space_mode):
 		Editor.instance.changed_transform_space_mode.disconnect(update_transform_space_mode)
 #endregion
 
 #region mode change
-func _on_transform_mode_changed(old_mode, new_mode):
+func _on_transform_mode_changed(_old_mode, new_mode):
 	reset()
 	match new_mode:
 		Editor.instance.TranformMode.TRANSLATE:
@@ -675,7 +677,7 @@ func translate_on_z_axis()->void:
 	translate_to_destination(destination_point)
 	draw_guide_lines_translation(Axis.Z, initial_position, destination_point)
 
-func get_rotation_target_point(axis:Axis)->Vector3:
+func get_rotation_target_point(_axis:Axis)->Vector3:
 	var cam:Camera3D = get_viewport().get_camera_3d()
 	var mouse_position:Vector2 = get_viewport().get_mouse_position() 
 	var projected_position:Vector3 = cam.project_position(mouse_position, cam.global_position.distance_to(global_position))
@@ -929,7 +931,7 @@ func scale_on_axis(axis:Axis)->void:
 				new_basis.z = Vector3.FORWARD * -scale_amount
 
 	draw_guide_lines_sliding(current_axis,initial_position)
-	var scale_distance:float = initial_position.distance_to(global_position)
+	#var scale_distance:float = initial_position.distance_to(global_position)
 	scaling_text = scaling_text%[space_text, new_basis.get_scale().x, new_basis.get_scale().y, new_basis.get_scale().z, scale_amount]
 	
 	Editor.instance.set_action_text(scaling_text)

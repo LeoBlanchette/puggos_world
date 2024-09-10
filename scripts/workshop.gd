@@ -91,12 +91,12 @@ func register_mod():
 	Steam.createItem(Global.steam_app_id, 0)
 
 ## 2 Update an existing record. This is callback to update an existing record.
-func _on_item_created(result: int, file_id: int, accept_tos: bool):
+func _on_item_created(_result: int, file_id: int, _accept_tos: bool):
 	update_mod(file_id)	
 	reset()
 
 ## 3 Update complete. After item update, do whatever.
-func _on_item_updated(result: int, accept_tos):
+func _on_item_updated(_result: int, accept_tos):
 	var item_page_template = "steam://url/CommunityFilePage/%s"
 	if accept_tos:
 		Steam.activateGameOverlayToWebPage(item_page_template % str(current_file_id))
@@ -159,7 +159,7 @@ func _log_error(err_signal:String, err_msg:String):
 	print_debug("Error with signal: %s" % err_signal)
 	print_debug(err_msg)
 
-func _steam_stats_ready(game: int, result: int, user: int) -> void:
+func _steam_stats_ready(_game: int, _result: int, _user: int) -> void:
 	pass
 
 func get_workshop_mods(page :int= 1, filters :Array= []):
@@ -207,7 +207,7 @@ func open_item_page(file_id):
 	Steam.activateGameOverlayToWebPage("steam://url/CommunityFilePage/%s" % str(file_id))
 
 
-func _on_ugc_query_completed(handle:int, result:int, results_returned:int, total_matching:int, cached:bool):
+func _on_ugc_query_completed(handle:int, result:int, results_returned:int, _total_matching:int, _cached:bool):
 	# If the current handler id changed - it means that we requested a list of items again, so we can dismiss these results. 
 	if handle != current_ugc_query_handler_id:
 		Steam.releaseQueryUGCRequest(handle)
@@ -235,7 +235,7 @@ func process_mod_list_results(list_of_results:Array):
 	subscribed_mods = list_of_results
 	subscribed_mods_updated.emit()
 	
-func _on_item_downloaded(result, file_id, app_id):
+func _on_item_downloaded(result, file_id, _app_id):
 	if result != 1:
 		# See steam result codes for more details
 		print_debug("Download failed %d" % result)
@@ -243,7 +243,7 @@ func _on_item_downloaded(result, file_id, app_id):
 		# We are expecting another file to download, so we will just skip this one. You can of course allow multiple parallel downloads in you game, if you wish.
 		return
 	# Getting the information about the downloaded item
-	var lvl_info = Steam.getItemInstallInfo(file_id)
+	var _lvl_info = Steam.getItemInstallInfo(file_id)
 	# lvl_info["folder"] will contain a folder with item files
 	# In my case, these are level.tscn and level.data
 	# Reset the global variable to allow new downloads to happen

@@ -339,21 +339,21 @@ func is_valid_selectable_object(ob:Node3D)->bool:
 		return false
 	return true
 
-func _on_object_translated(old_position:Vector3, new_position:Vector3)->void:
+func _on_object_translated(_old_position:Vector3, new_position:Vector3)->void:
 	if edited_object == null:
 		return
 	# NOTE: An UNDO can be placed here using old position. 
 	edited_object.global_position = new_position
 	object_transform_changed.emit()
 	
-func _on_object_rotated(old_rotation:Vector3, new_rotation:Vector3,)->void:
+func _on_object_rotated(_old_rotation:Vector3, new_rotation:Vector3,)->void:
 	if edited_object == null:
 		return	
 	# NOTE: An UNDO can be placed here using old rotation. 
 	edited_object.global_rotation_degrees = new_rotation
 	object_transform_changed.emit()
 	
-func _on_object_scaled(old_scale:Vector3, new_scale:Vector3,)->void:
+func _on_object_scaled(_old_scale:Vector3, new_scale:Vector3,)->void:
 	if edited_object == null:
 		return	
 	if Prefab.is_prefab(get_active_object()):
@@ -363,21 +363,21 @@ func _on_object_scaled(old_scale:Vector3, new_scale:Vector3,)->void:
 	edited_object.scale = new_scale
 	object_transform_changed.emit()
 	
-func _on_object_translated_ui(old_position:Vector3, new_position:Vector3)->void:
+func _on_object_translated_ui(_old_position:Vector3, new_position:Vector3)->void:
 	if edited_object == null:
 		return
 	# NOTE: An UNDO can be placed here using old position. 
 	edited_object.global_position = new_position
 	object_transform_changed_ui.emit()
 	
-func _on_object_rotated_ui(old_rotation:Vector3, new_rotation:Vector3,)->void:
+func _on_object_rotated_ui(_old_rotation:Vector3, new_rotation:Vector3,)->void:
 	if edited_object == null:
 		return	
 	# NOTE: An UNDO can be placed here using old rotation. 
 	edited_object.global_rotation_degrees = new_rotation
 	object_transform_changed_ui.emit()
 	
-func _on_object_scaled_ui(old_scale:Vector3, new_scale:Vector3,)->void:
+func _on_object_scaled_ui(_old_scale:Vector3, new_scale:Vector3,)->void:
 	if edited_object == null:
 		return	
 	if Prefab.is_prefab(get_active_object()):
@@ -389,7 +389,7 @@ func _on_object_scaled_ui(old_scale:Vector3, new_scale:Vector3,)->void:
 #endregion
 
 #region terrain editing
-func _on_changed_context(old_context:CurrentEditorContext, new_context:CurrentEditorContext)->void:
+func _on_changed_context(_old_context:CurrentEditorContext, new_context:CurrentEditorContext)->void:
 	match new_context:
 		CurrentEditorContext.OBJECT_EDIT:
 			add_editor_gizmo()

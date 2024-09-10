@@ -157,10 +157,10 @@ func _register_player(new_player_info):
 	player_connected.emit(new_player_id, new_player_info)
 
 @rpc("authority", "call_local", "reliable")
-func send_server_greeting(greeting:String):
+func send_server_greeting(_greeting:String):
 	return
 	#not using this yet
-	UIMain.display_status(greeting)
+	#UIMain.display_status(greeting)
 
 func _on_player_disconnected(id):
 	var player_name = Players.get_player_name(id)

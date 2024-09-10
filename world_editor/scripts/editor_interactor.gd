@@ -107,7 +107,7 @@ func _input(event):
 			KEY_ALT:
 				_alt = event.pressed
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if UI.instance.is_ui_blocking():
 		return
 	get_current_target()
@@ -201,7 +201,7 @@ func _on_entered_viewport(in_viewport:bool):
 		set_physics_process(false)
 		set_process(false)
 
-func _on_object_selected(ob:Node3D)->void:
+func _on_object_selected(_ob:Node3D)->void:
 	pass
 
 ## does a proper removal of this node
