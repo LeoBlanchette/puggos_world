@@ -460,7 +460,6 @@ func get_camera()->Camera3D:
 func equip(id:int):
 	if not avatar.is_node_ready():
 		await avatar.ready
-		
 	if ObjectIndex.object_index.has_object("items", id):
 		var ob:Node3D = ObjectIndex.object_index.get_object("items", id)
 		if not ob.has_meta("equippable_slot"):

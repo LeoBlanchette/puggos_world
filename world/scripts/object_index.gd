@@ -40,7 +40,6 @@ static func add_object_to_index(mod_object: Node):
 	var id: int = 0
 	if id_check != null:
 		id = int(id_check)
-	
 	var signature: String = AssetLoader.asset_loader.get_mod_name_signature(mod_path, "|")
 	mod_object.name = signature
 	

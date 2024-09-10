@@ -1,0 +1,18 @@
+	
+List Directory
+...lists folders and files in a given directory. Folders are green, files are blue.
+	
+[color=green]/ls[/color] 
+...will list files in your present working directory (/pwd)
+	
+[color=green]/ls[/color] [color=yellow]<target directory>[/color]
+...will list files in the target directory specified.
+	
+Please note that files will show a .remap or .import (light gray) suffix. This is 
+because you are browsing imported content. However the lighter colored text such
+as "texture.png" represents the file that successfully imported. You may ignore the ".import"
+suffix in "texture.png.import".
+	
+[color=yellow]Special note:[/color] The [color=green]/ls[/color], [color=green]/cd[/color], and [color=green]/pwd[/color] commands don't require a forward slash when
+working in the console. These commands were included so that modders can easily 
+verify how their content is being imported into the game.

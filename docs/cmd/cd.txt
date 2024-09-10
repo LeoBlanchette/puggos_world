@@ -1,0 +1,22 @@
+	
+Changes your directory to the specified path.
+	
+[color=green]/cd[/color] [color=yellow]<directory>[/color]
+	
+Example:
+	
+[color=orange]cd puggos_world[/color]
+	
+...will bring you into the puggos_world directory.
+	
+[color=orange]cd ..[/color]
+	
+... will bring you up one directory.
+	
+[color=orange]cd /[/color]
+	
+...will bring you to root, which is res://mods.
+	
+[color=yellow]Special note:[/color] The [color=green]/ls[/color], [color=green]/cd[/color], and [color=green]/pwd[/color] commands don't require a forward slash when
+working in the console. These commands were included so that modders can easily 
+verify how their content is being imported into the game.

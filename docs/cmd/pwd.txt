@@ -1,0 +1,17 @@
+	
+Will print out the mod directory you are presently in. You cannot navigate above 
+or outside of the res://mods/ directory. The res://mods directory is where ALL
+mod-related content is stored and fetched.
+	
+Please note the color-coded path represents the specialized mod hierarchy. 
+Example:
+	
+[color=a52a2aff][b]res://[/b][/color][color=ff0000ff]mods[/color][color=a9a9a9ff]/[/color][color=ffa500ff]puggos_world[/color][color=a9a9a9ff]/[/color][color=ffff00ff]sandbox[/color][color=a9a9a9ff]/[/color][color=6495edff]items[/color][color=a9a9a9ff]/[/color][color=8a2be2ff]character[/color][color=a9a9a9ff]/[/color][color=ee82eeff]face_7[/color]
+	
+...matches the schema:
+	
+[color=a52a2aff][b]res://[/b][/color][color=ff0000ff]mods[/color][color=a9a9a9ff]/[/color][color=ffa500ff]<creator>[/color][color=a9a9a9ff]/[/color][color=ffff00ff]<project>[/color][color=a9a9a9ff]/[/color][color=6495edff]<mod_type>[/color][color=a9a9a9ff]/[/color][color=8a2be2ff]<mod_type_category>[/color][color=a9a9a9ff]/[/color][color=ee82eeff]<object>[/color]
+	
+[color=yellow]Special note:[/color] The [color=green]/ls[/color], [color=green]/cd[/color], and [color=green]/pwd[/color] commands don't require a forward slash when
+working in the console. These commands were included so that modders can easily 
+verify how their content is being imported into the game.

@@ -2,6 +2,7 @@ class_name ArgParser
 var arguments = {}
 
 func _init(argument_string:String):		
+	var first_slash_skipped:bool = false
 	var args = parse(argument_string)
 	var args_named:Dictionary = {"args": args}
 	var named_arg_elements:Array = []
@@ -9,17 +10,21 @@ func _init(argument_string:String):
 	
 	var i:int = 1
 	for arg:String in args:
-		if arg.begins_with("/"):
+		if arg.begins_with("/") && not first_slash_skipped:
+			first_slash_skipped = true
 			continue
 		if arg.begins_with("-"):
 			continue
 		args_named[str(i)] = arg
 		i=i+1
 	
+	first_slash_skipped = false
+	
 	#get the named args
 	for arg:String in args:
 		
-		if arg.begins_with("/"):
+		if arg.begins_with("/") && not first_slash_skipped:
+			first_slash_skipped = true
 			args_named["command"] = arg
 		
 		if arg.begins_with("--") && populating_named_arg:
@@ -65,6 +70,11 @@ func get_first_argument()->String:
 func get_second_argument()->String:
 	if arguments["args"].size() > 1:
 		return arguments["args"][1]
+	return ""
+
+func get_third_argument()->String:
+	if arguments["args"].size() > 2:
+		return arguments["args"][2]
 	return ""
 
 func get_command()->String:

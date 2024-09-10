@@ -6,6 +6,8 @@ var history_current_index:int = 0
 ## beginning root of the cmd cycle
 func cmd(command_string:String):	
 	
+	command_string = detect_cmd(command_string)
+	
 	if command_string.is_empty():
 		print_to_console(" ") ## For formatting.
 		return
@@ -15,7 +17,7 @@ func cmd(command_string:String):
 		return
 
 	add_cmd_history(command_string)
-	command_string = command_string.to_lower()
+	
 	var command:ArgParser = ArgParser.new(command_string)
 	
 	match command.get_command():
@@ -88,6 +90,13 @@ func cmd(command_string:String):
 			server_info(command)
 		"/rick":
 			rick(command)
+		#MINI OS
+		"/ls":
+			ls(command)
+		"/pwd":
+			pwd(command)
+		"/cd":
+			cd(command)
 		_:
 			print_to_console("[color=red]Command not recognized.[/color]")
 			print_to_console("[color=orange]type [color=green][b]/help[/b][/color] to get a list of commands.[/color]")
@@ -112,6 +121,9 @@ func help(command:ArgParser):
 		"/unilink_info":"Prints out UniLink info.",
 		"/whoami":"Shows your player information.",
 		"/whois":"Shows information on a player based on Steam persona name.",
+		"/ls":"Lists items in a given res://mods/* directory.",
+		"/pwd":"Prints the Present Working Directory.",
+		"/cd":"Change Directory to the specified folder. Example: cd puggos_world",
 		"/list_players":"Lists information of player currently in game.",
 		"/save":"Saves a game / map / prefab state.",
 		"/load":"Loads level such as World, Editor, or Prefab.",
@@ -715,6 +727,28 @@ func rick(command:ArgParser):
 		return
 	OS.shell_open("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
+#region MINI OS
+
+func ls(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	MiniOs.ls(command)
+
+func pwd(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	MiniOs.pwd(command)
+
+func cd(command:ArgParser):
+	if is_help_request(command):
+		help(command)
+		return
+	MiniOs.cd(command)
+
+#endregion
+
 ## Adds to the CMD history. Should only be used in the CMD command and nowhere else.
 func add_cmd_history(command:String):
 	history.append(command)
@@ -738,3 +772,33 @@ func get_cmd_history_forward()->String:
 		return history[0]
 	history_current_index = history_current_index +1
 	return history[history_current_index]
+
+## For detecting commands that are not typical for chat. Only works if 
+## console is open.
+func detect_cmd(command_string:String)->String:
+	var reserved_commands:Array = [
+		"ls", "cd", "pwd", "whoami", "clear", "rick", "ip", "shutdown", "whois",
+		
+	]
+	if UIConsole.instance != null && not UIConsole.instance.is_console_open():
+		return command_string
+	if command_string.begins_with("/"):
+		return command_string
+	var command:String = command_string.strip_edges()
+	var parts:PackedStringArray = command.split(" ")
+	var sample:String = ""
+	if parts.size() > 1:
+		sample = parts[0].strip_edges()
+	else:
+		sample = command
+	var is_command:bool = false
+	
+	if reserved_commands.has(sample):
+		is_command = true
+		
+	if is_command:
+		command = "/%s"%command_string
+	return command
+
+func color_line(line:String, color:Color)->String:	
+	return "[color=%s]%s[/color]"%[color.to_html(), line]
