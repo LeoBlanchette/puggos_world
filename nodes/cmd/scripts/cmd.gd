@@ -1,8 +1,73 @@
 @icon("res://images/icons/computer.svg")
 extends Node
 
+var commands_help:Dictionary = {
+	"/help":"Prints a list of commands and a brief description of what they do.",
+	"/unilink_info":"Prints out UniLink info.",
+	"/whoami":"Shows your player information.",
+	"/whois":"Shows information on a player based on Steam persona name.",
+	"/ls":"Lists items in a given res://mods/* directory.",
+	"/pwd":"Prints the Present Working Directory.",
+	"/cd":"Change Directory to the specified folder. Example: cd puggos_world",
+	"/list_players":"Lists information of player currently in game.",
+	"/save":"Saves a game / map / prefab state.",
+	"/load":"Loads level such as World, Editor, or Prefab.",
+	"/load_prefab":"Loads a prefab while in the world editor.",
+	"/clear":"Clears the console.",
+	"/give":"Gives player an item. Not operative yet.",
+	"/play_animation":"Plays an animation on the character.",
+	"/spawn":"Spawns an object.",
+	"/interact":"Interacts with an object. Typically called by game, not console.",
+	"/teleport":"Teleports a player based on X,Y,Z coordinates supplied.",
+	"/t":"Shortcut for the /teleport command.",
+	"/set_personality":"Sets the personality (long idle) of the character. /set_personality --help for for information on this system.",
+	"/equip":"Equips an item.",
+	"/unequip":"Unequips a slot, removing the item in the slot.",
+	"/list_slots":"Lists all character slots with their descriptions.",
+	"/list_equipped":"Lists all items equipped on character. Returns a dictionary {'slot_<num>':<id>} if used in code.",
+	"/placement":"Puts user into placement mode, for placing an object such as modular building part.",
+	"/place":"Places an item.",
+	"/print_mod_dir": "Gets the directory of a mod. Returns a string when used in code. Example: /get_mod_dir animations 3",
+	"/kick":"Kick a player by Steam persona name.",
+	"/print_index":"Prints the entire item index loaded into the game.",
+	"/print_object":"Prints the status / info of an important object in the game. For modder use.",
+	"/print_peer_id":"Prints your peer id.",
+	"/print_object_meta":"Prints the meta data on a mod object.",
+	"/upload_mod":"Uploads a new mod to steam based on path supplied to it's root folder.",
+	"/update_mod":"Uploads / Updates a mod to steam based on path supplied to it's root folder. (Not yet working.)",
+	"/ip":"Prints the IP Address to the console.",
+	"/shutdown":"Quits the application. ",
+	"/server_info":"Prints out server information. Ip Address, Port, Etc.",
+	"/rick": "For when you are tired of reading documentation"
+}
+
 var history:Array[String] = []
 var history_current_index:int = 0
+var imported_commands:Dictionary = {}
+static var populate_commands_done:bool = false
+
+func _ready() -> void:
+	populate_commands()
+
+func populate_commands()->void:
+	if populate_commands_done:
+		return
+	var gd_files:PackedStringArray = HelperFunctions.get_all_files_recursive("res://", "gd")
+	var potential_command_scripts:Array = []
+	for file:String in gd_files:
+		if file.contains("/commands/"):
+			potential_command_scripts.append(file)
+	for potential_script_path:String in potential_command_scripts:
+		var potential_script = load(potential_script_path).new()
+		var command_name:String = potential_script_path.split("/")[-1].replace(".gd", "")
+		if potential_script.has_method(command_name):
+			imported_commands["/%s"%command_name]=potential_script
+		if potential_script.get("help") != null:
+			commands_help["/%s"%command_name]=potential_script.help
+			
+			
+	populate_commands_done = true
+	
 ## beginning root of the cmd cycle
 func cmd(command_string:String):	
 	
@@ -19,7 +84,7 @@ func cmd(command_string:String):
 	add_cmd_history(command_string)
 	
 	var command:ArgParser = ArgParser.new(command_string)
-	
+
 	match command.get_command():
 		"/help":
 			help(command)
@@ -98,8 +163,12 @@ func cmd(command_string:String):
 		"/cd":
 			cd(command)
 		_:
-			print_to_console("[color=red]Command not recognized.[/color]")
-			print_to_console("[color=orange]type [color=green][b]/help[/b][/color] to get a list of commands.[/color]")
+			
+			if imported_commands.has(command.get_command()):
+				imported_commands[command.get_command()].call(command.get_command().replace("/", ""), command)
+			else:
+				print_to_console("[color=red]Command not recognized.[/color]")
+				print_to_console("[color=orange]type [color=green][b]/help[/b][/color] to get a list of commands.[/color]")
 
 #region level editing 
 
@@ -116,61 +185,22 @@ func print_help_doc(command:String)->void:
 
 	
 func help(command:ArgParser):
-	var commands:Dictionary = {
-		"/help":"Prints a list of commands and a brief description of what they do.",
-		"/unilink_info":"Prints out UniLink info.",
-		"/whoami":"Shows your player information.",
-		"/whois":"Shows information on a player based on Steam persona name.",
-		"/ls":"Lists items in a given res://mods/* directory.",
-		"/pwd":"Prints the Present Working Directory.",
-		"/cd":"Change Directory to the specified folder. Example: cd puggos_world",
-		"/list_players":"Lists information of player currently in game.",
-		"/save":"Saves a game / map / prefab state.",
-		"/load":"Loads level such as World, Editor, or Prefab.",
-		"/load_prefab":"Loads a prefab while in the world editor.",
-		"/clear":"Clears the console.",
-		"/give":"Gives player an item. Not operative yet.",
-		"/play_animation":"Plays an animation on the character.",
-		"/spawn":"Spawns an object.",
-		"/interact":"Interacts with an object. Typically called by game, not console.",
-		"/teleport":"Teleports a player based on X,Y,Z coordinates supplied.",
-		"/t":"Shortcut for the /teleport command.",
-		"/set_personality":"Sets the personality (long idle) of the character. /set_personality --help for for information on this system.",
-		"/equip":"Equips an item.",
-		"/unequip":"Unequips a slot, removing the item in the slot.",
-		"/list_slots":"Lists all character slots with their descriptions.",
-		"/list_equipped":"Lists all items equipped on character. Returns a dictionary {'slot_<num>':<id>} if used in code.",
-		"/placement":"Puts user into placement mode, for placing an object such as modular building part.",
-		"/place":"Places an item.",
-		"/print_mod_dir": "Gets the directory of a mod. Returns a string when used in code. Example: /get_mod_dir animations 3",
-		"/kick":"Kick a player by Steam persona name.",
-		"/print_index":"Prints the entire item index loaded into the game.",
-		"/print_object":"Prints the status / info of an important object in the game. For modder use.",
-		"/print_peer_id":"Prints your peer id.",
-		"/print_object_meta":"Prints the meta data on a mod object.",
-		"/upload_mod":"Uploads a new mod to steam based on path supplied to it's root folder.",
-		"/update_mod":"Uploads / Updates a mod to steam based on path supplied to it's root folder. (Not yet working.)",
-		"/ip":"Prints the IP Address to the console.",
-		"/shutdown":"Quits the application. ",
-		"/server_info":"Prints out server information. Ip Address, Port, Etc.",
-		"/rick": "For when you are tired of reading documentation"
-	}
 		
 	var cmd_:String = command.get_first_argument().strip_edges().to_lower()
 	
 	if cmd_ == "/help":
 		print_to_console("[color=green]Available Commands:[/color]")
-		for key in commands:
-			print_to_console("[color=green]%s[/color]: %s"%[key, commands[key]])
+		for key in commands_help:
+			print_to_console("[color=green]%s[/color]: %s"%[key, commands_help[key]])
 		print_to_console(" ")
 		print_to_console("type [color=green]/<command> --help[/color] to find more on the given command.")
 		return
 		
 	if not command.get_first_argument().is_empty():
 		var key:String = cmd_
-		if commands.has(key):		
+		if commands_help.has(key):		
 			
-			print_to_console("[color=green]%s[/color]: %s"%[key, commands[key]])
+			print_to_console("[color=green]%s[/color]: %s"%[key, commands_help[key]])
 			print_help_doc(key)
 
 
@@ -381,6 +411,7 @@ func teleport(command:ArgParser):
 	if command.get_argument("--p", "").is_empty():
 		help(command)
 		return
+	print(command.get_argument("--p"))
 	var pos = ArgParser.vector_from_array(command.get_argument("--p", player.global_position))
 	player.global_position = pos
 	
@@ -476,6 +507,7 @@ func equip_remote(id:int):
 	var player:Player = Players.get_player_character(multiplayer.get_unique_id())
 	player.equip(id)
 
+## Prints the index
 func print_index(command:ArgParser)->void:
 	if is_help_request(command):
 		help(command)
@@ -484,12 +516,10 @@ func print_index(command:ArgParser)->void:
 		for id in ObjectIndex.index[key]:
 			var ob:Node = ObjectIndex.index[key][id]
 			var mod_name:String = ob.get_meta("name", "* not named")
-			
-			var basic_print:String = "%s: %s [%s]"%[key, str(id), mod_name]
 			var console_print:String = "[color=green]%s:[/color] [color=yellow]%s[/color] [ %s ]"%[key, str(id), mod_name]
-			print(basic_print)
 			print_to_console(console_print)
 
+		
 func list_equipped(command:ArgParser = null)->Dictionary:
 	if command != null: #If null, it is used from code and not a text command.
 		if is_help_request(command):
@@ -518,7 +548,11 @@ func list_equipped(command:ArgParser = null)->Dictionary:
 			if ObjectIndex.index["items"].has(id):
 				var ob:Node  = ObjectIndex.index["items"][id]
 				var mod_name:String = ob.get_meta("name", "* no name")
-				print_to_console("[color=green]%s[/color]: [color=yellow]%s[/color]    [color=gray][ %s ][/color]"%[slot, str(id), mod_name])
+				var slot_colored:String = color_line(slot, Color.GREEN)
+				var id_colored:String = color_line(str(id), Color.YELLOW)
+				var mod_name_colored:String = color_line(mod_name, Color.ORANGE)
+				var mod_slot_description_colored:String = color_line(CharacterAppearance.get_slot_description(slot_number), Color.RED)
+				print_to_console("%s: %s   [ %s ] [ %s ]"%[slot_colored, id_colored, mod_name_colored, mod_slot_description_colored])
 				equipped[slot]=id
 	return equipped
 	

@@ -36,7 +36,7 @@ file_logging/enable_file_logging=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/character-controller/plugin.cfg", "res://addons/godot_aerodynamic_physics/plugin.cfg", "res://addons/puggos_world_exporter/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
+enabled=PackedStringArray("res://addons/character-controller/plugin.cfg", "res://addons/godot_aerodynamic_physics/plugin.cfg", "res://addons/puggos_world_exporter/plugin.cfg", "res://addons/simple_argument_parser/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
 
 [file_customization]
 
@@ -44,6 +44,7 @@ folder_colors={
 "res://addons/": "yellow",
 "res://docs/": "gray",
 "res://image/": "green",
+"res://materials/": "orange",
 "res://mods/": "pink",
 "res://nodes/": "red",
 "res://nodes/GameManager/Scripts/": "green",

@@ -470,6 +470,7 @@ func equip(id:int):
 			print("Slot number was improperly assigned. Cannot use.")
 		var slot:String = "slot_%s"%str(slot_number)
 		## Set the given variable by string 
+		
 		set(slot, id)
 		
 ## The avatar controller function for equipping object to a slot. It is called by
@@ -494,6 +495,7 @@ func equip_slot(slot:String, id:int):
 		if slot_number in [1, 2, 3]: # if these slots, its skin layers. Change path...
 			path  = path.replace("item.tscn", "texture.png")
 		var meta:Dictionary = {"id":id}
+		
 		avatar.equip(slot, path, meta)
 
 func unequip(slot:String):

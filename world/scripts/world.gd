@@ -7,6 +7,8 @@ const PLAYER = preload ("res://nodes/characters/player.tscn")
 
 static var instance = null
 
+var is_world_loaded:bool = false
+
 const MODULAR_OBJECT_INITIATOR: Resource = preload ("res://nodes/build_kits/modular_object_initiator.tscn")
 
 var world_mod_groups: Array[String] = [
@@ -28,6 +30,7 @@ func _ready() -> void:
 	load_world_editor_related_mods()
 	
 	NetworkManager.register_world($".")
+	is_world_loaded = true
 	NetworkManager.world_loaded.emit()
 	ObjectIndex.object_index.spawned.connect(_on_object_spawned)
 	
@@ -53,6 +56,8 @@ func do_player_spawn(peer_id: int):
 
 ## The player spawner of any given world.
 func spawn_player(peer_id: int):
+	if not is_world_loaded:
+		await NetworkManager.world_loaded
 	var p = PLAYER.instantiate()
 	p.set_multiplayer_authority(peer_id)
 	p.name = "player-%s" %str(peer_id)
