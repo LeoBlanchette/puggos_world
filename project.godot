@@ -53,6 +53,7 @@ folder_colors={
 "res://nodes/characters/scripts/": "green",
 "res://nodes/cmd/": "green",
 "res://nodes/cmd/scripts/": "green",
+"res://nodes/cmd/scripts/commands/": "orange",
 "res://nodes/mod_engine/": "red",
 "res://nodes/mod_engine/scripts/": "green",
 "res://nodes/status_effects/scripts/": "green",
