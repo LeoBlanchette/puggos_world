@@ -23,6 +23,7 @@ enum ActionType{
 @export var default_secondary_action_animation_id:int=0
 @export var default_primary_action_alt_animation_id:int=0
 @export var default_secondary_action_alt_animation_id:int=0
+@export var default_short_idle_animation_id:int=0
 @export var default_long_idle_animation_id:int=0
 
 @export var default_basic_interaction_animation_mask:String=""
@@ -30,6 +31,7 @@ enum ActionType{
 @export var default_secondary_action_animation_mask:String=""
 @export var default_primary_action_alt_animation_mask:String=""
 @export var default_secondary_action_alt_animation_mask:String=""
+@export var default_short_idle_animation_mask:String=""
 @export var default_long_idle_animation_mask:String=""
 #endregion
 
@@ -39,6 +41,7 @@ var primary_action_animation_id:int=0
 var secondary_action_animation_id:int=0
 var primary_action_alt_animation_id:int=0
 var secondary_action_alt_animation_id:int=0
+var short_idle_animation_id:int=0
 var long_idle_animation_id:int=0
 
 var basic_interaction_animation_mask:String="TORSO"
@@ -46,8 +49,15 @@ var primary_action_animation_mask:String="TORSO"
 var secondary_action_animation_mask:String="TORSO"
 var primary_action_alt_animation_mask:String="FULL"
 var secondary_action_alt_animation_mask:String="FULL"
+var short_idle_animation_mask:String="TORSO"
 var long_idle_animation_mask:String="FULL"
 #endregion 
+
+func _ready() -> void:
+	if not avatar.get_character_appearance().is_node_ready():
+		await avatar.get_character_appearance().ready
+	avatar.get_character_appearance().pre_slot_equiped.connect(_on_character_appearance_pre_slot_equiped)
+	avatar.get_character_appearance().post_slot_equiped.connect(_on_character_appearance_post_slot_equiped)
 
 ## The main function for coordinating actions with animations.
 func coordinate_action(action_type:ActionType)->void:
@@ -83,13 +93,12 @@ func coordinate_action(action_type:ActionType)->void:
 			animation_name = ObjectIndex.object_index.get_animation_name(long_idle_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, long_idle_animation_mask, true)
 
-##Changes an action animation based on equipped item.
+## Changes an action animation based on equipped item.
 func change_action_animation(_slot: CharacterAppearance.Equippable, meta: Dictionary):
 	if meta.is_empty():
 		return
 	if not meta.has("id"):
 		return
-		
 	var ob:Node = ObjectIndex.get_object("items", meta["id"])
 	if ob == null:
 		return
@@ -105,6 +114,21 @@ func change_action_animation(_slot: CharacterAppearance.Equippable, meta: Dictio
 	primary_action_alt_animation_mask= ob.get_meta("primary_action_alt_animation_mask", default_primary_action_alt_animation_mask)
 	secondary_action_alt_animation_mask = ob.get_meta("secondary_action_alt_animation_mask", default_secondary_action_alt_animation_mask)
 
+## The much-anticipated end-process function of applying the 
+## offset from the object's meta to the transform of object in anchor.
+func apply_slot_offset(slot: CharacterAppearance.Equippable, meta: Dictionary):
+	if slot not in range(27,35):
+		# this is not an anchorable slot.
+		return
+	if not meta.has("id"):
+		return 
+	var id:int = meta["id"]
+	var ob = ObjectIndex.get_object("items", id)	
+	var anchor_slot_position:Vector3 = ob.get_meta("anchor_slot_%s_position"%str(slot), Vector3.ZERO)
+	var anchor_slot_rotation:Vector3 = ob.get_meta("anchor_slot_%s_rotation"%str(slot), Vector3.ZERO)
+	var object_in_slot:Node3D = avatar.character_appearance.get_slot_object(slot)
+	object_in_slot.position = anchor_slot_position
+	object_in_slot.rotation_degrees = anchor_slot_rotation
 
 #region signal listeners
 ## Simply relays the action to the coordinate_action function.
@@ -137,6 +161,9 @@ func _on_player_is_long_idle_changed(_value: Variant) -> void:
 
 func _on_character_appearance_pre_slot_equiped(slot: CharacterAppearance.Equippable, meta: Dictionary) -> void:
 	change_action_animation(slot, meta)
+
+func _on_character_appearance_post_slot_equiped(slot: CharacterAppearance.Equippable, meta: Dictionary) -> void:
+	apply_slot_offset(slot, meta)
 
 ## This is first triggered in the Console or UI. It changes the personality 
 ## aka long idle of the character.

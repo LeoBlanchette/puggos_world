@@ -17,6 +17,7 @@ var world_mod_groups: Array[String] = [
 	"items/junk/",
 	"items/general/",
 	"items/character/",
+	"items/weapons/",
 	"animations/character/"
 ]
 

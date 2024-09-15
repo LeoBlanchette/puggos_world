@@ -27,6 +27,7 @@ static var valid_creator_mod_types: Array = [
 	["items/junk/", "item.tscn"],
 	["items/general/", "item.tscn"],
 	["items/character/", "item.tscn"],
+	["items/weapons/", "item.tscn"],
 	["animations/character/", "animation.tscn"],
 ]
 
@@ -38,7 +39,6 @@ func _ready() -> void:
 		pre_analyze_mod.connect(mark_animation_types)
 	else:
 		queue_free()
-	
 
 func _exit_tree() -> void:
 	if ModManager.mod_manager == self:

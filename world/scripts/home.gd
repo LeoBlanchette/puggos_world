@@ -14,7 +14,8 @@ var player:Player = null
 
 var world_mod_groups: Array[String] = [
 	"items/character/",
-	"animations/character/"
+	"animations/character/",
+	"items/weapons/",
 ]
 
 func _ready() -> void:
