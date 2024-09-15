@@ -49,6 +49,9 @@ static var populate_commands_done:bool = false
 func _ready() -> void:
 	populate_commands()
 
+## Finds commands located in any /commands/ directory and adds them to the 
+## command list. See "res://nodes/cmd/scripts/commands/player_count.gd" as
+## template example.
 func populate_commands()->void:
 	if populate_commands_done:
 		return
@@ -64,8 +67,7 @@ func populate_commands()->void:
 			imported_commands["/%s"%command_name]=potential_script
 		if potential_script.get("help") != null:
 			commands_help["/%s"%command_name]=potential_script.help
-			
-			
+	# Stop routine from running twice.
 	populate_commands_done = true
 	
 ## beginning root of the cmd cycle
