@@ -388,14 +388,18 @@ func _input(event: InputEvent) -> void:
 		
 	# Main Actions
 	if event is InputEventMouseButton:
-		if event.is_action_pressed("left_mouse_button"):
-			do_action_primary.rpc()
-		if event.is_action_pressed("right_mouse_button"):
-			do_action_secondary.rpc()
 		if event.is_action_pressed("left_mouse_button_alt"):
 			do_action_primary_alt.rpc()
+			return
 		if event.is_action_pressed("right_mouse_button_alt"):
 			do_action_secondary_alt.rpc()
+			return
+		if event.is_action_pressed("left_mouse_button"):
+			do_action_primary.rpc()
+			return
+		if event.is_action_pressed("right_mouse_button"):
+			do_action_secondary.rpc()
+			return
 
 	if event is InputEventKey:
 		if event.is_action_pressed("basic_interact"):

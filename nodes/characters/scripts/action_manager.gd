@@ -4,13 +4,13 @@ extends Node3D
 ## actions to the related systems.
 class_name ActionManager
 
-
 enum ActionType{
 	BASIC_INTERACTION,
 	PRIMARY_ACTION,
 	SECONDARY_ACTION,
 	PRIMARY_ACTION_ALT,
 	SECONDARY_ACTION_ALT,
+	SHORT_IDLE,
 	LONG_IDLE,
 }
 
@@ -58,7 +58,8 @@ func _ready() -> void:
 		await avatar.get_character_appearance().ready
 	avatar.get_character_appearance().pre_slot_equiped.connect(_on_character_appearance_pre_slot_equiped)
 	avatar.get_character_appearance().post_slot_equiped.connect(_on_character_appearance_post_slot_equiped)
-
+	avatar.get_animation_tree().play_animation_complete.connect(_on_action_complete)
+	
 ## The main function for coordinating actions with animations.
 func coordinate_action(action_type:ActionType)->void:
 	if avatar == null:
@@ -88,11 +89,15 @@ func coordinate_action(action_type:ActionType)->void:
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_secondary_action_alt_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(secondary_action_alt_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, secondary_action_alt_animation_mask)
+		ActionType.SHORT_IDLE:
+			play_short_idle_animation()
 		ActionType.LONG_IDLE:
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_long_idle_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(long_idle_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, long_idle_animation_mask, true)
-
+		_:
+			play_short_idle_animation()
+			
 ## Changes an action animation based on equipped item.
 func change_action_animation(_slot: CharacterAppearance.Equippable, meta: Dictionary):
 	if meta.is_empty():
@@ -114,6 +119,31 @@ func change_action_animation(_slot: CharacterAppearance.Equippable, meta: Dictio
 	primary_action_alt_animation_mask= ob.get_meta("primary_action_alt_animation_mask", default_primary_action_alt_animation_mask)
 	secondary_action_alt_animation_mask = ob.get_meta("secondary_action_alt_animation_mask", default_secondary_action_alt_animation_mask)
 
+# TODO
+## Changes the idle animation associated with the item, such as an Ax or Food Item
+func change_short_idle_animation(slot: CharacterAppearance.Equippable, meta: Dictionary):
+	if slot != CharacterAppearance.Equippable.SLOT_34:
+		return
+	if meta.is_empty():
+		return
+	if not meta.has("id"):
+		return
+	var ob:Node = ObjectIndex.get_object("items", meta["id"])
+	if ob == null:
+		return
+	short_idle_animation_id = ob.get_meta("short_idle_animation_id", default_short_idle_animation_id)
+	short_idle_animation_mask = ob.get_meta("short_idle_animation_mask", default_short_idle_animation_mask)
+	play_short_idle_animation()
+
+func play_short_idle_animation():
+	await get_tree().process_frame
+	var animation_name:String = ""
+	var default_animation_name:String = ""
+	default_animation_name = ObjectIndex.object_index.get_animation_name(default_short_idle_animation_id)
+	animation_name = ObjectIndex.object_index.get_animation_name(short_idle_animation_id, default_animation_name)
+
+	avatar.play_animation(animation_name, short_idle_animation_mask, true)
+	
 ## The much-anticipated end-process function of applying the 
 ## offset from the object's meta to the transform of object in anchor.
 func apply_slot_offset(slot: CharacterAppearance.Equippable, meta: Dictionary):
@@ -159,8 +189,12 @@ func _on_player_secondary_action_pressed() -> void:
 func _on_player_is_long_idle_changed(_value: Variant) -> void:
 	coordinate_action(ActionType.LONG_IDLE)
 
+func _on_action_complete():
+	coordinate_action(ActionType.SHORT_IDLE)
+
 func _on_character_appearance_pre_slot_equiped(slot: CharacterAppearance.Equippable, meta: Dictionary) -> void:
 	change_action_animation(slot, meta)
+	change_short_idle_animation(slot, meta)
 
 func _on_character_appearance_post_slot_equiped(slot: CharacterAppearance.Equippable, meta: Dictionary) -> void:
 	apply_slot_offset(slot, meta)

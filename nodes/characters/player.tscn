@@ -165,7 +165,7 @@ multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
 builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
 spawner_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/SpawnerNode")
 avatar = NodePath("Avatar")
-long_idle_time = 10.0
+long_idle_time = 30.0
 speed = 1.75
 acceleration = 5.0
 sprint_speed_multiplier = 3.0
@@ -225,12 +225,14 @@ default_primary_action_animation_id = 41
 default_secondary_action_animation_id = 40
 default_primary_action_alt_animation_id = 30
 default_secondary_action_alt_animation_id = 29
+default_short_idle_animation_id = 4
 default_long_idle_animation_id = 55
 default_basic_interaction_animation_mask = "TORSO"
 default_primary_action_animation_mask = "TORSO"
 default_secondary_action_animation_mask = "TORSO"
 default_primary_action_alt_animation_mask = "FULL"
 default_secondary_action_alt_animation_mask = "FULL"
+default_short_idle_animation_mask = "TORSO"
 default_long_idle_animation_mask = "FULL"
 
 [node name="Avatar" parent="." index="15" instance=ExtResource("8_y755v")]
