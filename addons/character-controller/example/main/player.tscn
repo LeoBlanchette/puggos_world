@@ -65,6 +65,8 @@ affected_body_region = "NONE"
 personality_id = 55
 long_idle_time = 45.0
 is_long_idle = false
+short_idle_time = 0.1
+is_short_idle = false
 display_mode = false
 
 [node name="Player Audios" parent="." index="9" instance=ExtResource("4_ux8kv")]

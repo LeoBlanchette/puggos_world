@@ -165,7 +165,9 @@ multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
 builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
 spawner_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/SpawnerNode")
 avatar = NodePath("Avatar")
-long_idle_time = 30.0
+long_idle_time = 15.0
+short_idle_time = 0.1
+is_short_idle = false
 speed = 1.75
 acceleration = 5.0
 sprint_speed_multiplier = 3.0
@@ -240,6 +242,7 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1,
 
 [connection signal="do_action_basic_interact_pressed" from="." to="ActionManager" method="_on_player_do_action_basic_interact_pressed"]
 [connection signal="is_long_idle_changed" from="." to="ActionManager" method="_on_player_is_long_idle_changed"]
+[connection signal="is_short_idle_changed" from="." to="ActionManager" method="_on_player_is_short_idle_changed"]
 [connection signal="personality_id_changed" from="." to="ActionManager" method="_on_player_personality_id_changed"]
 [connection signal="primary_action_alt_pressed" from="." to="ActionManager" method="_on_player_primary_action_alt_pressed"]
 [connection signal="primary_action_pressed" from="." to="ActionManager" method="_on_player_primary_action_pressed"]

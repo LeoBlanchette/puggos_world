@@ -19,6 +19,7 @@ signal secondary_action_pressed
 signal primary_action_alt_pressed
 signal seconary_action_alt_pressed
 signal do_action_basic_interact_pressed
+signal is_short_idle_changed(value)
 signal is_long_idle_changed(value)
 signal personality_id_changed(value:int)
 #endregion
@@ -314,19 +315,27 @@ var input_swim_up:bool = false
 @export var is_running:bool = false
 @export var affected_body_region:String = "NONE"
 
-
 @export var personality_id:int = 55:
 	set(value):
 		personality_id = value
 		personality_id_changed.emit(personality_id)
-		
 
+## The long-idle animation (Personality)
 @export var long_idle_time:float = 45.0
 @export var is_long_idle:bool = false:
 	set(value): 
 		if value != is_long_idle:
 			is_long_idle_changed.emit(value)
 		is_long_idle = value
+
+## The short-idle animation. Engages immediately when idle.
+@export var short_idle_time:float = 0.1
+@export var is_short_idle:bool = false:
+	set(value): 
+		if value != is_short_idle:
+			is_short_idle_changed.emit(value)
+		is_short_idle = value
+
 var last_position:Vector3 = Vector3.ZERO
 var time_idling:float = 0.0
 
@@ -336,10 +345,9 @@ var time_idling:float = 0.0
 		if value == true:
 			enter_display_mode()
 @onready var view_switch: Node = $"View Switch"
-		
 #endregion
 
-func _ready():		
+func _ready():
 	if peer_id == multiplayer.get_unique_id():
 		camera_3d.current = true
 	setup()	
@@ -370,7 +378,6 @@ func _physics_process(delta):
 		input_swim_down = Input.is_action_pressed(input_crouch_action_name)
 		input_swim_up = Input.is_action_pressed(input_jump_action_name)
 		move(delta, input_axis, input_jump, input_crouch, input_sprint, input_swim_down, input_swim_up)
-		
 	else:
 		# NOTE: It is important to always call move() even if we have no inputs 
 		## to process, as we still need to calculate gravity and collisions.
@@ -440,13 +447,24 @@ func detect_idle(delta:float):
 	last_position = position
 	
 	if time_idling >= long_idle_time && !is_long_idle:
-		start_idle()
+		start_long_idle()
+		return #return here so as not to test long idle.
+		
+	if time_idling >= short_idle_time && !is_short_idle:
+		start_short_idle()
 
-func start_idle():
+func start_long_idle():
 	is_long_idle = true
 
+func start_short_idle():
+	is_short_idle = true
+	
 func break_idle():
 	time_idling = 0
+	if is_short_idle:
+		is_short_idle = false
+		avatar.animation_tree.stop_animation()
+	
 	if is_long_idle:
 		is_long_idle = false
 		avatar.animation_tree.stop_animation()
@@ -474,7 +492,6 @@ func equip(id:int):
 			print("Slot number was improperly assigned. Cannot use.")
 		var slot:String = "slot_%s"%str(slot_number)
 		## Set the given variable by string 
-		
 		set(slot, id)
 		
 ## The avatar controller function for equipping object to a slot. It is called by

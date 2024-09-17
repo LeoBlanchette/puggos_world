@@ -189,6 +189,9 @@ func _on_player_secondary_action_pressed() -> void:
 func _on_player_is_long_idle_changed(_value: Variant) -> void:
 	coordinate_action(ActionType.LONG_IDLE)
 
+func _on_player_is_short_idle_changed(value: Variant) -> void:
+	coordinate_action(ActionType.SHORT_IDLE)
+
 func _on_action_complete():
 	coordinate_action(ActionType.SHORT_IDLE)
 
