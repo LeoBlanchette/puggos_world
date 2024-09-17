@@ -21,6 +21,7 @@ signal seconary_action_alt_pressed
 signal do_action_basic_interact_pressed
 signal is_short_idle_changed(value)
 signal is_long_idle_changed(value)
+signal player_stopped()
 signal personality_id_changed(value:int)
 #endregion
 
@@ -314,6 +315,7 @@ var input_swim_up:bool = false
 @export var is_moving:bool = false
 @export var is_running:bool = false
 @export var affected_body_region:String = "NONE"
+var has_player_stopped:bool = true
 
 @export var personality_id:int = 55:
 	set(value):
@@ -442,7 +444,11 @@ func enter_placement_mode(object_category:String, object_id:int):
 func detect_idle(delta:float):
 	if position == last_position:
 		time_idling += delta
+		if not has_player_stopped:
+			has_player_stopped = true
+			player_stopped.emit()
 	else:
+		has_player_stopped = false
 		break_idle()
 	last_position = position
 	
@@ -450,7 +456,11 @@ func detect_idle(delta:float):
 		start_long_idle()
 		return #return here so as not to test long idle.
 		
-	if time_idling >= short_idle_time && !is_short_idle:
+	if time_idling >= short_idle_time && \
+	!is_short_idle && \
+	!is_moving && \
+	!is_running && \
+	!is_crouched:
 		start_short_idle()
 
 func start_long_idle():
@@ -458,7 +468,14 @@ func start_long_idle():
 
 func start_short_idle():
 	is_short_idle = true
-	
+
+func is_idle()->bool:
+	if is_short_idle:
+		return true
+	if is_long_idle:
+		return true
+	return false
+
 func break_idle():
 	time_idling = 0
 	if is_short_idle:

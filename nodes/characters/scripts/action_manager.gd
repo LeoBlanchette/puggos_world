@@ -190,6 +190,12 @@ func _on_player_is_long_idle_changed(_value: Variant) -> void:
 	coordinate_action(ActionType.LONG_IDLE)
 
 func _on_player_is_short_idle_changed(value: Variant) -> void:
+	#coordinate_action(ActionType.SHORT_IDLE)
+	pass
+
+## When player stops walking or running, we assure that the 
+## custom animation runs, if he is carrying a knife, gun, etc.
+func _on_player_player_stopped() -> void:
 	coordinate_action(ActionType.SHORT_IDLE)
 
 func _on_action_complete():
