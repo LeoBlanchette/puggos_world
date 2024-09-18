@@ -315,7 +315,7 @@ var input_swim_up:bool = false
 @export var is_moving:bool = false
 @export var is_running:bool = false
 @export var affected_body_region:String = "NONE"
-var has_player_stopped:bool = true
+@export var has_player_stopped:bool = true
 
 @export var personality_id:int = 55:
 	set(value):

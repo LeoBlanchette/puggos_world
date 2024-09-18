@@ -62,6 +62,7 @@ is_combat_mode = false
 is_moving = false
 is_running = false
 affected_body_region = "NONE"
+has_player_stopped = true
 personality_id = 55
 long_idle_time = 45.0
 is_long_idle = false

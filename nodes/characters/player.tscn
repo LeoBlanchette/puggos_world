@@ -158,6 +158,9 @@ properties/47/replication_mode = 1
 properties/48/path = NodePath(".:personality_id")
 properties/48/spawn = true
 properties/48/replication_mode = 1
+properties/49/path = NodePath(".:has_player_stopped")
+properties/49/spawn = true
+properties/49/replication_mode = 1
 
 [node name="Player" node_paths=PackedStringArray("camera_3d", "multiplayer_synchronizer", "builder_node", "spawner_node", "avatar") instance=ExtResource("1_kprfw")]
 camera_3d = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D")
@@ -165,6 +168,7 @@ multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
 builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
 spawner_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/SpawnerNode")
 avatar = NodePath("Avatar")
+has_player_stopped = true
 long_idle_time = 15.0
 speed = 1.75
 acceleration = 5.0
