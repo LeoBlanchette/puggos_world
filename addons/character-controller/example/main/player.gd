@@ -317,6 +317,11 @@ var input_swim_up:bool = false
 @export var affected_body_region:String = "NONE"
 @export var has_player_stopped:bool = true
 
+## Time between action clicks allowed
+var action_rate_limit_time:float = 0.25
+## Whether we may accept input for actions
+var is_actions_rate_limited:bool = false
+
 @export var personality_id:int = 55:
 	set(value):
 		personality_id = value
@@ -396,6 +401,9 @@ func _input(event: InputEvent) -> void:
 		rotate_head(event.relative)
 		
 	# Main Actions
+	if is_actions_rate_limited:
+		return
+	rate_limit_actions()
 	if event is InputEventMouseButton:
 		if event.is_action_pressed("left_mouse_button_alt"):
 			do_action_primary_alt.rpc()
@@ -413,6 +421,16 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if event.is_action_pressed("basic_interact"):
 			do_action_basic_interact.rpc()
+
+## This is the flat rate limit allowed for input on actions.
+## This does not represent the rate limit connected to the 
+## length of the animation.
+func rate_limit_actions():
+	if is_actions_rate_limited:
+		return
+	is_actions_rate_limited = true
+	await get_tree().create_timer(action_rate_limit_time).timeout
+	is_actions_rate_limited = false
 
 func setup_animation_library():
 	var animation_paths:Array = ObjectIndex.object_index.get_all_animation_paths()
@@ -480,11 +498,11 @@ func break_idle():
 	time_idling = 0
 	if is_short_idle:
 		is_short_idle = false
-		avatar.animation_tree.stop_animation()
+		#avatar.animation_tree.stop_animation()
 	
 	if is_long_idle:
 		is_long_idle = false
-		avatar.animation_tree.stop_animation()
+		#avatar.animation_tree.stop_animation()
 
 func get_spawner_node()->Node3D:
 	return spawner_node

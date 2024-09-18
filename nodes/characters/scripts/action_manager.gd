@@ -53,6 +53,8 @@ var short_idle_animation_mask:String="TORSO"
 var long_idle_animation_mask:String="FULL"
 #endregion 
 
+var is_rate_limited:bool = false
+
 func _ready() -> void:
 	if not avatar.get_character_appearance().is_node_ready():
 		await avatar.get_character_appearance().ready
@@ -61,34 +63,42 @@ func _ready() -> void:
 	avatar.get_animation_tree().play_animation_complete.connect(_on_action_complete)
 	
 ## The main function for coordinating actions with animations.
-func coordinate_action(action_type:ActionType)->void:
+func coordinate_action(action_type:ActionType, bypass_rate_limit:bool = false)->void:
+	if is_rate_limited && !bypass_rate_limit:
+		return
 	if avatar == null:
 		return
 	if not avatar.is_node_ready():
 		await avatar.ready
 	var animation_name:String = ""
 	var default_animation_name:String = ""
+	var rate_limit_actions = false
 	match action_type:
 		ActionType.BASIC_INTERACTION:
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_basic_interaction_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(basic_interaction_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, basic_interaction_animation_mask)
+			rate_limit_actions = true
 		ActionType.PRIMARY_ACTION:
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_primary_action_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(primary_action_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, primary_action_animation_mask)
+			rate_limit_actions = true
 		ActionType.SECONDARY_ACTION:
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_secondary_action_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(secondary_action_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, secondary_action_animation_mask)
+			rate_limit_actions = true
 		ActionType.PRIMARY_ACTION_ALT:
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_primary_action_alt_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(primary_action_alt_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, primary_action_alt_animation_mask)
+			rate_limit_actions = true
 		ActionType.SECONDARY_ACTION_ALT:
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_secondary_action_alt_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(secondary_action_alt_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, secondary_action_alt_animation_mask)
+			rate_limit_actions = true
 		ActionType.SHORT_IDLE:
 			play_short_idle_animation()
 		ActionType.LONG_IDLE:
@@ -97,7 +107,12 @@ func coordinate_action(action_type:ActionType)->void:
 			avatar.play_animation(animation_name, long_idle_animation_mask, true)
 		_:
 			play_short_idle_animation()
-			
+	
+	if rate_limit_actions:
+		var animation_length = avatar.get_animation_tree().get_animation_length(animation_name)
+		print(animation_length)
+		rate_limit_action(animation_length)
+		
 ## Changes an action animation based on equipped item.
 func change_action_animation(_slot: CharacterAppearance.Equippable, meta: Dictionary):
 	if meta.is_empty():
@@ -160,6 +175,11 @@ func apply_slot_offset(slot: CharacterAppearance.Equippable, meta: Dictionary):
 	object_in_slot.position = anchor_slot_position
 	object_in_slot.rotation_degrees = anchor_slot_rotation
 
+func rate_limit_action(time:float):
+	is_rate_limited = true
+	await get_tree().create_timer(time).timeout
+	is_rate_limited = false
+
 #region signal listeners
 ## Simply relays the action to the coordinate_action function.
 ## Signal connected from root Player class.
@@ -187,7 +207,7 @@ func _on_player_secondary_action_pressed() -> void:
 	coordinate_action(ActionType.SECONDARY_ACTION)
 
 func _on_player_is_long_idle_changed(_value: Variant) -> void:
-	coordinate_action(ActionType.LONG_IDLE)
+	coordinate_action(ActionType.LONG_IDLE, true)
 
 func _on_player_is_short_idle_changed(value: Variant) -> void:
 	#coordinate_action(ActionType.SHORT_IDLE)
@@ -196,10 +216,10 @@ func _on_player_is_short_idle_changed(value: Variant) -> void:
 ## When player stops walking or running, we assure that the 
 ## custom animation runs, if he is carrying a knife, gun, etc.
 func _on_player_player_stopped() -> void:
-	coordinate_action(ActionType.SHORT_IDLE)
+	coordinate_action(ActionType.SHORT_IDLE, true)
 
 func _on_action_complete():
-	coordinate_action(ActionType.SHORT_IDLE)
+	coordinate_action(ActionType.SHORT_IDLE, true)
 
 func _on_character_appearance_pre_slot_equiped(slot: CharacterAppearance.Equippable, meta: Dictionary) -> void:
 	change_action_animation(slot, meta)

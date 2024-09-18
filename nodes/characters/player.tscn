@@ -168,7 +168,6 @@ multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
 builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
 spawner_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/SpawnerNode")
 avatar = NodePath("Avatar")
-has_player_stopped = true
 long_idle_time = 15.0
 speed = 1.75
 acceleration = 5.0
