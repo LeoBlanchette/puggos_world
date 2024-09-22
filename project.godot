@@ -44,6 +44,7 @@ folder_colors={
 "res://addons/": "yellow",
 "res://docs/": "gray",
 "res://image/": "green",
+"res://images/svg/": "orange",
 "res://materials/": "orange",
 "res://mods/": "pink",
 "res://nodes/": "red",
