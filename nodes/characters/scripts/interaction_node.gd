@@ -68,7 +68,7 @@ func do_timed_interaction():
 	if time_interacted < time_interaction_minimum:
 		return
 	time_interacted = 0
-	print(get_focused_object())
+
 
 func update_interaction_timer(delta:float):
 	if is_interacting:		

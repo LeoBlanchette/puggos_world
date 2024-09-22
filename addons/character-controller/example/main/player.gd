@@ -21,7 +21,8 @@ signal seconary_action_alt_pressed
 signal do_action_basic_interact_pressed
 signal is_short_idle_changed(value)
 signal is_long_idle_changed(value)
-signal player_stopped()
+signal player_stopped
+signal player_moved
 signal personality_id_changed(value:int)
 #endregion
 
@@ -317,10 +318,10 @@ var input_swim_up:bool = false
 @export var affected_body_region:String = "NONE"
 @export var has_player_stopped:bool = true
 
-## Time between action clicks allowed
-var action_rate_limit_time:float = 0.25
-## Whether we may accept input for actions
-var is_actions_rate_limited:bool = false
+## Used by signal system to prevent double-fires of the signal upon player moving.
+var player_moved_signaled:bool = false
+## Used by signal system to prevent double-fires of the signal upon player stopped.
+var player_stopped_signaled:bool = false
 
 @export var personality_id:int = 55:
 	set(value):
@@ -352,7 +353,25 @@ var time_idling:float = 0.0
 		if value == true:
 			enter_display_mode()
 @onready var view_switch: Node = $"View Switch"
+
+@export var projected_view_marker:Vector3 = Vector3.ZERO
 #endregion
+
+#region rate limiting and timing
+## Initially used 
+var object_uptime:float = 0
+
+## Time between action clicks allowed
+var action_rate_limit_time:float = 0.25
+
+## Whether we may accept input for actions
+var is_actions_rate_limited:bool = false
+
+var enforce_rate_limit:bool = false
+
+@export var rate_limit_timer:Timer = null
+#endregion 
+
 
 func _ready():
 	if peer_id == multiplayer.get_unique_id():
@@ -362,9 +381,12 @@ func _ready():
 	equip(28) # DEFAULT skin.
 	last_position = position
 	setup_animation_library()
-	
+	player_moved.connect(acknowledge_player_moved_signal)
+	player_stopped.connect(acknowledge_player_stopped_signal)
 
 func _physics_process(delta):
+	update_view_marker()
+	object_uptime += delta
 	if display_mode:
 		return
 	update_avatar_animation_global()
@@ -399,10 +421,14 @@ func _input(event: InputEvent) -> void:
 	# Mouse look (only if the mouse is captured).
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_head(event.relative)
-		
+	# View tracking 
+	if event is InputEventMouse:
+		update_view_marker()
+
 	# Main Actions
-	if is_actions_rate_limited:
-		return
+	if is_rate_limit_enforced():
+		await rate_limit_timer.timeout
+		
 	rate_limit_actions()
 	if event is InputEventMouseButton:
 		if event.is_action_pressed("left_mouse_button_alt"):
@@ -417,10 +443,24 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("right_mouse_button"):
 			do_action_secondary.rpc()
 			return
-
+		enforce_rate_limit = true
+	
 	if event is InputEventKey:
 		if event.is_action_pressed("basic_interact"):
 			do_action_basic_interact.rpc()
+		enforce_rate_limit = true
+		
+
+func update_view_marker()->void:
+	var projection_point_on_window:Vector2 = Vector2(camera_3d.get_window().size.x/2, camera_3d.get_window().size.y/2)
+	projected_view_marker = camera_3d.project_position(projection_point_on_window, 20)
+
+func is_rate_limit_enforced()->bool:
+	if object_uptime < 1.0:
+		return true
+	if is_actions_rate_limited && enforce_rate_limit:
+		return true
+	return false
 
 ## This is the flat rate limit allowed for input on actions.
 ## This does not represent the rate limit connected to the 
@@ -429,8 +469,11 @@ func rate_limit_actions():
 	if is_actions_rate_limited:
 		return
 	is_actions_rate_limited = true
-	await get_tree().create_timer(action_rate_limit_time).timeout
+	rate_limit_timer.one_shot = true
+	rate_limit_timer.start(action_rate_limit_time)
+	await rate_limit_timer.timeout
 	is_actions_rate_limited = false
+	enforce_rate_limit = false
 
 func setup_animation_library():
 	var animation_paths:Array = ObjectIndex.object_index.get_all_animation_paths()
@@ -464,7 +507,7 @@ func detect_idle(delta:float):
 		time_idling += delta
 		if not has_player_stopped:
 			has_player_stopped = true
-			player_stopped.emit()
+			emit_player_stopped.rpc()
 	else:
 		has_player_stopped = false
 		break_idle()
@@ -497,12 +540,28 @@ func is_idle()->bool:
 func break_idle():
 	time_idling = 0
 	if is_short_idle:
-		is_short_idle = false
-		#avatar.animation_tree.stop_animation()
+		is_short_idle = false		
 	
 	if is_long_idle:
 		is_long_idle = false
-		#avatar.animation_tree.stop_animation()
+	if not player_moved_signaled:
+		emit_player_moved.rpc()
+
+@rpc("any_peer", "call_local", "unreliable")
+func emit_player_moved():
+	player_moved.emit()
+
+@rpc("any_peer", "call_local", "unreliable")
+func emit_player_stopped():
+	player_stopped.emit()
+
+func acknowledge_player_moved_signal():
+	player_moved_signaled = true
+	player_stopped_signaled = false
+
+func acknowledge_player_stopped_signal():
+	player_moved_signaled = false
+	player_stopped_signaled = true
 
 func get_spawner_node()->Node3D:
 	return spawner_node

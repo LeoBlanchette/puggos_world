@@ -69,5 +69,6 @@ is_long_idle = false
 short_idle_time = 0.1
 is_short_idle = false
 display_mode = false
+projected_view_marker = Vector3(0, 0, 0)
 
 [node name="Player Audios" parent="." index="9" instance=ExtResource("4_ux8kv")]
