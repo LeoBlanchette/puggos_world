@@ -146,10 +146,8 @@ func coordinate_action(action_type:ActionType, bypass_rate_limit:bool = false)->
 			avatar.animation_tree.stop_animation()
 		
 		ActionType.START_MOVE:
-			print("RAITE LIMITE STARTE")
 			if is_rate_limited:
 				await rate_limit_released
-			print("END")
 			avatar.stop_animation()
 		_:
 			play_short_idle_animation()

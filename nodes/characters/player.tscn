@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bgk06cxwm7u8n"]
+[gd_scene load_steps=14 format=3 uid="uid://bgk06cxwm7u8n"]
 
 [ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="1_kprfw"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/register_player.gd" id="2_3b31x"]
@@ -9,6 +9,8 @@
 [ext_resource type="Script" path="res://nodes/characters/multiplayer_synchronizer.gd" id="6_f55i6"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/action_manager.gd" id="8_av0vo"]
 [ext_resource type="PackedScene" uid="uid://c4bj48um6sbj6" path="res://addons/puggos_world_character/avatar/avatar.tscn" id="8_y755v"]
+[ext_resource type="Script" path="res://nodes/characters/scripts/emote_manager.gd" id="9_aad5o"]
+[ext_resource type="Script" path="res://nodes/emote/emote_drawing.gd" id="9_gvtwp"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/avatar_pointer.gd" id="9_q1wpy"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_260u7"]
@@ -171,6 +173,9 @@ properties/51/replication_mode = 2
 properties/52/path = NodePath("Avatar:rotation")
 properties/52/spawn = true
 properties/52/replication_mode = 2
+properties/53/path = NodePath(".:emote")
+properties/53/spawn = true
+properties/53/replication_mode = 2
 
 [node name="Player" node_paths=PackedStringArray("camera_3d", "multiplayer_synchronizer", "builder_node", "spawner_node", "avatar", "rate_limit_timer") instance=ExtResource("1_kprfw")]
 camera_3d = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D")
@@ -226,11 +231,7 @@ debug_shape_custom_color = Color(0.0812519, 0.589243, 3.85046e-07, 1)
 [node name="SpawnerNode" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -5)
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="13"]
-replication_config = SubResource("SceneReplicationConfig_260u7")
-script = ExtResource("6_f55i6")
-
-[node name="ActionManager" type="Node3D" parent="." index="14" node_paths=PackedStringArray("player", "avatar")]
+[node name="ActionManager" type="Node3D" parent="." index="13" node_paths=PackedStringArray("player", "avatar")]
 script = ExtResource("8_av0vo")
 player = NodePath("..")
 avatar = NodePath("../Avatar")
@@ -249,6 +250,28 @@ default_secondary_action_alt_animation_mask = "FULL"
 default_short_idle_animation_mask = "TORSO"
 default_long_idle_animation_mask = "FULL"
 
+[node name="EmoteManager" type="Node3D" parent="." index="14"]
+script = ExtResource("9_aad5o")
+
+[node name="EmoteDrawing" type="Node2D" parent="EmoteManager" index="0"]
+script = ExtResource("9_gvtwp")
+points_color = Color(1, 0, 0, 1)
+
+[node name="EmoteAnchors" type="Node3D" parent="EmoteManager" index="1"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1, 0)
+
+[node name="EmotePointTop" type="Marker3D" parent="EmoteManager/EmoteAnchors" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
+
+[node name="EmotePointLeft" type="Marker3D" parent="EmoteManager/EmoteAnchors" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2.1, 0)
+
+[node name="EmotePointRight" type="Marker3D" parent="EmoteManager/EmoteAnchors" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2.1, 0)
+
+[node name="EmotePointMiddle" type="Marker3D" parent="EmoteManager/EmoteAnchors" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63624, 0)
+
 [node name="AvatarPointer" type="Node3D" parent="." index="15" node_paths=PackedStringArray("player", "action_manager", "avatar")]
 script = ExtResource("9_q1wpy")
 player = NodePath("..")
@@ -259,7 +282,11 @@ avatar_rotation_speed = 1.5
 
 [node name="RateLimitTimer" type="Timer" parent="." index="16"]
 
-[node name="Avatar" parent="." index="17" instance=ExtResource("8_y755v")]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="17"]
+replication_config = SubResource("SceneReplicationConfig_260u7")
+script = ExtResource("6_f55i6")
+
+[node name="Avatar" parent="." index="18" instance=ExtResource("8_y755v")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1, 0)
 
 [connection signal="do_action_basic_interact_pressed" from="." to="ActionManager" method="_on_player_do_action_basic_interact_pressed"]

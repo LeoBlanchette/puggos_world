@@ -50,6 +50,7 @@ func join_game(address = "", port = ""):
 	if error:
 		return error
 	multiplayer.multiplayer_peer = peer
+	Global.peer_id = multiplayer.get_unique_id()
 
 
 func create_game(port = "", announce_status:bool = false):	
@@ -71,6 +72,7 @@ func create_game(port = "", announce_status:bool = false):
 		print(error)
 		return error
 	multiplayer.multiplayer_peer = peer	
+	Global.peer_id = multiplayer.get_unique_id()
 	
 	Players.add_player(multiplayer.get_unique_id(), Global.steam_id, Global.steam_username, Characters.get_currently_selected_character_name())
 	register_player_to_server.rpc_id(1, Players.get_player(multiplayer.get_unique_id()))

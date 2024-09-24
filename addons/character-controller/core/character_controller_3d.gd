@@ -237,6 +237,7 @@ func move(_delta: float, input_axis := Vector2.ZERO, input_jump := false, input_
 		_check_step(_delta)
 
 
+
 ## Returns true if the character controller is crouched
 func is_crouching() -> bool:
 	return crouch_ability.is_actived()

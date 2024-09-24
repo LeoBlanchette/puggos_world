@@ -26,10 +26,12 @@ signal player_moved
 signal personality_id_changed(value:int)
 #endregion
 
+#region emote signals
+signal emote_changed(value:int)
+#endregion 
+
 #region deactivate if not player
-
 @export var camera_3d:Camera3D
-
 #endregion
 
 @export var multiplayer_synchronizer:MultiplayerSynchronizer
@@ -297,6 +299,13 @@ var peer_id:int = 0
 		equip_slot("slot_39", value)
 #endregion
 
+#region emotes
+@export var emote:int = -1:
+	set(value):
+		emote = value
+		emote_changed.emit(value)
+#endregion
+
 #region avatar animation
 var input_axis:Vector2 = Vector2.ZERO
 		
@@ -320,6 +329,7 @@ var input_swim_up:bool = false
 
 ## Used by signal system to prevent double-fires of the signal upon player moving.
 var player_moved_signaled:bool = false
+
 ## Used by signal system to prevent double-fires of the signal upon player stopped.
 var player_stopped_signaled:bool = false
 
@@ -352,6 +362,7 @@ var time_idling:float = 0.0
 		display_mode = value
 		if value == true:
 			enter_display_mode()
+			
 @onready var view_switch: Node = $"View Switch"
 
 @export var projected_view_marker:Vector3 = Vector3.ZERO
@@ -424,12 +435,13 @@ func _input(event: InputEvent) -> void:
 	# View tracking 
 	if event is InputEventMouse:
 		update_view_marker()
-
+	
 	# Main Actions
 	if is_rate_limit_enforced():
 		await rate_limit_timer.timeout
 		
 	rate_limit_actions()
+	
 	if event is InputEventMouseButton:
 		if event.is_action_pressed("left_mouse_button_alt"):
 			do_action_primary_alt.rpc()
@@ -449,7 +461,7 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("basic_interact"):
 			do_action_basic_interact.rpc()
 		enforce_rate_limit = true
-		
+
 
 func update_view_marker()->void:
 	var projection_point_on_window:Vector2 = Vector2(camera_3d.get_window().size.x/2, camera_3d.get_window().size.y/2)

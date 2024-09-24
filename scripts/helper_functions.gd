@@ -76,3 +76,8 @@ func get_all_children(in_node,arr:=[]):
 	for child in in_node.get_children():
 		arr = get_all_children(child,arr)
 	return arr
+
+func get_screenpoint_from_position(global_position:Vector3)->Vector2:
+	var camera_3d = get_viewport().get_camera_3d()
+	return camera_3d.unproject_position(global_position)
+	
