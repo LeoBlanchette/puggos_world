@@ -92,7 +92,7 @@ func is_ui_blocking()->bool:
 	for ui_node in escapable_ui_nodes:
 		if ui_node == null:
 			continue
-		if ui_node.is_visible():			
+		if ui_node.is_visible():
 			return true
 	if UIChat.instance.is_chat_open():
 		return true

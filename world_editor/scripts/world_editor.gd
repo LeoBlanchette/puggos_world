@@ -10,6 +10,7 @@ var world_editor_related_mod_groups: Array[String] = [
 	"terrains/terrain/",
 	"structures/modular/",
 	"materials/structures_modular/",
+	"emotes/character/",
 ]
 
 # Called when the node enters the scene tree for the first time.

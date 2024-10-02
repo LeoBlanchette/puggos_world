@@ -1,12 +1,13 @@
-[gd_scene load_steps=14 format=3 uid="uid://bgk06cxwm7u8n"]
+[gd_scene load_steps=15 format=3 uid="uid://bgk06cxwm7u8n"]
 
 [ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="1_kprfw"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/register_player.gd" id="2_3b31x"]
-[ext_resource type="PackedScene" uid="uid://bkqfe3f3rwa8g" path="res://nodes/build_kits/builder_node.tscn" id="2_j8xj8"]
 [ext_resource type="PackedScene" uid="uid://7qxa2xlrunw0" path="res://ui/ui_hud.tscn" id="2_nmrc8"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/view_switch.gd" id="2_vpfrc"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/interaction_node.gd" id="5_3n0vt"]
 [ext_resource type="Script" path="res://nodes/characters/multiplayer_synchronizer.gd" id="6_f55i6"]
+[ext_resource type="Script" path="res://nodes/characters/scripts/build_interactor.gd" id="6_g21ep"]
+[ext_resource type="Script" path="res://nodes/characters/scripts/build_interactor_visualizer.gd" id="7_2wero"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/action_manager.gd" id="8_av0vo"]
 [ext_resource type="PackedScene" uid="uid://c4bj48um6sbj6" path="res://addons/puggos_world_character/avatar/avatar.tscn" id="8_y755v"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/emote_manager.gd" id="9_aad5o"]
@@ -177,10 +178,9 @@ properties/53/path = NodePath(".:emote")
 properties/53/spawn = true
 properties/53/replication_mode = 2
 
-[node name="Player" node_paths=PackedStringArray("camera_3d", "multiplayer_synchronizer", "builder_node", "spawner_node", "avatar", "rate_limit_timer") instance=ExtResource("1_kprfw")]
+[node name="Player" node_paths=PackedStringArray("camera_3d", "multiplayer_synchronizer", "spawner_node", "avatar", "rate_limit_timer") instance=ExtResource("1_kprfw")]
 camera_3d = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D")
 multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
-builder_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode")
 spawner_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/SpawnerNode")
 avatar = NodePath("Avatar")
 long_idle_time = 35.0
@@ -202,20 +202,7 @@ script = ExtResource("2_vpfrc")
 
 [node name="Camera3D" type="Camera3D" parent="Head/ThirdPersonCameraReference/ViewInteraction" index="0"]
 
-[node name="BuilderNode" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D" index="0" node_paths=PackedStringArray("anchor") instance=ExtResource("2_j8xj8")]
-marker_follow_speed = 0.8
-anchor = NodePath("HitMarker/Anchor")
-
-[node name="BuilderRayCast3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -2.375)
-target_position = Vector3(0, 0, -10)
-collide_with_bodies = true
-
-[node name="HitMarker" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode" index="1"]
-
-[node name="Anchor" type="Node3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode/HitMarker" index="0"]
-
-[node name="InteractionNode" type="Node3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D" index="1" node_paths=PackedStringArray("interaction_ray_cast_3d", "marker_3d")]
+[node name="InteractionNode" type="Node3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D" index="0" node_paths=PackedStringArray("interaction_ray_cast_3d", "marker_3d")]
 script = ExtResource("5_3n0vt")
 interaction_ray_cast_3d = NodePath("InteractionRayCast3D")
 marker_3d = NodePath("Marker3D")
@@ -227,6 +214,15 @@ collide_with_areas = true
 debug_shape_custom_color = Color(0.0812519, 0.589243, 3.85046e-07, 1)
 
 [node name="Marker3D" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/InteractionNode" index="1"]
+
+[node name="BuildInteractor" type="RayCast3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D" index="1"]
+target_position = Vector3(0, 0, -10)
+script = ExtResource("6_g21ep")
+current_cell_size = 3.0
+testing = true
+
+[node name="BuildInteractorVisualizer" type="Node2D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuildInteractor" index="0"]
+script = ExtResource("7_2wero")
 
 [node name="SpawnerNode" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -5)
@@ -301,4 +297,3 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1,
 [connection signal="secondary_action_pressed" from="." to="ActionManager" method="_on_player_secondary_action_pressed"]
 
 [editable path="UIHUD"]
-[editable path="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuilderNode"]

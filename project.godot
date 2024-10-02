@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Global="*res://scripts/global.gd"
+PlayerInput="*res://scripts/player_input.gd"
 Players="*res://scripts/players.gd"
 NetworkManager="*res://scripts/network_manager.gd"
 HelperFunctions="*res://scripts/helper_functions.gd"
@@ -29,6 +30,7 @@ Achievements="*res://scripts/achievements.gd"
 ObjectGrouper="*res://scripts/object_grouper.gd"
 Workshop="*res://scripts/workshop.gd"
 AeroUnits="*res://addons/godot_aerodynamic_physics/core/singletons/aero_units.gd"
+Grid="*res://scripts/grid.gd"
 
 [debug]
 

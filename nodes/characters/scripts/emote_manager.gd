@@ -18,6 +18,8 @@ var emote_point_left_screen_position:Vector2 = Vector2.ZERO
 var emote_point_right_screen_position:Vector2 = Vector2.ZERO
 var emote_point_middle_screen_position:Vector2 = Vector2.ZERO
 
+var default_emote_show_time:float = 6.0
+
 var current_emote:Emote = null
 
 @export var testing = false
@@ -26,13 +28,13 @@ func _ready() -> void:
 	player.emote_changed.connect(_on_emote_changed)
 	if not testing:
 		emote_drawing.queue_free()
+	set_process(false)
 
 func _process(delta: float) -> void:
 	set_anchor_points_to_face_camera()
 	set_emote_points()	
 	draw_testing_marks()
 	position_emote()
-
 
 func set_anchor_points_to_face_camera():
 	#position = Vector3(0, 0, 0)
@@ -66,14 +68,27 @@ func position_emote():
 		Types.EmoteType.THOUGHT:
 			current_emote.position_emote(emote_point_left_screen_position)
 		Types.EmoteType.URGENT_THOUGHT:
-			current_emote.position_emote(emote_point_left_screen_position)
+			current_emote.position_emote(emote_point_top_screen_position)
 		Types.EmoteType.COMMUNICATION:
 			current_emote.position_emote(emote_point_top_screen_position)
 		Types.EmoteType.URGENT_COMMUNICATION:
-			current_emote.position_emote(emote_point_top_screen_position)
+			current_emote.position_emote(emote_point_right_screen_position)
+
+func get_emote_type(id:int)->Types.EmoteType:
+	var ob:Node = ObjectIndex.get_object("emotes", id)
+	if ob == null:
+		return Types.EmoteType.NONE
+	var emote_type_meta:String = ob.get_meta("emote_type", "NONE")
+	if Types.EmoteType.has(emote_type_meta):
+		return Types.EmoteType.get(emote_type_meta)
+	return Types.EmoteType.NONE
 
 func _on_emote_changed(id:int)->void:
-	print("EMOTE %s"%str(id))
+	set_process(true)
+	var emote_type:Types.EmoteType = get_emote_type(id)	
 	current_emote = EMOTE.instantiate()
 	emote_point_top.add_child(current_emote)
-	current_emote.activate(id, 128, 4, Types.EmoteType.THOUGHT)
+	var time:float = default_emote_show_time
+	current_emote.activate(id, 128, time, emote_type)
+	await get_tree().create_timer(time).timeout	
+	set_process(false)

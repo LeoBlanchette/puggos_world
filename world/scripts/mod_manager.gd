@@ -29,6 +29,7 @@ static var valid_creator_mod_types: Array = [
 	["items/character/", "item.tscn"],
 	["items/weapons/", "item.tscn"],
 	["animations/character/", "animation.tscn"],
+	["emotes/character/", "emote.tscn"],
 ]
 
 # Called when the node enters the scene tree for the first time.

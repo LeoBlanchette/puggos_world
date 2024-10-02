@@ -14,11 +14,11 @@ class_name Player
 ## [Environment] when we are in the water.
 
 #region action signals
-signal primary_action_pressed
-signal secondary_action_pressed
-signal primary_action_alt_pressed
-signal seconary_action_alt_pressed
-signal do_action_basic_interact_pressed
+signal primary_action_pressed(on:bool)
+signal secondary_action_pressed(on:bool)
+signal primary_action_alt_pressed(on:bool)
+signal seconary_action_alt_pressed(on:bool)
+signal do_action_basic_interact_pressed(on:bool)
 signal is_short_idle_changed(value)
 signal is_long_idle_changed(value)
 signal player_stopped
@@ -35,15 +35,6 @@ signal emote_changed(value:int)
 #endregion
 
 @export var multiplayer_synchronizer:MultiplayerSynchronizer
-
-@export var input_back_action_name := "move_backward"
-@export var input_forward_action_name := "move_forward"
-@export var input_left_action_name := "move_left"
-@export var input_right_action_name := "move_right"
-@export var input_sprint_action_name := "move_sprint"
-@export var input_jump_action_name := "move_jump"
-@export var input_crouch_action_name := "move_crouch"
-@export var input_fly_mode_action_name := "move_fly_mode"
 
 @export var underwater_env: Environment
 
@@ -394,9 +385,33 @@ func _ready():
 	setup_animation_library()
 	player_moved.connect(acknowledge_player_moved_signal)
 	player_stopped.connect(acknowledge_player_stopped_signal)
+	PlayerInput.head_motion_relative_changed.connect(rotate_head)
+	
+	## The remaining is player controlled only. 
+	if not is_multiplayer_authority():
+		return
+	
+	# Actions Engaged
+	PlayerInput.primary_action_pressed.connect(trigger_action_primary)
+	PlayerInput.secondary_action_pressed.connect(trigger_action_secondary)
+	PlayerInput.primary_action_alt_pressed.connect(trigger_action_primary_alt)
+	PlayerInput.secondary_action_alt_pressed.connect(trigger_action_secondary_alt)
+	PlayerInput.action_basic_interact_pressed.connect(trigger_action_basic_interact)
+	
+	# Actions Released
+	PlayerInput.primary_action_released.connect(end_action_primary)
+	PlayerInput.secondary_action_released.connect(end_action_secondary)
+	PlayerInput.primary_action_alt_released.connect(end_action_primary_alt)
+	PlayerInput.secondary_action_alt_released.connect(end_action_secondary_alt)
+	PlayerInput.action_basic_interact_released.connect(end_action_basic_interact)
 
-func _physics_process(delta):
-	update_view_marker()
+func _enter_tree() -> void:
+	if not is_multiplayer_authority():
+		return
+	await ready
+	PlayerInput.register_character_object(self)
+
+func _process(delta: float) -> void:
 	object_uptime += delta
 	if display_mode:
 		return
@@ -405,62 +420,26 @@ func _physics_process(delta):
 	multiplayer_synchronizer.rotation = rotation
 	if not multiplayer_synchronizer.is_multiplayer_authority():
 		return
+	if not is_multiplayer_authority():
+		return
+	update_view_marker()
 	update_avatar_animation_local()
-	var is_valid_input := Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
-	
-	if is_valid_input:
-		if Input.is_action_just_pressed(input_fly_mode_action_name):
+		
+	if PlayerInput.is_valid_player_input:
+		if PlayerInput.fly_mode_toggled:
 			fly_ability.set_active(not fly_ability.is_actived())
-		input_axis = Input.get_vector(input_left_action_name, input_right_action_name, input_back_action_name, input_forward_action_name)
-		input_jump = Input.is_action_just_pressed(input_jump_action_name)
-		input_crouch = Input.is_action_pressed(input_crouch_action_name)
-		input_sprint = Input.is_action_pressed(input_sprint_action_name)
-		input_swim_down = Input.is_action_pressed(input_crouch_action_name)
-		input_swim_up = Input.is_action_pressed(input_jump_action_name)
+		input_axis = PlayerInput.input_axis
+		input_jump = PlayerInput.input_jump
+		input_crouch = PlayerInput.input_crouch
+		input_sprint = PlayerInput.input_sprint
+		input_swim_down = PlayerInput.input_swim_down
+		input_swim_up = PlayerInput.input_swim_up
 		move(delta, input_axis, input_jump, input_crouch, input_sprint, input_swim_down, input_swim_up)
 	else:
 		# NOTE: It is important to always call move() even if we have no inputs 
 		## to process, as we still need to calculate gravity and collisions.
 		move(delta)	
 	detect_idle(delta)
-
-func _input(event: InputEvent) -> void:
-	if display_mode:
-		return
-	if not multiplayer_synchronizer.is_multiplayer_authority():
-		return
-	# Mouse look (only if the mouse is captured).
-	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		rotate_head(event.relative)
-	# View tracking 
-	if event is InputEventMouse:
-		update_view_marker()
-	
-	# Main Actions
-	if is_rate_limit_enforced():
-		await rate_limit_timer.timeout
-		
-	rate_limit_actions()
-	
-	if event is InputEventMouseButton:
-		if event.is_action_pressed("left_mouse_button_alt"):
-			do_action_primary_alt.rpc()
-			return
-		if event.is_action_pressed("right_mouse_button_alt"):
-			do_action_secondary_alt.rpc()
-			return
-		if event.is_action_pressed("left_mouse_button"):
-			do_action_primary.rpc()
-			return
-		if event.is_action_pressed("right_mouse_button"):
-			do_action_secondary.rpc()
-			return
-		enforce_rate_limit = true
-	
-	if event is InputEventKey:
-		if event.is_action_pressed("basic_interact"):
-			do_action_basic_interact.rpc()
-		enforce_rate_limit = true
 
 
 func update_view_marker()->void:
@@ -628,31 +607,91 @@ func equip_slot(slot:String, id:int):
 func unequip(slot:String):
 	set(slot, -1)
 
-@rpc("any_peer", "call_local", "reliable")
-func do_action_primary():
-	break_idle()
-	primary_action_pressed.emit()
+#region ACTION PRIMARY TRIGGERS
+func trigger_action_primary():
+	if is_rate_limit_enforced():
+		await rate_limit_timer.timeout
+	rate_limit_actions()
+	do_action_primary.rpc()
+	enforce_rate_limit = true
+
+func end_action_primary():
+	do_action_primary.rpc(false)
 
 @rpc("any_peer", "call_local", "reliable")
-func do_action_secondary():
+func do_action_primary(on:bool = true):
 	break_idle()
-	secondary_action_pressed.emit()
+	primary_action_pressed.emit(on)
+#endregion ACTION PRIMARY TRIGGERS
+
+#region ACTION SECONDARY TRIGGERS
+func trigger_action_secondary():
+	if is_rate_limit_enforced():
+		await rate_limit_timer.timeout
+	rate_limit_actions()
+	do_action_secondary.rpc()
+	enforce_rate_limit = true
+
+func end_action_secondary():
+	do_action_secondary.rpc(false)
 
 @rpc("any_peer", "call_local", "reliable")
-func do_action_primary_alt():
+func do_action_secondary(on:bool = true):
 	break_idle()
-	primary_action_alt_pressed.emit()
+	secondary_action_pressed.emit(on)
+#endregion ACTION SECONDARY TRIGGERS
+
+#region ACTION PRIMARY ALT TRIGGERS
+func trigger_action_primary_alt():
+	if is_rate_limit_enforced():
+		await rate_limit_timer.timeout
+	rate_limit_actions()
+	do_action_primary_alt.rpc()
+	enforce_rate_limit = true
+
+func end_action_primary_alt():
+	do_action_primary_alt.rpc(false)
 
 @rpc("any_peer", "call_local", "reliable")
-func do_action_secondary_alt():
+func do_action_primary_alt(on:bool = true):
 	break_idle()
-	seconary_action_alt_pressed.emit()
+	primary_action_alt_pressed.emit(on)
+
+#endregion ACTION PRIMARY ALT TRIGGERS
+
+#region ACTION SECONDARY ALT TRIGGERS
+func trigger_action_secondary_alt():
+	if is_rate_limit_enforced():
+		await rate_limit_timer.timeout
+	rate_limit_actions()
+	do_action_secondary_alt.rpc()
+	enforce_rate_limit = true
+
+func end_action_secondary_alt():
+	do_action_secondary_alt.rpc(false)
 
 @rpc("any_peer", "call_local", "reliable")
-func do_action_basic_interact():
+func do_action_secondary_alt(on:bool = true):
 	break_idle()
-	do_action_basic_interact_pressed.emit()
+	seconary_action_alt_pressed.emit(on)
+#endregion ACTION SECONDARY ALT TRIGGERS
 
+#region ACTION BASIC INTERACT TRIGGERS
+func trigger_action_basic_interact():
+	if is_rate_limit_enforced():
+		await rate_limit_timer.timeout
+	rate_limit_actions()
+	do_action_basic_interact.rpc()
+	enforce_rate_limit = true
+
+func end_action_basic_interact():
+	do_action_basic_interact.rpc(false)
+
+@rpc("any_peer", "call_local", "reliable")
+func do_action_basic_interact(on:bool = true):
+	break_idle()
+	do_action_basic_interact_pressed.emit(on)
+#endregion ACTION BASIC INTERACT TRIGGERS
 
 #func _on_controller_emerged():
 	#camera.environment = null

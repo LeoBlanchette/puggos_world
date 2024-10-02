@@ -18,7 +18,8 @@ var world_mod_groups: Array[String] = [
 	"items/general/",
 	"items/character/",
 	"items/weapons/",
-	"animations/character/"
+	"animations/character/",
+	"emotes/character/",
 ]
 
 func _ready() -> void:

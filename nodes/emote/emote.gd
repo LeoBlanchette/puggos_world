@@ -11,20 +11,22 @@ var emote_type = Types.EmoteType.NONE:
 @onready var urgent_thought: TextureRect = $URGENT_THOUGHT
 @onready var communication: TextureRect = $COMMUNICATION
 @onready var urgent_communication: TextureRect = $URGENT_COMMUNICATION
+@onready var icon: TextureRect = $Icon
 
 func _ready() -> void:
 	pass
 
 func activate(id:int, _size:int = 128, time:float = 3, _emote_type:Types.EmoteType = Types.EmoteType.NONE):
-
+	if _emote_type == Types.EmoteType.NONE:
+		return
+		
 	size = Vector2(_size, _size)
 	pivot_offset =  Vector2(_size / 2, _size / 2)
 	
-	if _emote_type == Types.EmoteType.NONE:
-		#THIS MEANS USE THE ID FOR SETUP
-		pass
-	else:
-		emote_type = _emote_type
+	var texture2d = load(ObjectIndex.object_index.get_emote_icon_path(id))
+	icon.texture = texture2d
+	
+	emote_type = _emote_type
 	enqueue_removal(time)
 
 func enqueue_removal(time:float):
@@ -32,6 +34,10 @@ func enqueue_removal(time:float):
 	queue_free()
 
 func show_emote():
+	thought.hide()
+	urgent_thought.hide()
+	communication.hide()
+	urgent_communication.hide()
 	match emote_type:
 		Types.EmoteType.THOUGHT:
 			thought.show()

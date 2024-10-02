@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://c1l5t3nh77no2"]
+[gd_scene load_steps=7 format=3 uid="uid://c1l5t3nh77no2"]
 
 [ext_resource type="Script" path="res://nodes/emote/emote.gd" id="1_e3dpw"]
 [ext_resource type="Texture2D" uid="uid://2jvvhirxtcxv" path="res://images/svg/emote_4.svg" id="2_sjndc"]
 [ext_resource type="Texture2D" uid="uid://bacr358wr407j" path="res://images/svg/emote_16.svg" id="3_js1hc"]
 [ext_resource type="Texture2D" uid="uid://s50ky036w531" path="res://images/svg/emote_8.svg" id="4_0n5mp"]
 [ext_resource type="Texture2D" uid="uid://c2bbd2wxkh0nd" path="res://images/svg/emote_2.svg" id="4_v0bpf"]
+[ext_resource type="Texture2D" uid="uid://cpjvlbfwgapc8" path="res://nodes/emote/test_icon/caution.svg" id="6_0woli"]
 
 [node name="Emote" type="Control"]
 custom_minimum_size = Vector2(128, 128)
@@ -43,6 +44,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 2.92
+offset_top = 4.08
+offset_right = 2.92
+offset_bottom = 4.08
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_js1hc")
@@ -54,6 +59,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -4.825
+offset_top = -2.285
+offset_right = -4.825
+offset_bottom = -2.285
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_v0bpf")
@@ -66,8 +75,28 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -5.455
+offset_bottom = -5.455
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_0n5mp")
 expand_mode = 1
-flip_h = true
+
+[node name="Icon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -22.84
+offset_top = -32.575
+offset_right = 22.16
+offset_bottom = 12.425
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(32, 32)
+texture = ExtResource("6_0woli")
+expand_mode = 3
+stretch_mode = 5

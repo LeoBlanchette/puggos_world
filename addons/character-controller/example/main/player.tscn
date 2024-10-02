@@ -7,14 +7,6 @@
 
 [node name="Player" groups=["players"] instance=ExtResource("1_fbpun")]
 script = ExtResource("2_8r0nc")
-input_back_action_name = "move_backward"
-input_forward_action_name = "move_forward"
-input_left_action_name = "move_left"
-input_right_action_name = "move_right"
-input_sprint_action_name = "move_sprint"
-input_jump_action_name = "move_jump"
-input_crouch_action_name = "move_crouch"
-input_fly_mode_action_name = "move_fly_mode"
 underwater_env = ExtResource("3_dxksd")
 slot_0 = -1
 slot_1 = -1

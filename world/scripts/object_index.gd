@@ -132,6 +132,36 @@ func get_all_animation_paths()->Array:
 		animation_paths.append(path)
 	return animation_paths
 
+## Emotes have a tag so that they can be called by command. 
+## This seraches emotes by tag and returns 0 if not found.
+func get_emote_id_by_tag(tag:String)->int:
+	if not index.has("emotes"):
+		return 0
+	for emote_id:int in index["emotes"]:
+		var emote:Node = index["emotes"][emote_id]
+		var tag_string:String = emote.get_meta("tag", "")
+		if tag_string.is_empty():
+			continue
+		if tag_string.begins_with(tag):
+			return emote.get_meta("id", 0)
+		else:
+			continue
+	return 0
+
+## Gets the path to the SVG of an icon.
+func get_emote_icon_path(id:int)->String:
+	var dir:String = get_mod_dir("emotes", id)
+	var ob:Node = ObjectIndex.get_object("emotes", id)
+	if ob == null:
+		return ""
+	var emote_name:String = ob.get_meta("mod_name")
+	var emote_path = "%s/%s%s"%[dir,emote_name, ".svg"]
+	'''
+	if not FileAccess.file_exists(emote_path):
+		print("Emote Graphic for (%s) not found at %s"%[str(ob), emote_path])
+		return ""
+	'''
+	return emote_path
 
 static func query(params:Dictionary) -> Dictionary:	
 	if not index.has(params["query"]):

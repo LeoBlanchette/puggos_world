@@ -20,6 +20,27 @@ enum ActionType{
 @export var player: Player
 @export var avatar: Avatar 
 
+#region authoritative action signals
+signal aiming(aiming:bool)
+var is_aiming:bool = false
+var is_aimable:bool = false
+
+var is_primary_action_engaged:bool = false
+signal primary_action_engaged(on:bool)
+
+var is_secondary_action_engaged:bool = false
+signal secondary_action_engaged(on:bool)
+
+var is_primary_action_alt_engaged:bool = false
+signal primary_action_alt_engaged(on:bool)
+
+var is_secondary_action_alt_engaged:bool = false
+signal secondary_action_alt_engaged(on:bool)
+
+var is_basic_interact_engaged:bool = false
+signal basic_interact_engaged(on:bool)
+#endregion 
+
 #region default animations
 @export var default_basic_interaction_animation_id:int=0
 @export var default_primary_action_animation_id:int=0
@@ -63,6 +84,7 @@ signal rate_limit_enforced
 signal rate_limit_released
 #endregion 
 
+
 #region testing
 @export var testing:bool = false
 #endregion 
@@ -73,12 +95,10 @@ func _ready() -> void:
 	avatar.get_character_appearance().pre_slot_equiped.connect(_on_character_appearance_pre_slot_equiped)
 	avatar.get_character_appearance().post_slot_equiped.connect(_on_character_appearance_post_slot_equiped)
 	avatar.get_animation_tree().play_animation_complete.connect(_on_action_complete)
-	
-	
-func _process(delta: float) -> void:
-	#print(avatar.animation_tree.animation_merger.animation_player.current_animation)
-	pass
-	#print(avatar.animation_tree.animation_player.current_animation)
+	secondary_action_engaged.connect(check_stop_aiming)
+	aiming.connect(do_aiming_loop)
+	aiming.connect(position_object_to_aim)
+	complete_action()
 
 ## The main function for coordinating actions with animations.
 func coordinate_action(action_type:ActionType, bypass_rate_limit:bool = false)->void:
@@ -95,37 +115,56 @@ func coordinate_action(action_type:ActionType, bypass_rate_limit:bool = false)->
 	var animation_name:String = ""
 	var default_animation_name:String = ""
 	var rate_limit_actions = false
-	
+
 	match action_type:
 		
 		ActionType.BASIC_INTERACTION:
+			if not is_basic_interact_engaged:
+				basic_interact_engaged.emit(true)
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_basic_interaction_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(basic_interaction_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, basic_interaction_animation_mask)
+			is_basic_interact_engaged = true
 			rate_limit_actions = true
 		
 		ActionType.PRIMARY_ACTION:
+			if not is_primary_action_engaged:
+				primary_action_engaged.emit(true)
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_primary_action_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(primary_action_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, primary_action_animation_mask)
+			is_primary_action_engaged = true
 			rate_limit_actions = true
 		
 		ActionType.SECONDARY_ACTION:
+			var loop:bool = false
+			if not is_secondary_action_engaged:
+				secondary_action_engaged.emit(true)
+			if is_aimable && not is_aiming:
+				aiming.emit(true)
+				loop = true			
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_secondary_action_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(secondary_action_animation_id, default_animation_name)
-			avatar.play_animation(animation_name, secondary_action_animation_mask)
+			avatar.play_animation(animation_name, secondary_action_animation_mask, loop)
+			is_secondary_action_engaged = true
 			rate_limit_actions = true
-		
+			
 		ActionType.PRIMARY_ACTION_ALT:
+			if not is_primary_action_alt_engaged:
+				primary_action_alt_engaged.emit(true)
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_primary_action_alt_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(primary_action_alt_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, primary_action_alt_animation_mask)
+			is_primary_action_alt_engaged = true
 			rate_limit_actions = true
 		
 		ActionType.SECONDARY_ACTION_ALT:
+			if not is_secondary_action_alt_engaged:
+				secondary_action_alt_engaged.emit(true)
 			default_animation_name = ObjectIndex.object_index.get_animation_name(default_secondary_action_alt_animation_id)
 			animation_name = ObjectIndex.object_index.get_animation_name(secondary_action_alt_animation_id, default_animation_name)
 			avatar.play_animation(animation_name, secondary_action_alt_animation_mask)
+			is_secondary_action_alt_engaged = true
 			rate_limit_actions = true
 		
 		# OTHER
@@ -135,9 +174,10 @@ func coordinate_action(action_type:ActionType, bypass_rate_limit:bool = false)->
 				play_short_idle_animation()
 		
 		ActionType.LONG_IDLE:
-			default_animation_name = ObjectIndex.object_index.get_animation_name(default_long_idle_animation_id)
-			animation_name = ObjectIndex.object_index.get_animation_name(long_idle_animation_id, default_animation_name)
-			avatar.play_animation(animation_name, long_idle_animation_mask, true)
+			if not player.is_moving:
+				default_animation_name = ObjectIndex.object_index.get_animation_name(default_long_idle_animation_id)
+				animation_name = ObjectIndex.object_index.get_animation_name(long_idle_animation_id, default_animation_name)
+				avatar.play_animation(animation_name, long_idle_animation_mask, true)
 		
 		ActionType.END_MOVE:
 			#avatar.play_animation("")
@@ -151,7 +191,7 @@ func coordinate_action(action_type:ActionType, bypass_rate_limit:bool = false)->
 			avatar.stop_animation()
 		_:
 			play_short_idle_animation()
-	
+			
 	if rate_limit_actions:
 		rate_limited_action_type = action_type
 		var animation_length = avatar.get_animation_tree().get_animation_length(animation_name)
@@ -196,12 +236,25 @@ func change_short_idle_animation(slot: CharacterAppearance.Equippable, meta: Dic
 
 func play_short_idle_animation():
 	await get_tree().process_frame
-	var animation_name:String = ""
-	var default_animation_name:String = ""
-	default_animation_name = ObjectIndex.object_index.get_animation_name(default_short_idle_animation_id)
-	animation_name = ObjectIndex.object_index.get_animation_name(short_idle_animation_id, default_animation_name)
+	var default_animation_name = ObjectIndex.object_index.get_animation_name(default_short_idle_animation_id)
+	var animation_name = ObjectIndex.object_index.get_animation_name(short_idle_animation_id, default_animation_name)
 	if not avatar.is_playing_animation(animation_name):
 		avatar.play_animation(animation_name, short_idle_animation_mask, true)
+
+## After much consideration, only a slot 34 item can be aimed. The presense of 
+## an aimable in slot 34 enables aim mode, which loops-back the animation 
+## associated with Secondary Action, the animation being a mere pose of 
+## the character aiming.
+func detect_aimable(slot: CharacterAppearance.Equippable, meta: Dictionary):
+	if slot != CharacterAppearance.Equippable.SLOT_34:
+		# this is not a slot that can have aiming applied.
+		return
+	if not meta.has("id"):
+		return 
+	var id:int = meta["id"]
+	var ob:Node3D = ObjectIndex.get_object("items", id)	
+	is_aimable = ob.has_meta("anchor_slot_34_position_aiming")
+
 	
 ## The much-anticipated end-process function of applying the 
 ## offset from the object's meta to the transform of object in anchor.
@@ -227,30 +280,81 @@ func rate_limit_action(time:float):
 	rate_limited_action_type = ActionType.NONE
 	rate_limit_released.emit()
 
+#region Aiming...
+func do_aiming_loop(_aiming:bool):
+	if _aiming:
+		start_aim_loop()
+	else:
+		stop_aim_loop()
+
+func start_aim_loop():
+	is_aiming = true
+
+func stop_aim_loop():
+	is_aiming = false
+	
+func position_object_to_aim(_aiming:bool):
+	var object_in_slot:Node3D = avatar.character_appearance.get_slot_object(34)
+	if object_in_slot == null:
+		return
+	if _aiming:
+		object_in_slot.position = object_in_slot.get_meta("anchor_slot_34_position_aiming", object_in_slot.position)
+		object_in_slot.rotation_degrees = object_in_slot.get_meta("anchor_slot_34_rotation_aiming", object_in_slot.rotation_degrees)
+	else:
+		object_in_slot.position = object_in_slot.get_meta("anchor_slot_34_position", object_in_slot.position)
+		object_in_slot.rotation_degrees = object_in_slot.get_meta("anchor_slot_34_rotation", object_in_slot.rotation_degrees)
+
+func check_stop_aiming(_aiming:bool):
+	if not _aiming:		
+		aiming.emit(false)
+		coordinate_action(ActionType.SHORT_IDLE, true)
+	
+#endregion 
+
 #region signal listeners
 ## Simply relays the action to the coordinate_action function.
 ## Signal connected from root Player class.
-func _on_player_do_action_basic_interact_pressed() -> void:
+func _on_player_do_action_basic_interact_pressed(on:bool = true) -> void:
+	if not on && is_basic_interact_engaged:
+		is_basic_interact_engaged = false
+		basic_interact_engaged.emit(false)
+		return
 	coordinate_action(ActionType.BASIC_INTERACTION)
 
 ## Simply relays the action to the coordinate_action function.
 ## Signal connected from root Player class.
-func _on_player_primary_action_alt_pressed() -> void:
+func _on_player_primary_action_alt_pressed(on:bool = true) -> void:
+	if not on && is_primary_action_alt_engaged:
+		is_basic_interact_engaged = false
+		primary_action_alt_engaged.emit(false)		
+		return
 	coordinate_action(ActionType.PRIMARY_ACTION_ALT)
 
 ## Simply relays the action to the coordinate_action function.
 ## Signal connected from root Player class.
-func _on_player_primary_action_pressed() -> void:
+func _on_player_primary_action_pressed(on:bool = true) -> void:
+	if not on && is_primary_action_engaged:
+		is_primary_action_engaged = false
+		primary_action_engaged.emit(false)
+		return
 	coordinate_action(ActionType.PRIMARY_ACTION)
 
 ## Simply relays the action to the coordinate_action function.
 ## Signal connected from root Player class.
-func _on_player_seconary_action_alt_pressed() -> void:
+func _on_player_seconary_action_alt_pressed(on:bool = true) -> void:
+	if not on && is_secondary_action_alt_engaged:
+		is_secondary_action_alt_engaged = false
+		secondary_action_alt_engaged.emit(false)
+		return
 	coordinate_action(ActionType.SECONDARY_ACTION_ALT)
 
 ## Simply relays the action to the coordinate_action function.
 ## Signal connected from root Player class.
-func _on_player_secondary_action_pressed() -> void:
+func _on_player_secondary_action_pressed(on:bool = true) -> void:
+	if not on && is_secondary_action_engaged:
+		is_secondary_action_engaged = false
+		secondary_action_engaged.emit(false)
+		return
 	coordinate_action(ActionType.SECONDARY_ACTION)
 
 func _on_player_is_long_idle_changed(_value: Variant) -> void:
@@ -270,9 +374,14 @@ func _on_player_player_moved() -> void:
 	coordinate_action(ActionType.START_MOVE, true)
 
 func complete_action():
+	if is_rate_limited:
+		await rate_limit_released
 	_on_action_complete()
 	
 func _on_action_complete():
+	if is_rate_limited:
+		await rate_limit_released
+		
 	coordinate_action(ActionType.SHORT_IDLE)
 
 func _on_character_appearance_pre_slot_equiped(slot: CharacterAppearance.Equippable, meta: Dictionary) -> void:
@@ -281,6 +390,7 @@ func _on_character_appearance_pre_slot_equiped(slot: CharacterAppearance.Equippa
 
 func _on_character_appearance_post_slot_equiped(slot: CharacterAppearance.Equippable, meta: Dictionary) -> void:
 	apply_slot_offset(slot, meta)
+	detect_aimable(slot, meta)
 
 ## This is first triggered in the Console or UI. It changes the personality 
 ## aka long idle of the character.

@@ -74,7 +74,7 @@ func _process(delta: float) -> void:
 	if doing_avatar_rotation:
 		update_rotation_to_new_facing_direction(delta)
 		return
-	if player.is_moving:
+	if player.is_moving || action_manager.is_aiming:
 		align_avatar_with_player_object()	
 	if face_toward_last_facing_rotation:
 		avatar.global_rotation_degrees = last_player_facing_rotation
@@ -138,7 +138,7 @@ func align_avatar_with_player_object():
 func update_view_target():
 	view_marker = player.projected_view_marker
 
-func look_at_focus_point():
+func look_at_focus_point():	
 	if player.display_mode:
 		animation_merger.enable_head_look(false)
 		return
@@ -151,6 +151,9 @@ func look_at_focus_point():
 		animation_merger.enable_head_look(false)
 		return
 	if action_manager.is_rate_limited:
+		animation_merger.enable_head_look(false)
+		return
+	if action_manager.is_aiming:
 		animation_merger.enable_head_look(false)
 		return
 	animation_merger.enable_head_look(true)
