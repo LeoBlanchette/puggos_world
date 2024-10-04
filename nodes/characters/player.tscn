@@ -178,9 +178,10 @@ properties/53/path = NodePath(".:emote")
 properties/53/spawn = true
 properties/53/replication_mode = 2
 
-[node name="Player" node_paths=PackedStringArray("camera_3d", "multiplayer_synchronizer", "spawner_node", "avatar", "rate_limit_timer") instance=ExtResource("1_kprfw")]
+[node name="Player" node_paths=PackedStringArray("camera_3d", "multiplayer_synchronizer", "build_interactor", "spawner_node", "avatar", "rate_limit_timer") instance=ExtResource("1_kprfw")]
 camera_3d = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D")
 multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
+build_interactor = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuildInteractor")
 spawner_node = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/SpawnerNode")
 avatar = NodePath("Avatar")
 long_idle_time = 35.0
@@ -215,14 +216,16 @@ debug_shape_custom_color = Color(0.0812519, 0.589243, 3.85046e-07, 1)
 
 [node name="Marker3D" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/InteractionNode" index="1"]
 
-[node name="BuildInteractor" type="RayCast3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D" index="1"]
+[node name="BuildInteractor" type="RayCast3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D" index="1" node_paths=PackedStringArray("anchor")]
 target_position = Vector3(0, 0, -10)
 script = ExtResource("6_g21ep")
-current_cell_size = 3.0
+anchor = NodePath("Anchor")
 testing = true
 
 [node name="BuildInteractorVisualizer" type="Node2D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuildInteractor" index="0"]
 script = ExtResource("7_2wero")
+
+[node name="Anchor" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuildInteractor" index="1"]
 
 [node name="SpawnerNode" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -5)

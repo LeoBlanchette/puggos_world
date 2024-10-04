@@ -38,7 +38,8 @@ signal emote_changed(value:int)
 
 @export var underwater_env: Environment
 
-@export var builder_node: Node
+@export var build_interactor: BuildInteractor 
+
 @export var spawner_node: Node3D
 
 var activated:bool = false
@@ -490,7 +491,7 @@ func update_avatar_animation_global():
 	avatar.movement = blend_position
 
 func enter_placement_mode(object_category:String, object_id:int):
-	builder_node.enter_placement_mode(object_category, object_id)
+	build_interactor.enter_placement_mode(object_category, object_id)
 
 ## Runs by physics process. Will set idle to true when no interupting conditions occur.
 func detect_idle(delta:float):

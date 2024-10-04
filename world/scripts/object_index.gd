@@ -76,6 +76,13 @@ static func get_object(category: String, id: int):
 static func reset():
 	object_index.index = {}
 
+func get_structure(id:int)->Node3D:
+	if not object_index.index.has("structures"):
+		return null
+	if not object_index.index["structures"].has(id):
+		return null
+	return object_index.index["structures"][id]
+
 func get_all_mod_objects()->Array:
 	var mod_objects:Array = []
 	for key in ObjectIndex.index:

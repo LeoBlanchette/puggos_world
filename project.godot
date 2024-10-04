@@ -188,10 +188,7 @@ left_mouse_button_alt={
 3d_physics/layer_9="gizmo"
 3d_physics/layer_10="gizmo_guides_1"
 3d_physics/layer_11="gizmo_guides_2"
-3d_physics/layer_29="modular_building_space_occupied"
-3d_physics/layer_30="modular_building_layer_1"
-3d_physics/layer_31="modular_building_layer_2"
-3d_physics/layer_32="modular_building_layer_3"
+3d_physics/layer_32="no_interaction"
 
 [physics]
 
