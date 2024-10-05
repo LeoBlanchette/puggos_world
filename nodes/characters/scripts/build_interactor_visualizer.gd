@@ -8,7 +8,7 @@ extends Node2D
 @export var color_wall_points:Color = Color.ORANGE
 @export var color_pillar_points:Color = Color.FUCHSIA
 @export var color_collision_point:Color = Color.GREEN
-
+@export var color_closest_anchor_point:Color = Color.GREEN
 
 var camera_3d:Camera3D = null
 var current_grid_point:Vector3 = Vector3.ZERO
@@ -34,6 +34,7 @@ func _draw():
 	draw_wall_points()
 	draw_pillar_points()
 	draw_collision_point()
+	draw_closest_anchor_point()
 
 func draw_collision_point():
 	var hit_point:Vector2 = camera_3d.unproject_position(build_interactor.current_collision_point)
@@ -92,3 +93,7 @@ func draw_pillar_points():
 	draw_circle(camera_3d.unproject_position(pillar_2), 3, color_pillar_points)
 	draw_circle(camera_3d.unproject_position(pillar_3), 3, color_pillar_points)
 	draw_circle(camera_3d.unproject_position(pillar_4), 3, color_pillar_points)
+
+func draw_closest_anchor_point():
+	var closest_anchor_point:Vector3 = Grid.get_closest_anchor_point(build_interactor.current_collision_point)
+	draw_circle(camera_3d.unproject_position(closest_anchor_point), 6, color_closest_anchor_point, false, 1)

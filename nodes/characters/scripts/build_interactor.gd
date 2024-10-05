@@ -5,6 +5,7 @@ class_name BuildInteractor
 @export var current_cell_size:float = 4
 var current_grid_point:Vector3 = Vector3.ZERO
 var current_collision_point:Vector3 = Vector3.ZERO
+var current_structure_type:Types.ModularStructureType = Types.ModularStructureType.NONE
 
 ## This is the representation of the placeable object.
 @export var anchor:Marker3D 
@@ -22,7 +23,8 @@ func get_current_grid_point():
 		current_grid_point = Grid.get_grid_cell_center_point(get_collision_point(), current_cell_size)
 
 func position_anchor():
-	anchor.global_position = current_collision_point
+	var compatible_anchor_point:Vector3 = Grid.get_closest_anchor_point(current_collision_point, current_structure_type)
+	anchor.global_position = compatible_anchor_point
 	anchor.global_rotation_degrees = Vector3.ZERO
 
 func clear_hologram():
@@ -39,6 +41,7 @@ func reset_hologram():
 func anchor_hologram():
 	clear_hologram()
 	anchor.add_child(hologram)
+	update_current_structure_type()
 	reset_hologram()
 
 func enter_placement_mode(object_category:String, object_id:int):
@@ -47,4 +50,8 @@ func enter_placement_mode(object_category:String, object_id:int):
 		return
 	hologram = structure.duplicate()
 	anchor_hologram()
+	
+func update_current_structure_type():
+	var structure_type_meta:String = hologram.get_meta("structure_type", "NONE")
+	current_structure_type = Types.ModularStructureType.get(structure_type_meta)
 	

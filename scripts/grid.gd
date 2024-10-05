@@ -40,6 +40,9 @@ func get_grid_cell_center_point(pos:Vector3, cell_size:float)->Vector3:
 		update_current_grid_cell(cell_center_point, cell_size)
 	return cell_center_point
 
+func get_closest_anchor_point(pos:Vector3, modular_structure_type:Types.ModularStructureType = Types.ModularStructureType.NONE):
+	return current_grid_cell.get_closest_anchor_point(pos, modular_structure_type)
+
 func get_current_grid_point()->Vector3:
 	return current_grid_cell.get_cell_point()
 
@@ -48,5 +51,4 @@ func get_current_cell_size():
 
 func update_current_grid_cell(pos:Vector3, cell_size:float):
 	current_grid_cell = GridCell.new(pos, cell_size)
-	print(current_grid_cell.get_cell_point(Types.CompassDirection.NORTH))
 	

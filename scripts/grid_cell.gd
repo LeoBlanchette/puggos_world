@@ -56,3 +56,50 @@ func get_cell_point(direction:Types.CompassDirection = Types.CompassDirection.NO
 		_:
 			return cell_center_point
 	return cell_center_point
+
+func get_anchor_points(modular_structure_type:Types.ModularStructureType = Types.ModularStructureType.NONE)->Array[Vector3]:
+	var points:Array[Vector3] = []
+
+	var point_center:Array[Vector3] = [
+		cell_center_point,
+	]
+
+	var points_walls:Array[Vector3] = [
+		cell_point_north,
+		cell_point_east,
+		cell_point_south,
+		cell_point_west,
+	]
+	
+	var points_pillars:Array[Vector3] = [
+		cell_point_north_east,
+		cell_point_south_east,
+		cell_point_south_west,
+		cell_point_north_west,
+	]
+	
+	match modular_structure_type:
+		Types.ModularStructureType.NONE:
+			points = point_center + points_walls + points_pillars
+		Types.ModularStructureType.FLOOR:
+			points = point_center
+		Types.ModularStructureType.WALL_1:
+			points = points_walls
+		Types.ModularStructureType.WALL_2:
+			points = points_walls
+		Types.ModularStructureType.PILLAR:
+			points = points_pillars
+		Types.ModularStructureType.INTERIOR_MODULE:
+			points = point_center
+	return points
+
+## Gets the closest anchor point to the position supplied.
+func get_closest_anchor_point(pos:Vector3, modular_structure_type:Types.ModularStructureType = Types.ModularStructureType.NONE)->Vector3:	
+	var points:Array[Vector3] = get_anchor_points(modular_structure_type)	
+	var closest_point:Vector3 = Vector3.ZERO
+	var last_distance = 99999999	
+	for point in points:
+		if pos.distance_to(point) < last_distance:
+			last_distance = pos.distance_to(point)
+			closest_point = point	
+	return closest_point
