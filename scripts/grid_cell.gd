@@ -15,6 +15,7 @@ var cell_point_west:Vector3
 var cell_point_north_west:Vector3
 
 func _init(_cell_center_point:Vector3, _cell_size:float):
+
 	cell_center_point = _cell_center_point
 	cell_size = _cell_size
 	cell_size_half = _cell_size / 2
@@ -101,5 +102,57 @@ func get_closest_anchor_point(pos:Vector3, modular_structure_type:Types.ModularS
 	for point in points:
 		if pos.distance_to(point) < last_distance:
 			last_distance = pos.distance_to(point)
-			closest_point = point	
+			closest_point = point
 	return closest_point
+
+## Returns the compass direction based on the point supplied.
+func get_anchor_point_compass_direction(pos:Vector3)->Types.CompassDirection:
+	pos = get_closest_anchor_point(pos)
+	if pos == cell_center_point:
+		return Types.CompassDirection.NONE
+		
+	if pos == cell_point_north:
+		return Types.CompassDirection.NORTH
+	if pos == cell_point_east:
+		return Types.CompassDirection.EAST
+	if pos == cell_point_south:
+		return Types.CompassDirection.SOUTH
+	if pos == cell_point_west:
+		return Types.CompassDirection.WEST
+		
+	if pos == cell_point_north_east:
+		return Types.CompassDirection.NORTH_EAST
+	if pos == cell_point_south_east:
+		return Types.CompassDirection.SOUTH_EAST
+	if pos == cell_point_south_west:
+		return Types.CompassDirection.SOUTH_WEST
+	if pos == cell_point_north_west:
+		return Types.CompassDirection.NORTH_WEST
+		
+	return Types.CompassDirection.NONE
+
+func get_wall_rotation(pos:Vector3)->float:
+	var compass_direction:Types.CompassDirection = get_anchor_point_compass_direction(pos)
+	
+	match compass_direction:
+		Types.CompassDirection.NORTH:
+			return get_cell_point_rotation_north()
+		Types.CompassDirection.EAST:
+			return get_cell_point_rotation_east()
+		Types.CompassDirection.SOUTH:
+			return get_cell_point_rotation_south()
+		Types.CompassDirection.WEST:
+			return get_cell_point_rotation_west()	
+	return 0
+
+func get_cell_point_rotation_north()->float:
+	return -90
+
+func get_cell_point_rotation_east()->float:
+	return 180
+
+func get_cell_point_rotation_south()->float:
+	return 90
+
+func get_cell_point_rotation_west()->float:
+	return 0

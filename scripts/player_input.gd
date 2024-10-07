@@ -46,6 +46,7 @@ signal primary_action_alt_released
 signal secondary_action_alt_released
 signal action_basic_interact_released
 
+signal rotate_pressed
 
 var primary_action_active:bool = false
 var secondary_action_active:bool = false
@@ -138,6 +139,7 @@ func process_character_input(event:InputEvent):
 	
 
 	if event is InputEventMouseButton:
+		
 		# Actions Released
 		if event.is_action_released("left_mouse_button_alt") && primary_action_alt_active:
 			primary_action_alt_released.emit()
@@ -175,6 +177,9 @@ func process_character_input(event:InputEvent):
 			return
 			
 	if event is InputEventKey:
+		if event.is_action_pressed("rotate"):
+			rotate_pressed.emit()
+			
 		if event.is_action_released("basic_interact") && basic_interaction_active:
 			action_basic_interact_released.emit()
 			basic_interaction_active = false

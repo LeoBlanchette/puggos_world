@@ -52,3 +52,5 @@ func get_current_cell_size():
 func update_current_grid_cell(pos:Vector3, cell_size:float):
 	current_grid_cell = GridCell.new(pos, cell_size)
 	
+func get_wall_rotation(pos:Vector3)->float:
+	return current_grid_cell.get_wall_rotation(pos)

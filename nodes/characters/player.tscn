@@ -179,6 +179,7 @@ properties/53/spawn = true
 properties/53/replication_mode = 2
 
 [node name="Player" node_paths=PackedStringArray("camera_3d", "multiplayer_synchronizer", "build_interactor", "spawner_node", "avatar", "rate_limit_timer") instance=ExtResource("1_kprfw")]
+floor_max_angle = 0.872665
 camera_3d = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D")
 multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
 build_interactor = NodePath("Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuildInteractor")
@@ -189,6 +190,7 @@ rate_limit_timer = NodePath("RateLimitTimer")
 speed = 1.75
 acceleration = 5.0
 sprint_speed_multiplier = 3.0
+jump_height = 8.0
 
 [node name="UIHUD" parent="." index="0" node_paths=PackedStringArray("player") instance=ExtResource("2_nmrc8")]
 player = NodePath("..")
@@ -226,6 +228,9 @@ testing = true
 script = ExtResource("7_2wero")
 
 [node name="Anchor" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuildInteractor" index="1"]
+
+[node name="Probe" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuildInteractor" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
 
 [node name="SpawnerNode" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -5)
