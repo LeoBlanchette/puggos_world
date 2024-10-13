@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://bgk06cxwm7u8n"]
+[gd_scene load_steps=16 format=3 uid="uid://bgk06cxwm7u8n"]
 
 [ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="1_kprfw"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/register_player.gd" id="2_3b31x"]
 [ext_resource type="PackedScene" uid="uid://7qxa2xlrunw0" path="res://ui/ui_hud.tscn" id="2_nmrc8"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/view_switch.gd" id="2_vpfrc"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/interaction_node.gd" id="5_3n0vt"]
+[ext_resource type="Script" path="res://nodes/characters/climb_sensor.gd" id="5_81o7f"]
 [ext_resource type="Script" path="res://nodes/characters/multiplayer_synchronizer.gd" id="6_f55i6"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/build_interactor.gd" id="6_g21ep"]
 [ext_resource type="Script" path="res://nodes/characters/scripts/build_interactor_visualizer.gd" id="7_2wero"]
@@ -201,6 +202,25 @@ script = ExtResource("2_3b31x")
 [node name="View Switch" type="Node" parent="." index="3"]
 script = ExtResource("2_vpfrc")
 
+[node name="ClimbSensor" type="Node3D" parent="." index="11"]
+script = ExtResource("5_81o7f")
+
+[node name="ClimbTargetSensor" type="RayCast3D" parent="ClimbSensor" index="0"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.396, -0.75)
+target_position = Vector3(0, 0, -1.2)
+
+[node name="Sensor_3" type="RayCast3D" parent="ClimbSensor" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+target_position = Vector3(0, 0, -0.65)
+
+[node name="Sensor_2" type="RayCast3D" parent="ClimbSensor" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+target_position = Vector3(0, 0, -0.65)
+
+[node name="Sensor_1" type="RayCast3D" parent="ClimbSensor" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, 0)
+target_position = Vector3(0, 0, -0.65)
+
 [node name="ViewInteraction" type="Node3D" parent="Head/ThirdPersonCameraReference" index="0"]
 
 [node name="Camera3D" type="Camera3D" parent="Head/ThirdPersonCameraReference/ViewInteraction" index="0"]
@@ -222,7 +242,6 @@ debug_shape_custom_color = Color(0.0812519, 0.589243, 3.85046e-07, 1)
 target_position = Vector3(0, 0, -10)
 script = ExtResource("6_g21ep")
 anchor = NodePath("Anchor")
-testing = true
 
 [node name="BuildInteractorVisualizer" type="Node2D" parent="Head/ThirdPersonCameraReference/ViewInteraction/Camera3D/BuildInteractor" index="0"]
 script = ExtResource("7_2wero")
@@ -235,7 +254,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
 [node name="SpawnerNode" type="Marker3D" parent="Head/ThirdPersonCameraReference/ViewInteraction" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -5)
 
-[node name="ActionManager" type="Node3D" parent="." index="13" node_paths=PackedStringArray("player", "avatar")]
+[node name="ActionManager" type="Node3D" parent="." index="14" node_paths=PackedStringArray("player", "avatar")]
 script = ExtResource("8_av0vo")
 player = NodePath("..")
 avatar = NodePath("../Avatar")
@@ -253,8 +272,10 @@ default_primary_action_alt_animation_mask = "FULL"
 default_secondary_action_alt_animation_mask = "FULL"
 default_short_idle_animation_mask = "TORSO"
 default_long_idle_animation_mask = "FULL"
+step_up_animation_id = 191
+climb_up_animation_id = 190
 
-[node name="EmoteManager" type="Node3D" parent="." index="14"]
+[node name="EmoteManager" type="Node3D" parent="." index="15"]
 script = ExtResource("9_aad5o")
 
 [node name="EmoteDrawing" type="Node2D" parent="EmoteManager" index="0"]
@@ -276,7 +297,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2.1, 0)
 [node name="EmotePointMiddle" type="Marker3D" parent="EmoteManager/EmoteAnchors" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63624, 0)
 
-[node name="AvatarPointer" type="Node3D" parent="." index="15" node_paths=PackedStringArray("player", "action_manager", "avatar")]
+[node name="AvatarPointer" type="Node3D" parent="." index="16" node_paths=PackedStringArray("player", "action_manager", "avatar")]
 script = ExtResource("9_q1wpy")
 player = NodePath("..")
 action_manager = NodePath("../ActionManager")
@@ -284,13 +305,13 @@ avatar = NodePath("../Avatar")
 avatar_turn_threshold = 90.0
 avatar_rotation_speed = 1.5
 
-[node name="RateLimitTimer" type="Timer" parent="." index="16"]
+[node name="RateLimitTimer" type="Timer" parent="." index="17"]
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="17"]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="18"]
 replication_config = SubResource("SceneReplicationConfig_260u7")
 script = ExtResource("6_f55i6")
 
-[node name="Avatar" parent="." index="18" instance=ExtResource("8_y755v")]
+[node name="Avatar" parent="." index="19" instance=ExtResource("8_y755v")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1, 0)
 
 [connection signal="do_action_basic_interact_pressed" from="." to="ActionManager" method="_on_player_do_action_basic_interact_pressed"]

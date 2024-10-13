@@ -14,6 +14,8 @@ enum ActionType{
 	LONG_IDLE,
 	END_MOVE,
 	START_MOVE,
+	CLIMB_UP,
+	STEP_UP,
 	NONE,
 }
 
@@ -59,6 +61,14 @@ signal basic_interact_engaged(on:bool)
 @export var default_long_idle_animation_mask:String=""
 #endregion
 
+#region climb animations 
+@export var step_up_animation_id:int
+@export var climb_up_animation_id:int
+@export var step_up_animation_mask:String = "FULL"
+@export var climb_up_animation_mask:String = "FULL" 
+#endregion
+
+
 #region altered_animations
 var basic_interaction_animation_id:int=0
 var primary_action_animation_id:int=0
@@ -92,6 +102,8 @@ signal rate_limit_released
 func _ready() -> void:
 	if not avatar.get_character_appearance().is_node_ready():
 		await avatar.get_character_appearance().ready
+	player.do_action_step_up.connect(_on_do_action_step_up_initiated)
+	player.do_action_climb_up.connect(_on_do_action_climb_up_initiated)
 	avatar.get_character_appearance().pre_slot_equiped.connect(_on_character_appearance_pre_slot_equiped)
 	avatar.get_character_appearance().post_slot_equiped.connect(_on_character_appearance_post_slot_equiped)
 	avatar.get_animation_tree().play_animation_complete.connect(_on_action_complete)
@@ -189,9 +201,21 @@ func coordinate_action(action_type:ActionType, bypass_rate_limit:bool = false)->
 			if is_rate_limited:
 				await rate_limit_released
 			avatar.stop_animation()
+			
+		ActionType.CLIMB_UP:
+			animation_name = ObjectIndex.object_index.get_animation_name(climb_up_animation_id)
+			avatar.play_animation(animation_name, climb_up_animation_mask)
+			do_climb_up_process(avatar.animation_tree.get_animation_length(animation_name))
+			rate_limit_actions = true
+			
+		ActionType.STEP_UP:
+			animation_name = ObjectIndex.object_index.get_animation_name(step_up_animation_id)
+			avatar.play_animation(animation_name, step_up_animation_mask)
+			do_step_up_process(avatar.animation_tree.get_animation_length(animation_name))
+			rate_limit_actions = true
 		_:
 			play_short_idle_animation()
-			
+
 	if rate_limit_actions:
 		rate_limited_action_type = action_type
 		var animation_length = avatar.get_animation_tree().get_animation_length(animation_name)
@@ -311,6 +335,18 @@ func check_stop_aiming(_aiming:bool):
 	
 #endregion 
 
+#region climbing
+func do_step_up_process(process_time:float):
+	player.step_up_started.emit(process_time)
+	await get_tree().create_timer(process_time).timeout
+	player.step_up_stopped.emit()
+
+func do_climb_up_process(process_time:float):
+	player.climb_up_started.emit(process_time)
+	await get_tree().create_timer(process_time).timeout
+	player.climb_up_stopped.emit()
+#endregion 
+
 #region signal listeners
 ## Simply relays the action to the coordinate_action function.
 ## Signal connected from root Player class.
@@ -398,4 +434,11 @@ func _on_player_personality_id_changed(value: int) -> void:
 	long_idle_animation_id = value
 	if player.display_mode:
 		coordinate_action(ActionType.LONG_IDLE)
+		
+func _on_do_action_step_up_initiated():
+	coordinate_action(ActionType.STEP_UP)
+	
+func _on_do_action_climb_up_initiated():
+	coordinate_action(ActionType.CLIMB_UP)
+	
 #endregion 

@@ -19,11 +19,12 @@ var hologram:Node3D = null
 var hologram_last_postion:Vector3 = Vector3.ZERO
 var hologram_last_rotation:Vector3 = Vector3.ZERO
 
-@export var testing:bool = false
+@export var show_guides:bool = false
 
 func _ready() -> void:
 	PlayerInput.rotate_pressed.connect(rotate_hologram_90)
 	PlayerInput.primary_action_pressed.connect(place_object)
+	PlayerInput.alt_pressed.connect(toggle_guides)
 
 func _physics_process(delta: float) -> void:
 	get_current_grid_point()
@@ -114,3 +115,5 @@ func update_current_structure_type():
 	var structure_type_meta:String = hologram.get_meta("structure_type", "NONE")
 	current_structure_type = Types.ModularStructureType.get(structure_type_meta)
 	
+func toggle_guides():
+	show_guides = !show_guides

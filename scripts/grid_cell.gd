@@ -92,6 +92,8 @@ func get_anchor_points(modular_structure_type:Types.ModularStructureType = Types
 			points = points_pillars
 		Types.ModularStructureType.INTERIOR_MODULE:
 			points = point_center
+		Types.ModularStructureType.BLOCK:
+			points = point_center
 	return points
 
 ## Gets the closest anchor point to the position supplied.

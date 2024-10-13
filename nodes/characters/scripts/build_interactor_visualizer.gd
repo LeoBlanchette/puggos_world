@@ -14,17 +14,14 @@ var camera_3d:Camera3D = null
 var current_grid_point:Vector3 = Vector3.ZERO
 var current_cell_size:float = 0
 
-func _ready() -> void:
-	if not build_interactor.testing:
-		queue_free()
-
 func _process(_delta):
-	if not build_interactor.testing:
+	if not build_interactor.show_guides:
+		queue_redraw()
 		return
 	queue_redraw()
 
 func _draw():
-	if not build_interactor.testing:
+	if not build_interactor.show_guides:
 		return
 	camera_3d = get_viewport().get_camera_3d()
 	current_grid_point = build_interactor.current_grid_point

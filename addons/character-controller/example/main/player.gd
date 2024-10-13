@@ -24,6 +24,12 @@ signal is_long_idle_changed(value)
 signal player_stopped
 signal player_moved
 signal personality_id_changed(value:int)
+signal do_action_step_up
+signal do_action_climb_up
+signal climb_up_started(process_time:float)
+signal climb_up_stopped
+signal step_up_started(process_time:float)
+signal step_up_stopped
 #endregion
 
 #region emote signals
@@ -356,6 +362,7 @@ var time_idling:float = 0.0
 			enter_display_mode()
 			
 @onready var view_switch: Node = $"View Switch"
+@onready var climb_sensor: ClimbSensor = $ClimbSensor
 
 @export var projected_view_marker:Vector3 = Vector3.ZERO
 #endregion
@@ -375,6 +382,15 @@ var enforce_rate_limit:bool = false
 @export var rate_limit_timer:Timer = null
 #endregion 
 
+#region climb process
+
+var is_climbing_up:bool = false
+var is_stepping_up:bool = false
+var climb_up_time:float = 0
+var step_up_time:float = 0
+var climb_up_time_elapsed:float = 0
+var step_up_time_elapsed:float = 0
+#endregion 
 
 func _ready():
 	if peer_id == multiplayer.get_unique_id():
@@ -387,6 +403,11 @@ func _ready():
 	player_moved.connect(acknowledge_player_moved_signal)
 	player_stopped.connect(acknowledge_player_stopped_signal)
 	PlayerInput.head_motion_relative_changed.connect(rotate_head)
+	
+	step_up_started.connect(do_process_step_up)
+	climb_up_started.connect(do_process_climb_up)	
+	step_up_stopped.connect(stop_process_step_up)
+	climb_up_stopped.connect(stop_process_climb_up)	
 	
 	## The remaining is player controlled only. 
 	if not is_multiplayer_authority():
@@ -425,7 +446,12 @@ func _process(delta: float) -> void:
 		return
 	update_view_marker()
 	update_avatar_animation_local()
-		
+	
+	if is_climbing_up:
+		return	
+	if is_stepping_up:
+		return
+
 	if PlayerInput.is_valid_player_input:
 		if PlayerInput.fly_mode_toggled:
 			fly_ability.set_active(not fly_ability.is_actived())
@@ -435,13 +461,14 @@ func _process(delta: float) -> void:
 		input_sprint = PlayerInput.input_sprint
 		input_swim_down = PlayerInput.input_swim_down
 		input_swim_up = PlayerInput.input_swim_up
+		if input_jump && climb_sensor.block_jump:
+			initiate_climb()
 		move(delta, input_axis, input_jump, input_crouch, input_sprint, input_swim_down, input_swim_up)
 	else:
 		# NOTE: It is important to always call move() even if we have no inputs 
 		## to process, as we still need to calculate gravity and collisions.
 		move(delta)	
 	detect_idle(delta)
-
 
 func update_view_marker()->void:
 	var projection_point_on_window:Vector2 = Vector2(camera_3d.get_window().size.x/2, camera_3d.get_window().size.y/2)
@@ -529,6 +556,13 @@ func is_idle()->bool:
 		return true
 	return false
 
+func initiate_climb():
+	input_jump = false
+	if climb_sensor.is_step_up_available:
+		do_action_step_up.emit()
+	if climb_sensor.is_climb_up_available:
+		do_action_climb_up.emit()
+
 func break_idle():
 	time_idling = 0
 	if is_short_idle:
@@ -538,6 +572,30 @@ func break_idle():
 		is_long_idle = false
 	if not player_moved_signaled:
 		emit_player_moved.rpc()
+
+func do_process_climb_up(process_time:float):
+	is_climbing_up = true
+	climb_up_time = process_time
+	var tween = get_tree().create_tween()
+	var destination:Vector3 = climb_sensor.get_climb_target()+Vector3.UP
+	tween.tween_property(self, "global_position", destination, process_time).set_trans(Tween.TransitionType.TRANS_QUAD)
+	
+
+func do_process_step_up(process_time:float):
+	step_up_time = process_time
+	is_stepping_up = true
+	var tween = get_tree().create_tween()
+	var destination:Vector3 = climb_sensor.get_climb_target()+Vector3.UP
+	tween.tween_property(self, "global_position", destination, process_time).set_trans(Tween.TransitionType.TRANS_QUINT)
+	
+	
+func stop_process_climb_up():
+	is_climbing_up = false
+	climb_up_time_elapsed = 0
+
+func stop_process_step_up():
+	is_stepping_up = false
+	step_up_time_elapsed = 0
 
 @rpc("any_peer", "call_local", "unreliable")
 func emit_player_moved():
