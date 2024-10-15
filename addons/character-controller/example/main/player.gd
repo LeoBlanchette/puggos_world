@@ -586,7 +586,7 @@ func do_process_step_up(process_time:float):
 	is_stepping_up = true
 	var tween = get_tree().create_tween()
 	var destination:Vector3 = climb_sensor.get_climb_target()+Vector3.UP
-	tween.tween_property(self, "global_position", destination, process_time).set_trans(Tween.TransitionType.TRANS_QUINT)
+	tween.tween_property(self, "global_position", destination, process_time).set_trans(Tween.TransitionType.TRANS_CIRC)
 	
 	
 func stop_process_climb_up():
