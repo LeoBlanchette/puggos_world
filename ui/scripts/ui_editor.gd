@@ -23,7 +23,6 @@ var view_port_mode:bool = false
 #region mode containers
 @export var object_ops: MarginContainer
 @export var object_ops_right: MarginContainer 
-
 #endregion 
 
 var action_update:String:
@@ -33,6 +32,7 @@ var action_update:String:
 		action_updates_label.text = value
 
 func _ready():	
+	PlayerInput.input_mode = PlayerInput.InputMode.OBJECT_EDITOR_INPUT
 	connect_signals()
 	set_button_local_space_mode()
 
@@ -147,10 +147,12 @@ func _on_option_button_item_selected(index: int) -> void:
 	match index:
 		0:
 			Editor.instance.current_editor_context = Editor.CurrentEditorContext.OBJECT_EDIT
+			PlayerInput.input_mode = PlayerInput.InputMode.OBJECT_EDITOR_INPUT
 		1:
 			Editor.instance.current_editor_context = Editor.CurrentEditorContext.TERRAIN_EDIT 
+			PlayerInput.input_mode = PlayerInput.InputMode.TERRAIN_EDITOR_INPUT
 		_:
-			pass
+			PlayerInput.input_mode = PlayerInput.InputMode.CHARACTER_INPUT
 	
 func _on_editor_context_changed(_old_context:Editor.CurrentEditorContext, new_context:Editor.CurrentEditorContext)->void:
 	object_ops.hide()

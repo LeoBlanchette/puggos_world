@@ -20,7 +20,6 @@ static var mod_manager: ModManager = null
 ## IMPORTANT array that contains the core information for mod scanning
 ## valid_mod_types
 static var valid_creator_mod_types: Array = [
-	["terrains/terrain/", "terrain.tscn"],
 	["structures/modular/", "structure.tscn"],
 	["materials/structures_modular/", "material.tres"],
 	["images/player_faces/", "face.png"],

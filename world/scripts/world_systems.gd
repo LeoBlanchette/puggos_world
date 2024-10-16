@@ -10,6 +10,7 @@ func _ready() -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func spawn_object(category:String, id:int, pos:Vector3, rot:Vector3):
+	print("HERE")
 	if not multiplayer.is_server():
 		return
 	var ob:Node3D = ObjectIndex.spawn(category, id)

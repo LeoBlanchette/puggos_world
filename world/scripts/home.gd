@@ -28,6 +28,7 @@ func _ready() -> void:
 	spawn_preview_character()
 	#camera_3d.current = true
 	GameManager.instance.ui_ready.connect(populate_character_options)
+	PlayerInput.input_mode = PlayerInput.InputMode.UI_INPUT
 
 func _exit_tree() -> void:
 	# This was commented out because it seems to be a race condition 

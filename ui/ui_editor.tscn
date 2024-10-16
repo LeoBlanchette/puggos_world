@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://crosvu1qvbywp" path="res://images/icons/editor/Play.svg" id="7_7oiso"]
 [ext_resource type="Texture2D" uid="uid://b6m8ovj3ewehw" path="res://images/icons/editor/ImageTexture3D.svg" id="8_rvhb3"]
 [ext_resource type="Texture2D" uid="uid://cg3bctpewr2wu" path="res://images/icons/editor/ViewportSpeed.svg" id="9_7rqip"]
-[ext_resource type="Texture2D" uid="uid://dql5jmolcb0yd" path="res://addons/godot_aerodynamic_physics/icons/object.svg" id="11_n4rsj"]
+[ext_resource type="Texture2D" uid="uid://cy2ylh64xp12u" path="res://addons/godot_aerodynamic_physics/icons/object.svg" id="11_n4rsj"]
 [ext_resource type="PackedScene" uid="uid://b7ojyw6bptbkg" path="res://ui/scripts/elements/divider.tscn" id="11_xl0nv"]
 [ext_resource type="PackedScene" uid="uid://qj2rmi63n4ga" path="res://ui/building_interface_elements/transform_adjuster.tscn" id="13_qiin7"]
 [ext_resource type="Texture2D" uid="uid://bi387joh01con" path="res://images/icons/editor/NodeWarning.svg" id="14_f3xxl"]

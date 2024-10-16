@@ -9,6 +9,8 @@ enum InputMode{
 	CHARACTER_INPUT,
 	VEHICLE_INPUT,
 	UI_INPUT,
+	OBJECT_EDITOR_INPUT,
+	TERRAIN_EDITOR_INPUT,
 }
 
 var input_mode = InputMode.CHARACTER_INPUT
@@ -93,6 +95,23 @@ var head_motion_relative:Vector2 = Vector2.ZERO:
 #region ui input vars
 #endregion 
 
+#region EDITOR
+signal editor_target_selected
+signal mouselook_engaged
+signal mouselook_disengaged
+var _mouse_position:Vector2 = Vector2.ZERO
+var _vel_multiplier = 4
+# Keyboard state
+var editor_forward_pressed = false
+var editor_backward_pressed = false
+var editor_left_pressed = false
+var editor_right_pressed = false
+var editor_up_pressed = false
+var editor_down_pressed = false
+var editor_shift_pressed = false
+var editor_alt_pressed = false
+#endregion 
+
 func _ready() -> void:
 	if testing:
 		primary_action_held.connect(_on_primary_action_held)
@@ -115,6 +134,10 @@ func _input(event: InputEvent) -> void:
 			process_vehicle_input(event)
 		InputMode.UI_INPUT:
 			process_ui_input(event)
+		InputMode.OBJECT_EDITOR_INPUT:
+			process_editor_object_mode_input(event)
+		InputMode.TERRAIN_EDITOR_INPUT:
+			process_editor_terrain_mode_input(event)
 			
 #region CHARACTER
 func process_character_input(event:InputEvent):
@@ -297,4 +320,64 @@ func process_vehicle_input(event:InputEvent):
 #region UI
 func process_ui_input(event:InputEvent):
 	pass
+#endregion 
+
+
+#region EDITOR OBJECT MODE
+func process_editor_mode_input(event:InputEvent):
+	if UI.instance.is_ui_blocking():
+		return
+	# Receives mouse motion
+	if event is InputEventMouseMotion:
+		_mouse_position = event.relative
+	
+	# Receives mouse button input
+	if event is InputEventMouseButton:
+		match event.button_index:
+			MOUSE_BUTTON_RIGHT: # Only allows rotation if right click down
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED if event.pressed else Input.MOUSE_MODE_VISIBLE)
+			MOUSE_BUTTON_WHEEL_UP: # Increases max velocity
+				_vel_multiplier = clamp(_vel_multiplier * 1.1, 0.2, 20)
+			MOUSE_BUTTON_WHEEL_DOWN: # Decereases max velocity
+				_vel_multiplier = clamp(_vel_multiplier / 1.1, 0.2, 20)
+	# Receives key input
+	if event is InputEventKey:
+		match event.keycode:
+			KEY_W:
+				editor_forward_pressed = event.pressed
+			KEY_S:
+				editor_backward_pressed = event.pressed
+			KEY_A:
+				editor_left_pressed = event.pressed
+			KEY_D:
+				editor_right_pressed = event.pressed
+			KEY_Q:
+				editor_down_pressed = event.pressed
+			KEY_E:
+				editor_up_pressed = event.pressed
+			KEY_SHIFT:
+				editor_shift_pressed = event.pressed
+			KEY_ALT:
+				editor_alt_pressed = event.pressed
+#endregion 
+
+#region EDITOR OBJECT MODE
+func process_editor_object_mode_input(event:InputEvent):
+	process_editor_mode_input(event)
+	if event is InputEventMouseButton:
+		match event.button_index:
+			MOUSE_BUTTON_LEFT:
+				if event.pressed:
+					editor_target_selected.emit()
+#endregion 
+
+#region EDITOR TERRAIN MODE
+func process_editor_terrain_mode_input(event:InputEvent):
+	process_editor_mode_input(event)
+	if event is InputEventMouseButton:
+		if event.is_action_pressed("right_mouse_button"):
+			mouselook_engaged.emit()
+		if event.is_action_released("right_mouse_button"):
+			mouselook_disengaged.emit()
+			
 #endregion 

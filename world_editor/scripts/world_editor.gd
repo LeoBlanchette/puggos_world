@@ -7,7 +7,6 @@ static var instance:WorldEditor = null
 @export var terrain_editor:Node3D
 
 var world_editor_related_mod_groups: Array[String] = [
-	"terrains/terrain/",
 	"structures/modular/",
 	"materials/structures_modular/",
 	"emotes/character/",

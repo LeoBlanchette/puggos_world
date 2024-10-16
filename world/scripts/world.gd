@@ -36,6 +36,8 @@ func _ready() -> void:
 	NetworkManager.world_loaded.emit()
 	ObjectIndex.object_index.spawned.connect(_on_object_spawned)
 	
+	PlayerInput.input_mode = PlayerInput.InputMode.CHARACTER_INPUT
+	
 	Achievements.achievement.emit("entered_world")
 	
 

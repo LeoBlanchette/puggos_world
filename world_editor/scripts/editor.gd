@@ -15,7 +15,7 @@ signal object_transform_changed_ui
 ## Changed from translate, rotation, scale
 signal changed_transform_mode(old_mode, new_mode)
 signal changed_interaction_mode(old_mode, new_mode)
-signal changed_editor_context(old_context, new_context)
+signal changed_editor_context(old_context:CurrentEditorContext, new_context:CurrentEditorContext)
 ## Global or Local
 signal changed_transform_space_mode
 
@@ -166,12 +166,15 @@ func switch_interaction_mode():
 	match pressed_button.name:
 		"ButtonPlayMode":
 			current_interaction_mode = InteractionMode.PLAY
+			PlayerInput.input_mode = PlayerInput.InputMode.OBJECT_EDITOR_INPUT
 			enter_play_mode()
 		"ButtonEditorMode":
 			current_interaction_mode = InteractionMode.EDITOR
+			PlayerInput.input_mode = PlayerInput.InputMode.OBJECT_EDITOR_INPUT
 			enter_editor_mode()
 		"ButtonPlayerMode":
 			current_interaction_mode = InteractionMode.PLAYER
+			PlayerInput.input_mode = PlayerInput.InputMode.CHARACTER_INPUT
 			enter_player_mode()
 
 func trigger_interaction_mode_change_signal():

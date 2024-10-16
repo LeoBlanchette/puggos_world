@@ -52,4 +52,3 @@ func apply_operation(p_editor: Terrain3DEditor, p_global_position: Vector3, p_ca
 	p_editor.stop_operation()
 	
 	_get_point_picker().clear()
-
