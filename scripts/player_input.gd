@@ -112,6 +112,11 @@ var editor_shift_pressed = false
 var editor_alt_pressed = false
 #endregion 
 
+#region EDITOR TERRAIN
+signal operation_started
+signal operation_stopped
+#endregion 
+
 func _ready() -> void:
 	if testing:
 		primary_action_held.connect(_on_primary_action_held)
@@ -379,5 +384,9 @@ func process_editor_terrain_mode_input(event:InputEvent):
 			mouselook_engaged.emit()
 		if event.is_action_released("right_mouse_button"):
 			mouselook_disengaged.emit()
-			
+		
+		if event.is_action_pressed("left_mouse_button"):
+			operation_started.emit()
+		if event.is_action_released("left_mouse_button"):
+			operation_stopped.emit()
 #endregion 
