@@ -115,6 +115,7 @@ var editor_alt_pressed = false
 #region EDITOR TERRAIN
 signal operation_started
 signal operation_stopped
+var is_operating:bool = false
 #endregion 
 
 func _ready() -> void:
@@ -387,6 +388,9 @@ func process_editor_terrain_mode_input(event:InputEvent):
 		
 		if event.is_action_pressed("left_mouse_button"):
 			operation_started.emit()
+			is_operating = true
+			
 		if event.is_action_released("left_mouse_button"):
 			operation_stopped.emit()
+			is_operating = false
 #endregion 
